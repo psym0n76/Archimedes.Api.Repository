@@ -11,7 +11,7 @@ namespace Archimedes.Fx.Api.Repository.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "repository.api", "repository.api" };
+            return new string[] { "repository.api.rep", "repository.api.repo" };
         }
 
         // GET: api/Repository/5
