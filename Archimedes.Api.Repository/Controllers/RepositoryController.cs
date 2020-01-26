@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Archimedes.Fx.Api.Repository.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/api")]
     [ApiController]
     public class RepositoryController : ControllerBase
     {
