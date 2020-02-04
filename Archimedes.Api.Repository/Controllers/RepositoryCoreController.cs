@@ -9,7 +9,6 @@ namespace Archimedes.Fx.Api.Repository.Controllers
     [ApiController]
     public class RepositoryCoreController : ControllerBase
     {
-
         private readonly Config _config;
 
         // GET: api/Repository
@@ -22,7 +21,6 @@ namespace Archimedes.Fx.Api.Repository.Controllers
         public IEnumerable<string> Get()
         {
             //_config.AppVersion
-            //var assemblyVersion = typeof(Startup).Assembly.GetName().Version.ToString();
             return new string[] { "repository.api", "repository.api" , "version: " + _config.AppVersion};
         }
 
