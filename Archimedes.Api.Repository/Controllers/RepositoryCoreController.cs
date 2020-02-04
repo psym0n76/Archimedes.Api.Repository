@@ -11,7 +11,10 @@ namespace Archimedes.Fx.Api.Repository.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "repository.api", "repository.api" };
+
+            var assemblyVersion = typeof(Startup).Assembly.GetName().Version.ToString();
+
+            return new string[] { "repository.api", "repository.api" , "version: " + assemblyVersion};
         }
 
         // GET: api/Repository/5
