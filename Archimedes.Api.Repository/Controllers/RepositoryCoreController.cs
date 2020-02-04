@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Archimedes.Library.Domain;
+using Microsoft.Extensions.Options;
 
 namespace Archimedes.Fx.Api.Repository.Controllers
 {
@@ -7,14 +9,21 @@ namespace Archimedes.Fx.Api.Repository.Controllers
     [ApiController]
     public class RepositoryCoreController : ControllerBase
     {
+
+        private readonly Config _config;
+
         // GET: api/Repository
+        public RepositoryCoreController(IOptions<Config> config)
+        {
+            _config = config.Value;
+        }
+
         [HttpGet]
         public IEnumerable<string> Get()
         {
-
-            var assemblyVersion = typeof(Startup).Assembly.GetName().Version.ToString();
-
-            return new string[] { "repository.api", "repository.api" , "version: " + assemblyVersion};
+            //_config.AppVersion
+            //var assemblyVersion = typeof(Startup).Assembly.GetName().Version.ToString();
+            return new string[] { "repository.api", "repository.api" , "version: " + _config.AppVersion};
         }
 
         // GET: api/Repository/5
