@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Archimedes.Fx.Api.Repository.Controllers
 {
-    [Route("api/[controller]/api")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class RepositoryController : ControllerBase
+    public class RepositoryCoreController : ControllerBase
     {
         // GET: api/Repository
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "repository.api.rep", "repository.api.repo" };
+            return new string[] { "repository.api", "repository.api" };
         }
 
         // GET: api/Repository/5

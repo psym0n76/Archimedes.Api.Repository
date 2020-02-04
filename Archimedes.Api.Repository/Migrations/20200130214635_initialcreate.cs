@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Archimedes.Fx.Api.Repository.Migrations
+namespace Archimedes.Api.Repository.Migrations
 {
     public partial class initialcreate : Migration
     {
