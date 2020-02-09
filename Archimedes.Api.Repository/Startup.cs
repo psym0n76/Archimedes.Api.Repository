@@ -1,5 +1,6 @@
 ﻿
 using Archimedes.Library.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,8 +28,8 @@ namespace Archimedes.Api.Repository
             services.Configure<Config>(Configuration.GetSection("AppSettings"));
             services.AddSingleton(Configuration);
 
-
-
+            services.AddAutoMapper(typeof(Startup));
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddDbContext<ArchimedesContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

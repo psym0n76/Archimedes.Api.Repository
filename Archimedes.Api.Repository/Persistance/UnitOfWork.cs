@@ -3,7 +3,6 @@ namespace Archimedes.Api.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-
         private readonly ArchimedesContext _context;
 
         public UnitOfWork(ArchimedesContext context)

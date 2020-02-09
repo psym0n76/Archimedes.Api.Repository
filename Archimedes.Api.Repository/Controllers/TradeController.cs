@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Archimedes.Api.Repository.Controllers
@@ -8,24 +10,26 @@ namespace Archimedes.Api.Repository.Controllers
     public class TradeController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
+        private readonly IMapper _mapper;
 
-        // GET: api/Trade
-        public TradeController(IUnitOfWork unit)
+        public TradeController(IMapper mapper, IUnitOfWork unit)
         {
+            _mapper = mapper;
             _unit = unit;
         }
 
         [HttpGet(Name = "GetTrades")]
         public IActionResult Get()
         {
-            var result = _unit.Trade.GetTrades(1, 100);
+            var trade = _unit.Trade.GetTrades(1, 100);
 
-            if (result == null)
+            if (trade == null)
             {
                 return NotFound("Trade data not found.");
             }
 
-            var json = JsonConvert.SerializeObject(result);
+            var tradeDto = _mapper.Map<IEnumerable<TradeDto>>(trade);
+            var json = JsonConvert.SerializeObject(tradeDto);
 
             return Ok(json);
         }
@@ -34,16 +38,28 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}", Name = "GetTrade")]
         public IActionResult Get(int id)
         {
-            var result = _unit.Trade.GetTrade(id);
+            var trade = _unit.Trade.GetTrade(id);
 
-            if (result == null)
+            if (trade == null)
             {
                 return NotFound($"Trade data not found for Id: {id}");
             }
 
-            var json = JsonConvert.SerializeObject(result);
+            var tradeDto = _mapper.Map<TradeDto>(trade);
+            var json = JsonConvert.SerializeObject(tradeDto);
 
             return Ok(json);
+        }
+
+        // POST: api/Trade
+        [HttpPost(Name = "PostTrade")]
+        public IActionResult Post([FromBody] IEnumerable<TradeDto> value)
+        {
+            var trade = _mapper.Map<IEnumerable<Trade>>(value);
+            _unit.Trade.AddTrades(trade);
+            var records = _unit.Complete();
+
+            return Ok($"Added {records} Trade records");
         }
     }
 }
