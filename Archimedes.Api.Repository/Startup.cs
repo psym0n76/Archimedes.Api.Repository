@@ -3,12 +3,13 @@ using Archimedes.Library.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Archimedes.Fx.Api.Repository
+namespace Archimedes.Api.Repository
 {
     public class Startup
     {
@@ -25,7 +26,14 @@ namespace Archimedes.Fx.Api.Repository
             services.AddLogging();
             services.Configure<Config>(Configuration.GetSection("AppSettings"));
             services.AddSingleton(Configuration);
-            services.AddDbContext<ArchimedesContext>();
+
+
+
+
+            services.AddDbContext<ArchimedesContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddMvc().SetCompatibilityVersion(version: CompatibilityVersion.Version_3_0);
         }
 

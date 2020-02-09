@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Archimedes.Fx.Api.Repository
+namespace Archimedes.Api.Repository
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
@@ -16,7 +16,7 @@ namespace Archimedes.Fx.Api.Repository
             Context = context;
         }
 
-        public TEntity Get(int id)
+        public TEntity Get(long id)
         {
             return Context.Set<TEntity>().Find(id);
         }

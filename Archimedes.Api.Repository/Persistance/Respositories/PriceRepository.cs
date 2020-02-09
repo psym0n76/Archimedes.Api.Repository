@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace Archimedes.Fx.Api.Repository
+namespace Archimedes.Api.Repository
 {
     public class PriceRepository : Repository<Price>,IPriceRepository
     {
@@ -11,7 +11,7 @@ namespace Archimedes.Fx.Api.Repository
         }
         public ArchimedesContext FxDatabaseContext => Context as ArchimedesContext;
 
-        public Price GetPrice(int id)
+        public Price GetPrice(long id)
         {
             return FxDatabaseContext.Prices.Find(id);
         }

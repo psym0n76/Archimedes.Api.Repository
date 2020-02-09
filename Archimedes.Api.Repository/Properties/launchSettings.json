@@ -12,15 +12,15 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/repositorycore",
+      "launchUrl": "api/v1/default",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Archimedes.Fx.Api.Repository": {
+    "Archimedes.Api.Repository": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/repositorycore",
+      "launchUrl": "api/v1/default",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

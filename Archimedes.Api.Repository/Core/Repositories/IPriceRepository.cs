@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Archimedes.Fx.Api.Repository
+namespace Archimedes.Api.Repository
 {
     public interface IPriceRepository
     {
-        Price GetPrice(int id);
+        Price GetPrice(long id);
         IEnumerable<Price> GetPrices(int pageIndex, int pageSize);
         void AddPrice(Price price);
         void AddPrices(IEnumerable<Price> prices);

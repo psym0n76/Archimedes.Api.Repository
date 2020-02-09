@@ -1,5 +1,5 @@
 ﻿
-namespace Archimedes.Fx.Api.Repository
+namespace Archimedes.Api.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {

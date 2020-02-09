@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Archimedes.Fx.Api.Repository
+namespace Archimedes.Api.Repository
 {
     public class Candle
     {

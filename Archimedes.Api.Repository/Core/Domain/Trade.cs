@@ -1,4 +1,4 @@
-﻿namespace Archimedes.Fx.Api.Repository
+﻿namespace Archimedes.Api.Repository
 {
     public class Trade
     {

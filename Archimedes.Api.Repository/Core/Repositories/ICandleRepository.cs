@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Archimedes.Fx.Api.Repository
+namespace Archimedes.Api.Repository
 {
     public interface ICandleRepository : IRepository<Candle>
     {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Archimedes.Fx.Api.Repository
+namespace Archimedes.Api.Repository
 {
     public class ArchimedesContext : DbContext
     {
@@ -13,14 +13,19 @@ namespace Archimedes.Fx.Api.Repository
 
         private readonly Config  _config;
 
-        public ArchimedesContext(IOptions<Config> configuration)
+        //public ArchimedesContext(IOptions<Config> configuration)
+        //{
+        //    _config = configuration.Value;
+        //}
+
+        public ArchimedesContext(DbContextOptions<ArchimedesContext> options) : base(options)
         {
-            _config = configuration.Value;
+
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_config.DatabaseServerConnection);
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(_config.DatabaseServerConnection);
+        //}
     }
 }
