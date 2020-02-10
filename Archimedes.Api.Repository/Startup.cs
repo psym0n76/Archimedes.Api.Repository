@@ -29,14 +29,14 @@ namespace Archimedes.Api.Repository
             services.AddSingleton(Configuration);
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddControllers().AddNewtonsoftJson();
+            //services.AddControllers().AddNewtonsoftJson();
 
             services.AddDbContext<ArchimedesContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddMvc()
-                .AddNewtonsoftJson();
+            //services.AddMvc()
+             //   .AddNewtonsoftJson();
             services.AddMvc().SetCompatibilityVersion(version: CompatibilityVersion.Version_3_0);
         }
 
