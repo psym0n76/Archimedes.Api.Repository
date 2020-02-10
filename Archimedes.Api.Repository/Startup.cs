@@ -35,6 +35,8 @@ namespace Archimedes.Api.Repository
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddMvc()
+                .AddNewtonsoftJson();
             services.AddMvc().SetCompatibilityVersion(version: CompatibilityVersion.Version_3_0);
         }
 
