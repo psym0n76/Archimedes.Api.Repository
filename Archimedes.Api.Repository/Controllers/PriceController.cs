@@ -12,7 +12,6 @@ namespace Archimedes.Api.Repository.Controllers
     {
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
-
         public PriceController(IMapper mapper, IUnitOfWork unit)
         {
             _mapper = mapper;
@@ -39,19 +38,18 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}", Name = "GetPrice")]
         public IActionResult Get(int id)
         {
-            var result = _unit.Price.GetPrice(id);
+            var price = _unit.Price.GetPrice(id);
 
-            if (result == null)
+            if (price == null)
             {
                 return NotFound($"Price data not found for Id: {id}");
             }
 
-            var priceDto = _mapper.Map<PriceDto>(result);
+            var priceDto = _mapper.Map<PriceDto>(price);
             var json = JsonConvert.SerializeObject(priceDto);
 
             return Ok(json);
         }
-
 
         // POST: api/Price
         [HttpPost(Name = "PostPrice")]

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Archimedes.Library.Message.Dto;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Archimedes.Api.Repository.Controllers
@@ -8,8 +11,10 @@ namespace Archimedes.Api.Repository.Controllers
     public class CandleController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
-        public CandleController(IUnitOfWork unit)
+        private readonly IMapper _mapper;
+        public CandleController(IMapper mapper, IUnitOfWork unit)
         {
+            _mapper = mapper;
             _unit = unit;
         }
 
@@ -17,14 +22,15 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet(Name = "GetCandles")]
         public IActionResult Get()
         {
-            var result = _unit.Candle.GetCandles(1, 100);
+            var candle = _unit.Candle.GetCandles(1, 100);
 
-            if (result == null)
+            if (candle == null)
             {
                 return NotFound("Candle data not found.");
             }
 
-            var json = JsonConvert.SerializeObject(result);
+            var candleDto = _mapper.Map<IEnumerable<CandleDto>>(candle);
+            var json = JsonConvert.SerializeObject(candleDto);
 
             return Ok(json);
         }
@@ -40,7 +46,8 @@ namespace Archimedes.Api.Repository.Controllers
                 return NotFound($"Candle data not found for Id: {id}");
             }
 
-            var json = JsonConvert.SerializeObject(result);
+            var priceDto = _mapper.Map<PriceDto>(result);
+            var json = JsonConvert.SerializeObject(priceDto);
 
             return Ok(json);
         }

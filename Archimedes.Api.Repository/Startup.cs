@@ -1,5 +1,4 @@
-﻿
-using Archimedes.Library.Domain;
+﻿using Archimedes.Library.Domain;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,14 +30,11 @@ namespace Archimedes.Api.Repository
             var config = Configuration.GetSection("AppSettings").Get<Config>();
 
             services.AddAutoMapper(typeof(Startup));
-            //services.AddControllers().AddNewtonsoftJson();
 
             services.AddDbContext<ArchimedesContext>(options =>
                 options.UseSqlServer(config.DatabaseServerConnection));
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            //services.AddMvc()
-             //   .AddNewtonsoftJson();
             services.AddMvc().SetCompatibilityVersion(version: CompatibilityVersion.Version_3_0);
         }
 
