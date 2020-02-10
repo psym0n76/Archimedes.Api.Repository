@@ -28,11 +28,13 @@ namespace Archimedes.Api.Repository
             services.Configure<Config>(Configuration.GetSection("AppSettings"));
             services.AddSingleton(Configuration);
 
+            var config = Configuration.GetSection("AppSettings").Get<Config>();
+
             services.AddAutoMapper(typeof(Startup));
             //services.AddControllers().AddNewtonsoftJson();
 
             services.AddDbContext<ArchimedesContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(config.DatabaseServerConnection));
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             //services.AddMvc()
