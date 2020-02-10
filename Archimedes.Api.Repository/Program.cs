@@ -13,14 +13,13 @@ namespace Archimedes.Api.Repository
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("init main");
+                logger.Debug("Initialise Main");
                 CreateWebHostBuilder(args).Build().Run();
             }
             catch (Exception e)
             {
                 logger.Error(e, "Stopped program because of exception");
-                Console.WriteLine(e);
-                throw;
+                throw new ApplicationException("Stopped program because of exception");
             }
             finally
             {
