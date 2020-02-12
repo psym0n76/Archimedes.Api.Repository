@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Archimedes.Api.Repository.DTO;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Archimedes.Api.Repository.Controllers
@@ -33,6 +33,42 @@ namespace Archimedes.Api.Repository.Controllers
 
             return Ok(json);
         }
+
+
+        //GET: api/v1/price/bymarket?market=gbpusd
+        [HttpGet("bymarket", Name = "GetMarketPrices")]
+        public  IActionResult Get(string market)
+        {
+            var price = _unit.Price.GetPrices(a=>a.Market == market);
+
+            if (price == null)
+            {
+                return NotFound($"Price data not found for Id: {market}");
+            }
+
+            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
+            var json = JsonConvert.SerializeObject(priceDto);
+
+            return Ok(json);
+        }
+
+        //GET: api/v1/price/bymarket_fromdate_todate?market=gbpusd&fromDate=25&toDate=20
+        [HttpGet("bymarket_fromdate_todate", Name = "GetMarketPricesDate")]
+        public  IActionResult Get(string market,string fromDate,string toDate)
+        {
+            var price = _unit.Price.GetPrices(a=>a.Market == market);
+
+            if (price == null)
+            {
+                return NotFound($"Price data not found for Id: {market}");
+            }
+
+            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
+            var json = JsonConvert.SerializeObject(priceDto);
+
+            return Ok(json);
+        }
+
 
         // GET: api/Price/5
         [HttpGet("{id}", Name = "GetPrice")]
