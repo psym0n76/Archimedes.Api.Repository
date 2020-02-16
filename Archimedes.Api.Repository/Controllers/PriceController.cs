@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Net.Mime;
 using Archimedes.Api.Repository.DTO;
-using AutoMapper;using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Archimedes.Api.Repository.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [ApiVersion("1.0")]
+    //[Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class PriceController : ControllerBase
     {
@@ -17,85 +20,90 @@ namespace Archimedes.Api.Repository.Controllers
             _mapper = mapper;
             _unit = unit;
         }
-
-        [HttpGet(Name = "GetPrices")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet()]
         public IActionResult Get()
         {
             var price = _unit.Price.GetPrices(1, 100);
 
             if (price == null)
             {
-                return NotFound("Pricing data not found.");
+                return NotFound();
             }
 
             var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
-            var json = JsonConvert.SerializeObject(priceDto);
 
-            return Ok(json);
+            return Ok(priceDto);
         }
-
-
-        //GET: api/v1/price/bymarket?market=gbpusd
-        [HttpGet("bymarket", Name = "GetMarketPrices")]
-        public  IActionResult Get(string market)
-        {
-            var price = _unit.Price.GetPrices(a=>a.Market == market);
-
-            if (price == null)
-            {
-                return NotFound($"Price data not found for Id: {market}");
-            }
-
-            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
-            var json = JsonConvert.SerializeObject(priceDto);
-
-            return Ok(json);
-        }
-
-        //GET: api/v1/price/bymarket_fromdate_todate?market=gbpusd&fromDate=25&toDate=20
-        [HttpGet("bymarket_fromdate_todate", Name = "GetMarketPricesDate")]
-        public  IActionResult Get(string market,string fromDate,string toDate)
-        {
-            var price = _unit.Price.GetPrices(a=>a.Market == market);
-
-            if (price == null)
-            {
-                return NotFound($"Price data not found for Id: {market}");
-            }
-
-            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
-            var json = JsonConvert.SerializeObject(priceDto);
-
-            return Ok(json);
-        }
-
 
         // GET: api/Price/5
-        [HttpGet("{id}", Name = "GetPrice")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             var price = _unit.Price.GetPrice(id);
 
             if (price == null)
             {
-                return NotFound($"Price data not found for Id: {id}");
+                return NotFound();
             }
 
             var priceDto = _mapper.Map<PriceDto>(price);
-            var json = JsonConvert.SerializeObject(priceDto);
 
-            return Ok(json);
+            return Ok(priceDto);
+        }
+
+
+        //GET: api/v1/price/bymarket?market=gbpusd
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("bymarket", Name = "GetMarketPrices")]
+        public IActionResult Get(string market)
+        {
+            var price = _unit.Price.GetPrices(a => a.Market == market);
+
+            if (price == null)
+            {
+                return NotFound();
+            }
+
+            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
+
+            return Ok(priceDto);
+        }
+
+        //GET: api/v1/price/bymarket_fromdate_todate?market=gbpusd&fromDate=25&toDate=20
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("bymarket_fromdate_todate", Name = "GetMarketPricesDate")]
+        public IActionResult Get(string market, string fromDate, string toDate)
+        {
+            var price = _unit.Price.GetPrices(a => a.Market == market);
+
+            if (price == null)
+            {
+                return NotFound();
+            }
+
+            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
+
+            return Ok(priceDto);
         }
 
         // POST: api/Price
-        [HttpPost(Name = "PostPrice")]
+        [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Post([FromBody] IEnumerable<PriceDto> value)
         {
             var price = _mapper.Map<IEnumerable<Price>>(value);
             _unit.Price.AddPrices(price);
             var result = _unit.Complete();
 
-            return Ok($"Added {result} Price records");
+            return Ok($"Records added: {result}");
         }
     }
 }
