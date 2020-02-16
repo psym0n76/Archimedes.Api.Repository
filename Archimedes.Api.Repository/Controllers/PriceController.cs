@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Mime;
 using Archimedes.Api.Repository.DTO;
 using AutoMapper;
@@ -20,6 +21,7 @@ namespace Archimedes.Api.Repository.Controllers
             _mapper = mapper;
             _unit = unit;
         }
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet()]
@@ -74,20 +76,34 @@ namespace Archimedes.Api.Repository.Controllers
             return Ok(priceDto);
         }
 
-        //GET: api/v1/price/bymarket_fromdate_todate?market=gbpusd&fromDate=25&toDate=20
+        //GET: api/v1/price/bymarket_fromdate_todate?market=gbpusd&fromDate=25&toDate=20&granularity=15
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("bymarket_fromdate_todate", Name = "GetMarketPricesDate")]
-        public IActionResult Get(string market, string fromDate, string toDate)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("bymarket_fromdate_todate_granularity", Name = "GetMarketPricesDateGranularity")]
+        public IActionResult Get(string market, string fromDate, string toDate, string granularity)
         {
-            var price = _unit.Price.GetPrices(a => a.Market == market);
 
-            if (price == null)
+            if (DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
+            {
+                return BadRequest($"Incorrect date format: {fromDate}");
+            }
+
+            if (DateTimeOffset.TryParse(toDate, out var toDateOffset))
+            {
+                return BadRequest($"Incorrect date format: {toDate}");
+            }
+
+            var prices = _unit.Price.GetPrices(a =>
+                a.Market == market && a.Timestamp > fromDateOffset && a.Timestamp <= toDateOffset &&
+                a.Granularity == granularity);
+
+            if (prices == null)
             {
                 return NotFound();
             }
 
-            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
+            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(prices);
 
             return Ok(priceDto);
         }
