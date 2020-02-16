@@ -20,12 +20,12 @@ namespace Archimedes.Api.Repository
 
         public IEnumerable<Price> GetPrices(int pageIndex, int pageSize)
         {
-            return FxDatabaseContext.Prices.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
         }
 
         public IEnumerable<Price> GetPrices(Expression<Func<Price, bool>> predicate)
         {
-            return FxDatabaseContext.Prices.Where(predicate).ToList();
+            return FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToList();
         }
 
         public void AddPrice(Price price)
@@ -36,6 +36,11 @@ namespace Archimedes.Api.Repository
         public void AddPrices(IEnumerable<Price> prices)
         {
             FxDatabaseContext.Prices.AddRange(prices);
+        }
+
+        public void RemovePrices(IEnumerable<Price> prices)
+        {
+            FxDatabaseContext.Prices.RemoveRange(prices);
         }
     }
 }

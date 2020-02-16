@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using Archimedes.Api.Repository.DTO;
 using AutoMapper;
@@ -57,7 +58,6 @@ namespace Archimedes.Api.Repository.Controllers
             return Ok(priceDto);
         }
 
-
         //GET: api/v1/price/bymarket?market=gbpusd
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -76,12 +76,12 @@ namespace Archimedes.Api.Repository.Controllers
             return Ok(priceDto);
         }
 
-        //GET: api/v1/price/bymarket_fromdate_todate?market=gbpusd&fromDate=25&toDate=20&granularity=15
+        //GET: api/v1/price/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15&fromDate=25&toDate=20
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpGet("bymarket_fromdate_todate_granularity", Name = "GetMarketPricesDateGranularity")]
-        public IActionResult Get(string market, string fromDate, string toDate, string granularity)
+        [HttpGet("bymarket_bygranularity_fromdate_todate", Name = "GetMarketGranularityPricesDate")]
+        public IActionResult Get(string market, string granularity,string fromDate, string toDate)
         {
 
             if (DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
@@ -113,13 +113,43 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody] IEnumerable<PriceDto> value)
+        public IActionResult Post([FromBody] IEnumerable<PriceDto> priceDto)
         {
-            var price = _mapper.Map<IEnumerable<Price>>(value);
+            var price = _mapper.Map<IEnumerable<Price>>(priceDto).ToList();
+
+            RemoveDuplicatePriceEntries(price);
+
             _unit.Price.AddPrices(price);
             var result = _unit.Complete();
 
-            return Ok($"Records added: {result}");
+            return Ok($"Records changed: {result}");
+        }
+
+        private void RemoveDuplicatePriceEntries(IList<Price> price)
+        {
+            var granularity = price.Select(a => a.Granularity).SingleOrDefault();
+            var market = price.Select(a => a.Market).SingleOrDefault();
+
+            var historicPrices = _unit.Price.GetPrices(a => a.Granularity == granularity && a.Market == market);
+
+            var result = historicPrices.Join(price, hist => hist.Timestamp, current => current.Timestamp,
+                (hist, current) => new Price
+                {
+                    Id = hist.Id,
+                    Market = hist.Market,
+                    Granularity = hist.Granularity,
+                    AskOpen = hist.AskOpen,
+                    AskHigh = hist.AskHigh,
+                    AskLow = hist.AskLow,
+                    AskClose = hist.AskClose,
+                    BidOpen = hist.BidOpen,
+                    BidHigh = hist.BidHigh,
+                    BidLow = hist.BidLow,
+                    BidClose = hist.BidClose,
+                    Timestamp = hist.Timestamp
+                }).ToList();
+
+            _unit.Price.RemoveRange(result);
         }
     }
 }

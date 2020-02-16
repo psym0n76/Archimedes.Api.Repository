@@ -8,10 +8,9 @@ namespace Archimedes.Api.Repository
     {
         Price GetPrice(long id);
         IEnumerable<Price> GetPrices(int pageIndex, int pageSize);
-
         IEnumerable<Price> GetPrices(Expression<Func<Price, bool>> predicate);
-
         void AddPrice(Price price);
         void AddPrices(IEnumerable<Price> prices);
+        void RemovePrices(IEnumerable<Price> prices);
     }
 }
