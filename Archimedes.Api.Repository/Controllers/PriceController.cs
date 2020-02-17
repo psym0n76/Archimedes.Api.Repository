@@ -6,6 +6,7 @@ using Archimedes.Api.Repository.DTO;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Archimedes.Api.Repository.Controllers
 {
@@ -17,10 +18,12 @@ namespace Archimedes.Api.Repository.Controllers
     {
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
-        public PriceController(IMapper mapper, IUnitOfWork unit)
+        private readonly ILogger<PriceController> _logger;
+        public PriceController(IMapper mapper, IUnitOfWork unit,ILogger<PriceController> logger)
         {
             _mapper = mapper;
             _unit = unit;
+            _logger = logger;
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -32,6 +35,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (price == null)
             {
+                _logger.LogError("Price data not found.");
                 return NotFound();
             }
 
@@ -50,6 +54,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (price == null)
             {
+                _logger.LogError($"Price data not found for Id: {id}");
                 return NotFound();
             }
 
@@ -68,6 +73,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (price == null)
             {
+                _logger.LogError($"Price data not found for market: {market}.");
                 return NotFound();
             }
 
@@ -86,12 +92,12 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
             {
-                return BadRequest($"Incorrect date format: {fromDate}");
+                return BadRequest($"Incorrect From date format: {fromDate}");
             }
 
             if (DateTimeOffset.TryParse(toDate, out var toDateOffset))
             {
-                return BadRequest($"Incorrect date format: {toDate}");
+                return BadRequest($"Incorrect To date format: {toDate}");
             }
 
             var prices = _unit.Price.GetPrices(a =>
@@ -100,11 +106,13 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (prices == null)
             {
+                _logger.LogError($"Price data not found. Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
                 return NotFound();
             }
 
             var priceDto = _mapper.Map<IEnumerable<PriceDto>>(prices);
 
+            _logger.LogInformation($"Returned {priceDto.Count()} trade records");
             return Ok(priceDto);
         }
 
@@ -120,9 +128,11 @@ namespace Archimedes.Api.Repository.Controllers
             RemoveDuplicatePriceEntries(price);
 
             _unit.Price.AddPrices(price);
-            var result = _unit.Complete();
+            var records = _unit.Complete();
 
-            return Ok($"Records changed: {result}");
+            
+            _logger.LogInformation($"Added {records} trade records");
+            return Ok();
         }
 
         private void RemoveDuplicatePriceEntries(IList<Price> price)

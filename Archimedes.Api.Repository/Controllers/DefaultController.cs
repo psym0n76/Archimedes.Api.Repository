@@ -1,33 +1,45 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Archimedes.Library.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace Archimedes.Api.Repository.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [ApiVersion("1.0")]
+    //[Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class DefaultController : ControllerBase
     {
         private readonly Config _config;
+        private readonly ILogger<CandleController> _logger;
 
         // GET: api/Repository
-        public DefaultController(IOptions<Config> config,IUnitOfWork unit)
+        public DefaultController(IOptions<Config> config, ILogger<CandleController> logger)
         {
             _config = config.Value;
+            _logger = logger;
         }
 
-        [HttpGet(Name="GetDefaults")]
-        public IEnumerable<string> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet()]
+        public IActionResult Get()
         {
-            return new string[] {$"{_config.ApplicationName} Version: {_config.AppVersion}"};
+            _logger.LogInformation($"{_config.ApplicationName} Version: {_config.AppVersion}");
+            return Ok($"{_config.ApplicationName} Version: {_config.AppVersion}");
+
         }
 
         // GET: api/Repository/5
-        [HttpGet("{id}", Name = "GetDefault")]
-        public string Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
         {
-            return "value1";
+            _logger.LogInformation($"{_config.ApplicationName} Version: {_config.AppVersion}");
+            return Ok($"{_config.ApplicationName} Version: {_config.AppVersion}");
         }
     }
 }

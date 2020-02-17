@@ -2,7 +2,7 @@
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Archimedes.Api.Repository.Controllers
 {
@@ -12,27 +12,31 @@ namespace Archimedes.Api.Repository.Controllers
     {
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
-        public CandleController(IMapper mapper, IUnitOfWork unit)
+        private readonly ILogger<CandleController> _logger;
+        public CandleController(IMapper mapper, IUnitOfWork unit,ILogger<CandleController> logger)
         {
             _mapper = mapper;
             _unit = unit;
+            _logger = logger;
         }
 
         // GET: api/Candle
         [HttpGet(Name = "GetCandles")]
         public IActionResult Get()
         {
+            _logger.LogInformation("Get Candles");
             var candle = _unit.Candle.GetCandles(1, 100);
 
             if (candle == null)
             {
-                return NotFound("Candle data not found.");
+                _logger.LogError("Candle data not found.");
+                return NotFound();
+
             }
 
             var candleDto = _mapper.Map<IEnumerable<CandleDto>>(candle);
-            var json = JsonConvert.SerializeObject(candleDto);
 
-            return Ok(json);
+            return Ok(candleDto);
         }
 
         // GET: api/Candle/5
@@ -43,13 +47,13 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (result == null)
             {
-                return NotFound($"Candle data not found for Id: {id}");
+                _logger.LogError($"Candle data not found for Id: {id}");
+                return NotFound();
             }
 
-            var priceDto = _mapper.Map<PriceDto>(result);
-            var json = JsonConvert.SerializeObject(priceDto);
+            var candleDto = _mapper.Map<PriceDto>(result);
 
-            return Ok(json);
+            return Ok(candleDto);
         }
     }
 }
