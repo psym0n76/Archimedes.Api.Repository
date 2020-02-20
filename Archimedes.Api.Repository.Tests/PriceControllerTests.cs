@@ -11,14 +11,14 @@ using NUnit.Framework;
 namespace Archimedes.Api.Repository.Tests
 {
     [TestFixture]
-    public class PriceRepositoryTests
+    public class PriceControllerTests
     {
         private static Price _price;
         private static Price _priceTwo;
         private static IEnumerable<Price> _prices;
 
         [Test]
-        public async Task Should_Return_OK_Response_When_Passing_Valid_Id_To_Get_Request()
+        public async Task Should_ReturnOK_When_IdToGetMethod()
         {
             var  controller = GetMockPriceControllerWithId(1);
             var result = await controller.Get(1);
@@ -29,7 +29,7 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
-        public async Task Should_Return_OK_Response_When_Passing_InValid_Id_To_Get_Request()
+        public async Task Should_ReturnOK_When_InValidIdToGetMethod()
         {
             var  controller = GetMockPriceControllerWithId(2);
             var result = await controller.Get(1);
@@ -40,7 +40,7 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
-        public async Task Should_Return_OK_Response_When_Passing_No_Id_To_Get_Request()
+        public async Task Should_ReturnOK_When_NoIdToGetMethod()
         {
             var  controller = GetMockPriceController();
             var result = await controller.Get();
@@ -51,7 +51,7 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
-        public async Task Should_Return_NotFound_When_Null_Is_Returned_from_repo()
+        public async Task Should_ReturnNotFound_When_NullIsReturnedFromUnitOfWork()
         {
             var  controller = GetMockPriceControllerNull();
             var result = await controller.Get();
@@ -62,7 +62,7 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
-        public async Task Should_Return_Ok_When_Passing_Market_To_Get_Request()
+        public async Task Should_ReturnOk_When_MarketToGetMethod()
         {
             var  controller = GetMockPriceControllerMarket();
             var result = await controller.Get("GBPUSD");
@@ -73,7 +73,7 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
-        public async Task Should_Return_Ok_When_Passing_Market_Granularity_Date_To_Get_Request()
+        public async Task Should_ReturnOk_When_MarketGranularityDateToGetMethod()
         {
             var  controller = GetMockPriceControllerMarketDateGranularity();
             var result = await controller.Get("GBPUSD","15","20200101100000","20200501100000");
@@ -83,9 +83,9 @@ namespace Archimedes.Api.Repository.Tests
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
-        [Ignore("Unable to test null exception from unitofwork")]
+        [Ignore("Unable to test null exception from unit of work")]
         [Test]
-        public async Task Should_Return_Ok_When_Passing_Null_To_Get_Request()
+        public async Task Should_ReturnOk_When_NullToGetRequest()
         {
             var  controller = GetMockPriceControllerMarketNull();
             var result = await controller.Get("GBPUSD");
