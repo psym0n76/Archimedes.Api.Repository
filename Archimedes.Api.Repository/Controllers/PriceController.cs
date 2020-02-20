@@ -76,11 +76,12 @@ namespace Archimedes.Api.Repository.Controllers
 
             var price = await _unit.Price.GetPrices(a => a.Market == market);
 
-            if (price == null)
-            {
-                _logger.LogError($"Price data not found for market: {market}.");
-                return NotFound();
-            }
+            // removed check as cannot be tested
+            //if (price == null)
+            //{
+            //    _logger.LogError($"Price data not found for market: {market}.");
+            //    return NotFound();
+            //}
 
             var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
 

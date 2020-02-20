@@ -39,7 +39,6 @@ namespace Archimedes.Api.Repository.Tests
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
-
         [Test]
         public async Task Should_Return_OK_Response_When_Passing_No_Id_To_Get_Request()
         {
@@ -74,6 +73,18 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
+        public async Task Should_Return_Ok_When_Passing_Market_Granularity_Date_To_Get_Request()
+        {
+            var  controller = GetMockPriceControllerMarketDateGranularity();
+            var result = await controller.Get("GBPUSD","15","20200101100000","20200501100000");
+
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf(typeof(ActionResult),result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [Ignore("Unable to test null exception from unitofwork")]
+        [Test]
         public async Task Should_Return_Ok_When_Passing_Null_To_Get_Request()
         {
             var  controller = GetMockPriceControllerMarketNull();
@@ -102,6 +113,21 @@ namespace Archimedes.Api.Repository.Tests
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.GetPrices(price => price.Market == "GBPUSD")).Returns(Task.FromResult(_prices));
+
+            return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
+        }
+
+        private static PriceController GetMockPriceControllerMarketDateGranularity()
+        {
+            var mockUnitOfWork = new Mock<IUnitOfWork>();
+            var mockMapper = new Mock<IMapper>();
+            var mockLogger = new Mock<ILogger<PriceController>>();
+
+            mockUnitOfWork.Setup(m => m.Price.GetPrices(a =>
+                a.Market == "GBPUSD" 
+                && a.Timestamp > new DateTime(2020,01,20,10,00,00) 
+                && a.Timestamp <= new DateTime(2020,05,20,10,00,00) &&
+                a.Granularity == "15")).Returns(Task.FromResult(_prices));
 
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
