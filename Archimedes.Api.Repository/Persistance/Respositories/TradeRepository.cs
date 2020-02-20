@@ -9,6 +9,7 @@ namespace Archimedes.Api.Repository
         public TradeRepository(DbContext context) : base(context)
         {
         }
+
         public ArchimedesContext FxDatabaseContext => Context as ArchimedesContext;
 
         public Trade GetTrade(int id)

@@ -1,4 +1,6 @@
 ﻿
+using System.Threading.Tasks;
+
 namespace Archimedes.Api.Repository
 {
     public class UnitOfWork : IUnitOfWork
@@ -22,9 +24,9 @@ namespace Archimedes.Api.Repository
         public ITradeRepository Trade { get; }
         public ICandleRepository Candle { get; set; }
 
-        public int Complete()
+        public async Task<int> Complete()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
     }
 }

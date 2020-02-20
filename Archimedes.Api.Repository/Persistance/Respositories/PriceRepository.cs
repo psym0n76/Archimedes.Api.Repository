@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Archimedes.Api.Repository
@@ -13,29 +14,29 @@ namespace Archimedes.Api.Repository
         }
         public ArchimedesContext FxDatabaseContext => Context as ArchimedesContext;
 
-        public Price GetPrice(long id)
+        public async Task<Price> GetPrice(long id)
         {
-            return FxDatabaseContext.Prices.Find(id);
+            return await FxDatabaseContext.Prices.FindAsync(id);
         }
 
-        public IEnumerable<Price> GetPrices(int pageIndex, int pageSize)
+        public async Task <IEnumerable<Price>> GetPrices(int pageIndex, int pageSize)
         {
-            return FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return await FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
-        public IEnumerable<Price> GetPrices(Expression<Func<Price, bool>> predicate)
+        public async Task< IEnumerable<Price>> GetPrices(Expression<Func<Price, bool>> predicate)
         {
-            return FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToList();
+            return await FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToListAsync();
         }
 
         public void AddPrice(Price price)
         {
-            FxDatabaseContext.Prices.Add(price);
+            FxDatabaseContext.Prices.AddAsync(price);
         }
 
         public void AddPrices(IEnumerable<Price> prices)
         {
-            FxDatabaseContext.Prices.AddRange(prices);
+            FxDatabaseContext.Prices.AddRangeAsync(prices);
         }
 
         public void RemovePrices(IEnumerable<Price> prices)

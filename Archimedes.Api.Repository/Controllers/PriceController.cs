@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using System.Threading.Tasks;
 using Archimedes.Api.Repository.DTO;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -29,9 +30,10 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet()]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var price = _unit.Price.GetPrices(1, 100);
+            _logger.LogInformation($"Request: Get all Prices");
+            var price = await _unit.Price.GetPrices(1, 100);
 
             if (price == null)
             {
@@ -48,9 +50,10 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var price = _unit.Price.GetPrice(id);
+            _logger.LogInformation($"Request: Get Prices for Id: {id}");
+            var price = await _unit.Price.GetPrice(id);
 
             if (price == null)
             {
@@ -67,9 +70,10 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("bymarket", Name = "GetMarketPrices")]
-        public IActionResult Get(string market)
+        public async Task<IActionResult> Get(string market)
         {
-            var price = _unit.Price.GetPrices(a => a.Market == market);
+            _logger.LogInformation($"Request: Get all Prices for Market: {market}");
+            var price = await _unit.Price.GetPrices(a => a.Market == market);
 
             if (price == null)
             {
@@ -87,8 +91,9 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("bymarket_bygranularity_fromdate_todate", Name = "GetMarketGranularityPricesDate")]
-        public IActionResult Get(string market, string granularity,string fromDate, string toDate)
+        public async Task<IActionResult> Get(string market, string granularity,string fromDate, string toDate)
         {
+            _logger.LogInformation($"Request: Get all Prices for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
 
             if (DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
             {
@@ -100,7 +105,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest($"Incorrect To date format: {toDate}");
             }
 
-            var prices = _unit.Price.GetPrices(a =>
+            var prices = await _unit.Price.GetPrices(a =>
                 a.Market == market && a.Timestamp > fromDateOffset && a.Timestamp <= toDateOffset &&
                 a.Granularity == granularity);
 
@@ -121,17 +126,18 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody] IEnumerable<PriceDto> priceDto)
+        public async Task<IActionResult> Post([FromBody] IEnumerable<PriceDto> priceDto)
         {
+            _logger.LogInformation($"Request: Post Prices: {priceDto.Count()}");
+
             var price = _mapper.Map<IEnumerable<Price>>(priceDto).ToList();
 
             RemoveDuplicatePriceEntries(price);
 
             _unit.Price.AddPrices(price);
-            var records = _unit.Complete();
+            var records = await _unit.Complete();
 
-            
-            _logger.LogInformation($"Added {records} trade records");
+            _logger.LogInformation($"Added {records} price records");
             return Ok();
         }
 
@@ -140,7 +146,9 @@ namespace Archimedes.Api.Repository.Controllers
             var granularity = price.Select(a => a.Granularity).SingleOrDefault();
             var market = price.Select(a => a.Market).SingleOrDefault();
 
-            var historicPrices = _unit.Price.GetPrices(a => a.Granularity == granularity && a.Market == market);
+            var historicPrices = _unit.Price.GetPrices(a => a.Granularity == granularity && a.Market == market).Result.ToList();
+
+            _logger.LogInformation($"Identified {historicPrices.Count} duplicate price records to delete");
 
             var result = historicPrices.Join(price, hist => hist.Timestamp, current => current.Timestamp,
                 (hist, current) => new Price

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Archimedes.Api.Repository
 {
@@ -8,7 +9,6 @@ namespace Archimedes.Api.Repository
         IPriceRepository Price { get; }
         ICandleRepository Candle { get; }
         ITradeRepository Trade { get; }
-
-        int Complete();
+        Task<int> Complete();
     }
 }

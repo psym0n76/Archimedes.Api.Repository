@@ -51,7 +51,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return NotFound();
             }
 
-            var candleDto = _mapper.Map<PriceDto>(result);
+            var candleDto = _mapper.Map<CandleDto>(result);
 
             return Ok(candleDto);
         }
