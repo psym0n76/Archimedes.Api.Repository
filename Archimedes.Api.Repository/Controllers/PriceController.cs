@@ -73,6 +73,7 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<IActionResult> Get(string market)
         {
             _logger.LogInformation($"Request: Get all Prices for Market: {market}");
+
             var price = await _unit.Price.GetPrices(a => a.Market == market);
 
             if (price == null)

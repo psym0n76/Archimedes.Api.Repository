@@ -19,12 +19,12 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Prices.FindAsync(id);
         }
 
-        public async Task <IEnumerable<Price>> GetPrices(int pageIndex, int pageSize)
+        public async Task<IEnumerable<Price>> GetPrices(int pageIndex, int pageSize)
         {
             return await FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
-        public async Task< IEnumerable<Price>> GetPrices(Expression<Func<Price, bool>> predicate)
+        public async Task<IEnumerable<Price>> GetPrices(Expression<Func<Price, bool>> predicate)
         {
             return await FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToListAsync();
         }
