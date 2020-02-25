@@ -94,7 +94,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bylastupdated", Name = "GetLastUpdated")]
         public async Task<IActionResult> Get(string market,string granularity)
         {
-            _logger.LogInformation($"Request: Get Lastupdated Price for Market: {market} and Granularity: {granularity}");
+            _logger.LogInformation($"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
 
             var price = await _unit.Price.GetPrices(a => a.Market == market && a.Granularity == granularity);
 

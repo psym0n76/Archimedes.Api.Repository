@@ -7,11 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Archimedes.Api.Repository
 {
-    public class PriceRepository : Repository<Price>,IPriceRepository
+    public class PriceRepository : Repository<Price>, IPriceRepository
     {
         public PriceRepository(DbContext context) : base(context)
         {
         }
+
         public ArchimedesContext FxDatabaseContext => Context as ArchimedesContext;
 
         public async Task<Price> GetPrice(long id)
@@ -19,10 +20,10 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Prices.FindAsync(id);
         }
 
-
         public async Task<IEnumerable<Price>> GetPrices(int pageIndex, int pageSize)
         {
-            return await FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return await FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Price>> GetPrices(Expression<Func<Price, bool>> predicate)
@@ -37,7 +38,7 @@ namespace Archimedes.Api.Repository
 
         public async Task AddPrices(IEnumerable<Price> prices)
         {
-             await FxDatabaseContext.Prices.AddRangeAsync(prices);
+            await FxDatabaseContext.Prices.AddRangeAsync(prices);
         }
 
         public void RemovePrices(IEnumerable<Price> prices)

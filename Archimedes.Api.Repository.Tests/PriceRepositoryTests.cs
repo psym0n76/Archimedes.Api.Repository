@@ -70,6 +70,18 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
+        public async Task Should_ReturnOneRecord_When_PricesCalledWithPaging()
+        {
+            var repo = GetRepository();
+            AddTestData();
+            var result = await repo.GetPrices(1,1);
+
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
+            Assert.IsTrue(result.Count() == 1);
+            DeleteTestData();
+        }
+
+        [Test]
         public  async Task Should_ReturnNilRecords_When_TruncateCalled()
         {
             var repo = GetRepository();
