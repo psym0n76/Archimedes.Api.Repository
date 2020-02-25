@@ -76,19 +76,19 @@ namespace Archimedes.Api.Repository.Controllers
 
             var price = await _unit.Price.GetPrices(a => a.Market == market);
 
-            // removed check as cannot be tested
-            //if (price == null)
-            //{
-            //    _logger.LogError($"Price data not found for market: {market}.");
-            //    return NotFound();
-            //}
+            //removed check as cannot be tested
+            if (price == null)
+            {
+                _logger.LogError($"Price data not found for market: {market}.");
+                return NotFound();
+            }
 
             var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
 
             return Ok(priceDto);
         }
 
-        //GET: api/v1/price/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15&fromDate=25&toDate=20
+        //GET: api/v1/price/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15&fromDate=2020-01-01T05:00:00&toDate=2020-01-01T05:00:00
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -97,20 +97,21 @@ namespace Archimedes.Api.Repository.Controllers
         {
             _logger.LogInformation($"Request: Get all Prices for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
 
-            if (DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
+            if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
             {
-                return BadRequest($"Incorrect From date format: {fromDate}");
+                return BadRequest($"Incorrect FromDate format: {fromDate}");
             }
 
-            if (DateTimeOffset.TryParse(toDate, out var toDateOffset))
+            if (!DateTimeOffset.TryParse(toDate, out var toDateOffset))
             {
-                return BadRequest($"Incorrect To date format: {toDate}");
+                return BadRequest($"Incorrect ToDate format: {toDate}");
             }
 
             var prices = await _unit.Price.GetPrices(a =>
                 a.Market == market && a.Timestamp > fromDateOffset && a.Timestamp <= toDateOffset &&
                 a.Granularity == granularity);
 
+            // unable to test due to mocking problems returning a null
             if (prices == null)
             {
                 _logger.LogError($"Price data not found. Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
@@ -136,7 +137,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             RemoveDuplicatePriceEntries(price);
 
-            _unit.Price.AddPrices(price);
+            await _unit.Price.AddPrices(price);
             var records = await _unit.Complete();
 
             _logger.LogInformation($"Added {records} price records");

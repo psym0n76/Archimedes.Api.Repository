@@ -66,5 +66,10 @@ namespace Archimedes.Api.Repository
         {
             Context.Set<TEntity>().RemoveRange(entities);
         }
+
+        public void Truncate()
+        {
+            Context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {typeof(TEntity).Name}");
+        }
     }
 }

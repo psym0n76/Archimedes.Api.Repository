@@ -10,8 +10,8 @@ namespace Archimedes.Api.Repository
         Task<Price> GetPrice(long id);
         Task<IEnumerable<Price>> GetPrices(int pageIndex, int pageSize);
         Task<IEnumerable<Price>> GetPrices(Expression<Func<Price, bool>> predicate);
-        void AddPrice(Price price);
-        void AddPrices(IEnumerable<Price> prices);
+        Task AddPrice(Price price);
+        Task AddPrices(IEnumerable<Price> prices);
         void RemovePrices(IEnumerable<Price> prices);
     }
 }

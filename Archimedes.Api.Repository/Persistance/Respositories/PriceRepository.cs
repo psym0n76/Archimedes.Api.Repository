@@ -29,14 +29,14 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToListAsync();
         }
 
-        public void AddPrice(Price price)
+        public async Task AddPrice(Price price)
         {
-            FxDatabaseContext.Prices.AddAsync(price);
+            await FxDatabaseContext.Prices.AddAsync(price);
         }
 
-        public void AddPrices(IEnumerable<Price> prices)
+        public async Task AddPrices(IEnumerable<Price> prices)
         {
-            FxDatabaseContext.Prices.AddRangeAsync(prices);
+             await FxDatabaseContext.Prices.AddRangeAsync(prices);
         }
 
         public void RemovePrices(IEnumerable<Price> prices)
