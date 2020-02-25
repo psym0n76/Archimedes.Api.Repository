@@ -66,10 +66,10 @@ namespace Archimedes.Api.Repository
         {
             Context.Set<TEntity>().RemoveRange(entities);
         }
-
+        // hack adding s to end of table name
         public void Truncate()
         {
-            Context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {typeof(TEntity).Name}");
+            Context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {typeof(TEntity).Name}s");
         }
     }
 }

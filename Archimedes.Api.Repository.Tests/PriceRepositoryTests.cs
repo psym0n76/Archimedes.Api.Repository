@@ -36,42 +36,60 @@ namespace Archimedes.Api.Repository.Tests
         [Test]
         public async Task Should_ReturnTwoRecords_WhenGetPricesIsCalled()
         {
-
             var repo = GetRepository();
             AddToTable();
             var  result = await repo.GetPrices(x => x.Market == "TEST_GBPUSD");
 
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
             Assert.IsTrue(result.Count() == 5);
             DeleteFromTable();
-
         }
 
         [Test]
         public async Task Should_ReturnNoRecords_WhenGetPricesIsCalled()
         {
-
             var repo = GetRepository();
             AddToTable();
             var  result = await repo.GetPrices(x => x.Market == "GBPUSD");
 
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
             Assert.IsTrue(!result.Any());
             DeleteFromTable();
-
         }
 
-        private static ArchimedesContext GetContext()
+        [Test]
+        public async Task Should_ReturnFiveRecords_WhenGetPricesIsCalled()
         {
-            var option = new DbContextOptionsBuilder<ArchimedesContext>();
-            option.UseSqlServer(Connection);
+            var repo = GetRepository();
+            AddToTable();
+            var  result = await repo.GetPrices(1,100);
 
-            return new ArchimedesContext(option.Options);
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
+            Assert.IsTrue(result.Count() == 5);
+            DeleteFromTable();
+        }
+
+        [Test]
+        public  async Task Should_ReturnNillRecords_WhenRemoveTableCalled()
+        {
+            var repo = GetRepository();
+            AddToTable();
+            repo.Truncate();
+
+            var  result = await repo.GetPrices(1,100);
+
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
+            Assert.IsTrue(!result.Any());
+            DeleteFromTable();
         }
 
         private static PriceRepository GetRepository()
         {
-            return  new PriceRepository(GetContext());
-        }
+            var option = new DbContextOptionsBuilder<ArchimedesContext>();
+            option.UseSqlServer(Connection);
 
+            return  new PriceRepository(new ArchimedesContext(option.Options));
+        }
 
         [OneTimeSetUp]
         public void RunBeforeAnyTests()
@@ -127,7 +145,6 @@ namespace Archimedes.Api.Repository.Tests
                 command.ExecuteNonQuery();
             }
         }
-
 
         private static void  AddToTable()
         {
