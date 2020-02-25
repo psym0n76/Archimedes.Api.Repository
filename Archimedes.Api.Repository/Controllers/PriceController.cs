@@ -88,6 +88,27 @@ namespace Archimedes.Api.Repository.Controllers
             return Ok(priceDto);
         }
 
+        //GET: api/v1/price/bylastupdated?market=gbpusd&granularity=15
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("bylastupdated", Name = "GetLastUpdated")]
+        public async Task<IActionResult> Get(string market,string granularity)
+        {
+            _logger.LogInformation($"Request: Get Lastupdated Price for Market: {market} and Granularity: {granularity}");
+
+            var price = await _unit.Price.GetPrices(a => a.Market == market && a.Granularity == granularity);
+
+            //removed check as cannot be tested
+            if (price == null)
+            {
+                _logger.LogError($"Price data not found for market: {market}.");
+                return NotFound();
+            }
+
+            var priceArray = price as Price[] ?? price.ToArray();
+            return Ok(priceArray.Any() ? priceArray.Max(a => a.Timestamp) : DateTimeOffset.MinValue);
+        }
+
         //GET: api/v1/price/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15&fromDate=2020-01-01T05:00:00&toDate=2020-01-01T05:00:00
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

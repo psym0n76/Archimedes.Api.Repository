@@ -17,14 +17,14 @@ namespace Archimedes.Api.Repository.Tests
         private const string Connection = "Server=localhost\\SQLEXPRESS;Database=Archimedes;Integrated Security=SSPI;";
 
         [Test]
-        public async Task Should_ReturnOk_WhenPostingPriceData()
+        public async Task Should_ReturnOk_When_PostingPriceData()
         {
             try
             {
                 var repo = GetRepository();
                 await repo.AddPrices(_prices);
                 await repo.FxDatabaseContext.SaveChangesAsync();
-                DeleteFromTable();
+                DeleteTestData();
                 Assert.IsTrue(true);
             }
             catch 
@@ -34,53 +34,53 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
-        public async Task Should_ReturnTwoRecords_WhenGetPricesIsCalled()
+        public async Task Should_ReturnTwoRecords_When_PriceCalled()
         {
             var repo = GetRepository();
-            AddToTable();
+            AddTestData();
             var  result = await repo.GetPrices(x => x.Market == "TEST_GBPUSD");
 
             Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
             Assert.IsTrue(result.Count() == 5);
-            DeleteFromTable();
+            DeleteTestData();
         }
 
         [Test]
-        public async Task Should_ReturnNoRecords_WhenGetPricesIsCalled()
+        public async Task Should_ReturnNoRecords_When_PriceCalled()
         {
             var repo = GetRepository();
-            AddToTable();
+            AddTestData();
             var  result = await repo.GetPrices(x => x.Market == "GBPUSD");
 
             Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
             Assert.IsTrue(!result.Any());
-            DeleteFromTable();
+            DeleteTestData();
         }
 
         [Test]
-        public async Task Should_ReturnFiveRecords_WhenGetPricesIsCalled()
+        public async Task Should_ReturnFiveRecords_When_PricesCalled()
         {
             var repo = GetRepository();
-            AddToTable();
-            var  result = await repo.GetPrices(1,100);
+            AddTestData();
+            var result = await repo.GetPrices(1,100);
 
             Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
             Assert.IsTrue(result.Count() == 5);
-            DeleteFromTable();
+            DeleteTestData();
         }
 
         [Test]
-        public  async Task Should_ReturnNilRecords_WhenTruncateCalled()
+        public  async Task Should_ReturnNilRecords_When_TruncateCalled()
         {
             var repo = GetRepository();
-            AddToTable();
+            AddTestData();
             repo.Truncate();
 
             var  result = await repo.GetPrices(1,100);
 
             Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
             Assert.IsTrue(!result.Any());
-            DeleteFromTable();
+            DeleteTestData();
         }
 
         private static PriceRepository GetRepository()
@@ -132,10 +132,10 @@ namespace Archimedes.Api.Repository.Tests
         [OneTimeTearDown]
         public void RunAfterTests()
         {
-            DeleteFromTable();
+            DeleteTestData();
         }
 
-        private static void DeleteFromTable()
+        private static void DeleteTestData()
         {
             using (var connection = new SqlConnection(Connection))
             {
@@ -146,7 +146,7 @@ namespace Archimedes.Api.Repository.Tests
             }
         }
 
-        private static void  AddToTable()
+        private static void  AddTestData()
         {
             const string queryString = "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
                                        "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
