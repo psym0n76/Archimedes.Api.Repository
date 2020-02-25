@@ -70,7 +70,7 @@ namespace Archimedes.Api.Repository.Tests
         }
 
         [Test]
-        public  async Task Should_ReturnNillRecords_WhenRemoveTableCalled()
+        public  async Task Should_ReturnNilRecords_WhenTruncateCalled()
         {
             var repo = GetRepository();
             AddToTable();
