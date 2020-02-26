@@ -20,7 +20,8 @@ namespace Archimedes.Api.Repository.Controllers
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
         private readonly ILogger<PriceController> _logger;
-        public PriceController(IMapper mapper, IUnitOfWork unit,ILogger<PriceController> logger)
+
+        public PriceController(IMapper mapper, IUnitOfWork unit, ILogger<PriceController> logger)
         {
             _mapper = mapper;
             _unit = unit;
@@ -92,11 +93,13 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("bylastupdated", Name = "GetLastUpdated")]
-        public async Task<IActionResult> Get(string market,string granularity)
+        public async Task<IActionResult> Get(string market, string granularity)
         {
-            _logger.LogInformation($"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
+            _logger.LogInformation(
+                $"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
 
             var price = await _unit.Price.GetPrices(a => a.Market == market && a.Granularity == granularity);
+
 
             //removed check as cannot be tested
             if (price == null)
@@ -114,9 +117,10 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("bymarket_bygranularity_fromdate_todate", Name = "GetMarketGranularityPricesDate")]
-        public async Task<IActionResult> Get(string market, string granularity,string fromDate, string toDate)
+        public async Task<IActionResult> Get(string market, string granularity, string fromDate, string toDate)
         {
-            _logger.LogInformation($"Request: Get all Prices for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
+            _logger.LogInformation(
+                $"Request: Get all Prices for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
 
             if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
             {
@@ -133,9 +137,10 @@ namespace Archimedes.Api.Repository.Controllers
                 a.Granularity == granularity);
 
             // unable to test due to mocking problems returning a null
-            if (prices == null)
+            if (prices ==null)
             {
-                _logger.LogError($"Price data not found. Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
+                _logger.LogError(
+                    $"Price data not found. Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
                 return NotFound();
             }
 
@@ -170,7 +175,8 @@ namespace Archimedes.Api.Repository.Controllers
             var granularity = price.Select(a => a.Granularity).SingleOrDefault();
             var market = price.Select(a => a.Market).SingleOrDefault();
 
-            var historicPrices = _unit.Price.GetPrices(a => a.Granularity == granularity && a.Market == market).Result.ToList();
+            var historicPrices = _unit.Price.GetPrices(a => a.Granularity == granularity && a.Market == market).Result
+                .ToList();
 
             _logger.LogInformation($"Identified {historicPrices.Count} duplicate price records to delete");
 

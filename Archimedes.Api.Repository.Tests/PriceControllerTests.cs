@@ -14,9 +14,6 @@ namespace Archimedes.Api.Repository.Tests
     [TestFixture]
     public class PriceControllerTests
     {
-        private static Price _price;
-        private static Price _priceTwo;
-        private static IEnumerable<Price> _prices;
 
         [Test]
         public async Task Should_ReturnOK_When_IdToGetMethod()
@@ -153,29 +150,29 @@ namespace Archimedes.Api.Repository.Tests
         }
 
 
-        private static PriceController PriceControllerGet()
+        private  PriceController PriceControllerGet()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
-            mockUnitOfWork.Setup(m => m.Price.GetPrices(1,100)).Returns(Task.FromResult(_prices));
+            mockUnitOfWork.Setup(m => m.Price.GetPrices(1,100)).ReturnsAsync(GetListOfPrices);
 
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private static PriceController PriceControllerGetMarket()
+        private  PriceController PriceControllerGetMarket()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
-            mockUnitOfWork.Setup(m => m.Price.GetPrices(price => price.Market == "GBPUSD")).Returns(Task.FromResult(_prices));
+            mockUnitOfWork.Setup(m => m.Price.GetPrices(price => price.Market == "GBPUSD")).ReturnsAsync(GetListOfPrices);
 
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private static PriceController PriceControllerGetMarketDateGranularity()
+        private  PriceController PriceControllerGetMarketDateGranularity()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
@@ -185,24 +182,28 @@ namespace Archimedes.Api.Repository.Tests
                 a.Market == "GBPUSD" 
                 && a.Timestamp > new DateTime(2020,01,20,10,00,00) 
                 && a.Timestamp <= new DateTime(2020,05,20,10,00,00) &&
-                a.Granularity == "15")).Returns(Task.FromResult(_prices));
+                a.Granularity == "15")).ReturnsAsync(GetListOfPrices);
 
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private static PriceController PriceControllerGetLastUpdated()
+        private  PriceController PriceControllerGetLastUpdated()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.GetPrices(a =>
-                a.Market == "GBPUSD" && a.Granularity == "15")).Returns(Task.FromResult(_prices));
+                a.Market == "GBPUSD" && a.Granularity == "15")).ReturnsAsync(GetListOfPrices);
+
+
+            //mockUnitOfWork.Setup(m => m.Price.GetPrices(a =>
+            //    a.Market == "GBPUSD" && a.Granularity == "15")).ReturnsAsync(new List<Price>(){new Price(){AskClose = 1},new Price(){AskClose = 2}});
 
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private static PriceController PriceControllerGetMarketDateGranularityNull()
+        private  PriceController PriceControllerGetMarketDateGranularityNull()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
@@ -217,42 +218,40 @@ namespace Archimedes.Api.Repository.Tests
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private static PriceController PriceControllerGetMarketNull()
+        private  PriceController PriceControllerGetMarketNull()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
-            mockUnitOfWork.Setup(m => m.Price.GetPrices(price => price.Market == "GBPUSD")).Returns(Task.FromResult((IEnumerable<Price>)null));
-            //mockUnitOfWork.Setup(m => m.Price.GetPrices(price => price.Market == "GBPUSD")).Returns( (() => null));
+            mockUnitOfWork.Setup(m => m.Price.GetPrices(price => price.Market == "GBPUSD")).ReturnsAsync(default(IEnumerable<Price>));
 
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private static PriceController PriceControllerGetNull()
+        private  PriceController PriceControllerGetNull()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
-            mockUnitOfWork.Setup(m => m.Price.GetPrice(10)).Returns(Task.FromResult((Price)null));
-            //mockUnitOfWork.Setup(m => m.Price.GetPrice(10)).Returns(Task.FromResult((IEnumerable<Price>)null));
+            mockUnitOfWork.Setup(m => m.Price.GetPrice(10)).ReturnsAsync(default(Price));
 
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private static PriceController PriceControllerGetId(int id)
+        private  PriceController PriceControllerGetId(int id)
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
-            mockUnitOfWork.Setup(m => m.Price.GetPrice(id)).Returns(Task.FromResult(_price));
+            mockUnitOfWork.Setup(m => m.Price.GetPrice(id)).Returns(Task.FromResult(GetPrice()));
 
             return  new PriceController(mockMapper.Object, mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private static PriceController PriceControllerPost()
+        private  PriceController PriceControllerPost()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
             var mockMapper = new Mock<IMapper>();
@@ -266,43 +265,76 @@ namespace Archimedes.Api.Repository.Tests
         [OneTimeSetUp]
         public void RunBeforeAnyTests()
         {
-            _price = new Price()
-            {
-                AskClose = 1.25,
-                AskHigh = 1.24,
-                AskLow = 1.24,
-                AskOpen = 1.25,
-                BidClose = 1.24,
-                BidHigh = 1.25,
-                BidOpen = 1.27,
-                BidLow = 1.24,
-                Granularity = "15",
-                Id = 1,
-                Market = "GBPUSD",
-                TickQty = 2540,
-                Timestamp = new DateTime(2020,01,01)
-            };
-
-            _priceTwo = new Price()
-            {
-                AskClose = 1.25,
-                AskHigh = 1.24,
-                AskLow = 1.24,
-                AskOpen = 1.25,
-                BidClose = 1.24,
-                BidHigh = 1.25,
-                BidOpen = 1.27,
-                BidLow = 1.24,
-                Granularity = "15",
-                Id = 1,
-                Market = "GBPUSD",
-                TickQty = 2540,
-                Timestamp = new DateTime(2020,01,01)
-            };
-
-            _prices = new List<Price>(){_price,_priceTwo};
-
         }
+
+        private IEnumerable<Price> GetListOfPrices()
+        {
+            var prices = new List<Price>();
+
+            var price1 = new Price()
+            {
+                AskClose = 1.25,
+                AskHigh = 1.24,
+                AskLow = 1.24,
+                AskOpen = 1.25,
+                BidClose = 1.24,
+                BidHigh = 1.25,
+                BidOpen = 1.27,
+                BidLow = 1.24,
+                Granularity = "15",
+                Id = 1,
+                Market = "GBPUSD",
+                TickQty = 2540,
+                Timestamp = new DateTime(2020,01,01)
+            };
+
+            var price2  = new Price()
+            {
+                AskClose = 1.25,
+                AskHigh = 1.24,
+                AskLow = 1.24,
+                AskOpen = 1.25,
+                BidClose = 1.24,
+                BidHigh = 1.25,
+                BidOpen = 1.27,
+                BidLow = 1.24,
+                Granularity = "15",
+                Id = 1,
+                Market = "GBPUSD",
+                TickQty = 2540,
+                Timestamp = new DateTime(2020,01,01)
+            };
+
+            prices.Add(price1);
+            prices.Add(price2);
+
+            return prices;
+        }
+
+        private Price GetPrice()
+        {
+
+            var price1 = new Price()
+            {
+                AskClose = 1.25,
+                AskHigh = 1.24,
+                AskLow = 1.24,
+                AskOpen = 1.25,
+                BidClose = 1.24,
+                BidHigh = 1.25,
+                BidOpen = 1.27,
+                BidLow = 1.24,
+                Granularity = "15",
+                Id = 1,
+                Market = "GBPUSD",
+                TickQty = 2540,
+                Timestamp = new DateTime(2020,01,01)
+            };
+
+            return price1;
+        }
+
+
 
         [OneTimeTearDown]
         public void RunAfterTests()
