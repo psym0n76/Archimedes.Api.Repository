@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Archimedes.Api.Repository.DTO;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;

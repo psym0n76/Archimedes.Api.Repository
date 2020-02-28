@@ -1,5 +1,4 @@
-﻿using Archimedes.Api.Repository.DTO;
-using Archimedes.Library.Message.Dto;
+﻿using Archimedes.Library.Message.Dto;
 using AutoMapper;
 
 namespace Archimedes.Api.Repository

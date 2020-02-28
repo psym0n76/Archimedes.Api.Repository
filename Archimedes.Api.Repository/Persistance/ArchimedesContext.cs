@@ -10,7 +10,6 @@ namespace Archimedes.Api.Repository
 
         public ArchimedesContext(DbContextOptions<ArchimedesContext> options) : base(options)
         {
-
         }
     }
 }
