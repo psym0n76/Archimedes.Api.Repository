@@ -19,7 +19,6 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
             _config = config.Value;
         }
 
-
         public void Configure(SwaggerGenOptions options)
         {
             if (options == null)

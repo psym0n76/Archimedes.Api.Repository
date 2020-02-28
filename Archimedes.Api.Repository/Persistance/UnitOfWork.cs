@@ -6,7 +6,6 @@ namespace Archimedes.Api.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ArchimedesContext _context;
-
         public UnitOfWork(ArchimedesContext context)
         {
             _context = context;
@@ -23,7 +22,6 @@ namespace Archimedes.Api.Repository
         public IPriceRepository Price { get; }
         public ITradeRepository Trade { get; }
         public ICandleRepository Candle { get; set; }
-
         public async Task<int> Complete()
         {
             return await _context.SaveChangesAsync();

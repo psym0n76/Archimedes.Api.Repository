@@ -45,7 +45,6 @@ namespace Archimedes.Api.Repository
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddMvc().SetCompatibilityVersion(version: CompatibilityVersion.Version_3_0);
 
-
             //API versioning
             services.AddApiVersioning(
                 version =>
@@ -57,7 +56,6 @@ namespace Archimedes.Api.Repository
                 }
             );
 
-            
             // note: the specified format code will format the version as "'v'major[.minor][-status]"
             services.AddVersionedApiExplorer(
                 options =>
@@ -77,9 +75,6 @@ namespace Archimedes.Api.Repository
                 options.OperationFilter<SwaggerDefaultValues>();
                // options.IncludeXmlComments(XmlCommentsFilePath);
             });
-
-
-
         }
 
         public string XmlCommentsFilePath
@@ -92,9 +87,9 @@ namespace Archimedes.Api.Repository
             }
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger,IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> log,IApiVersionDescriptionProvider provider)
         {
-            logger.LogInformation("Started configure:");
+            log.LogInformation("Started configure:");
 
             if (env.IsDevelopment())
             {
@@ -104,11 +99,8 @@ namespace Archimedes.Api.Repository
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>
@@ -117,11 +109,8 @@ namespace Archimedes.Api.Repository
                 {
                     options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
                         description.GroupName.ToUpperInvariant());
-                    //options.RoutePrefix = string.Empty;
                 }
             });
-
-
         }
     }
 }

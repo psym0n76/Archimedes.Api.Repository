@@ -8,7 +8,6 @@ namespace Archimedes.Api.Repository
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-
         protected readonly DbContext Context;
 
         public Repository(DbContext context)
