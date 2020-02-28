@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Archimedes.Api.Repository.Controllers;
-using Archimedes.Api.Repository.DTO;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
