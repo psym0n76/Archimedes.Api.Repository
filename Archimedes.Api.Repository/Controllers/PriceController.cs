@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 namespace Archimedes.Api.Repository.Controllers
 {
     [ApiVersion("1.0")]
-    //[Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class PriceController : ControllerBase

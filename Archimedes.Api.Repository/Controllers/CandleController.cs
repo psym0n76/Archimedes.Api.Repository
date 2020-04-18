@@ -1,19 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Archimedes.Api.Repository.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class CandleController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
         private readonly ILogger<CandleController> _logger;
-        public CandleController(IMapper mapper, IUnitOfWork unit,ILogger<CandleController> logger)
+
+        public CandleController(IMapper mapper, IUnitOfWork unit, ILogger<CandleController> logger)
         {
             _mapper = mapper;
             _unit = unit;
@@ -21,8 +25,10 @@ namespace Archimedes.Api.Repository.Controllers
         }
 
         // GET: api/Candle
-        [HttpGet(Name = "GetCandles")]
-        public IActionResult Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet()]
+        public async Task<IActionResult> Get()
         {
             _logger.LogInformation("Get Candles");
             var candle = _unit.Candle.GetCandles(1, 100);
@@ -31,7 +37,6 @@ namespace Archimedes.Api.Repository.Controllers
             {
                 _logger.LogError("Candle data not found.");
                 return NotFound();
-
             }
 
             var candleDto = _mapper.Map<IEnumerable<CandleDto>>(candle);
@@ -40,8 +45,10 @@ namespace Archimedes.Api.Repository.Controllers
         }
 
         // GET: api/Candle/5
-        [HttpGet("{id}", Name = "GetCandle")]
-        public IActionResult Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
         {
             var result = _unit.Candle.GetCandle(id);
 

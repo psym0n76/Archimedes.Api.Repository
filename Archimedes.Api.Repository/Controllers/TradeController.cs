@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Mime;
+using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +10,6 @@ using Microsoft.Extensions.Logging;
 namespace Archimedes.Api.Repository.Controllers
 {
     [ApiVersion("1.0")]
-    //[Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class TradeController : ControllerBase
@@ -18,7 +18,7 @@ namespace Archimedes.Api.Repository.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<TradeController> _logger;
 
-        public TradeController(IMapper mapper, IUnitOfWork unit,ILogger<TradeController> logger)
+        public TradeController(IMapper mapper, IUnitOfWork unit, ILogger<TradeController> logger)
         {
             _mapper = mapper;
             _unit = unit;
@@ -28,7 +28,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet()]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             var trade = _unit.Trade.GetTrades(1, 100);
 
@@ -48,7 +48,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             var trade = _unit.Trade.GetTrade(id);
 
@@ -69,7 +69,7 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody] IEnumerable<TradeDto> tradeDto)
+        public async Task<IActionResult> Post([FromBody] IEnumerable<TradeDto> tradeDto)
         {
             var trade = _mapper.Map<IEnumerable<Trade>>(tradeDto);
             _unit.Trade.AddTrades(trade);

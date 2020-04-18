@@ -87,7 +87,8 @@ namespace Archimedes.Api.Repository
             }
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> log,IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> log,
+            IApiVersionDescriptionProvider provider)
         {
             log.LogInformation("Started configure:");
 
