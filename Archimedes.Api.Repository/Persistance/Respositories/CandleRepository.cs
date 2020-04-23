@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Archimedes.Api.Repository
 {
-    public class CandleRepository : Repository<Candle>,ICandleRepository
+    public class CandleRepository : Repository<Candle>, ICandleRepository
     {
         public CandleRepository(DbContext context) : base(context)
         {
@@ -12,24 +14,25 @@ namespace Archimedes.Api.Repository
 
         public ArchimedesContext FxDatabaseContext => Context as ArchimedesContext;
 
-        public Candle GetCandle(int id)
+        public async Task<Candle> GetCandleAsync(int id, CancellationToken ct = default)
         {
-            return FxDatabaseContext.Candles.Find(id);
+            return await FxDatabaseContext.Candles.FindAsync(id);
         }
 
-        public IEnumerable<Candle> GetCandles(int pageIndex, int pageSize)
+        public async Task<IEnumerable<Candle>> GetCandlesAsync(int pageIndex, int pageSize,
+            CancellationToken ct = default)
         {
-            return FxDatabaseContext.Candles.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return await FxDatabaseContext.Candles.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
-        public void AddCandle(Candle candle)
+        public async Task AddCandleAsync(Candle candle, CancellationToken ct = default)
         {
-            FxDatabaseContext.Candles.Add(candle);
+            await FxDatabaseContext.Candles.AddAsync(candle, ct);
         }
 
-        public void AddCandles(IEnumerable<Candle> candles)
+        public async Task AddCandlesAsync(IEnumerable<Candle> candles, CancellationToken ct = default)
         {
-            FxDatabaseContext.Candles.AddRange(candles);
+            await FxDatabaseContext.Candles.AddRangeAsync(candles, ct);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Archimedes.Api.Repository
         public IPriceRepository Price { get; }
         public ITradeRepository Trade { get; }
         public ICandleRepository Candle { get; set; }
-        public async Task<int> Complete()
+        public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
         }

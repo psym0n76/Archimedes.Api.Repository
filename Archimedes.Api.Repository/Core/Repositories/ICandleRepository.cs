@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Archimedes.Api.Repository
 {
-    public interface ICandleRepository 
+    public interface ICandleRepository
     {
-        Candle GetCandle(int id);
-        IEnumerable<Candle> GetCandles(int pageIndex, int pageSize);
-        void AddCandle(Candle candle);
-        void AddCandles(IEnumerable<Candle> candles);
+        Task<Candle> GetCandleAsync(int id, CancellationToken ct);
+        Task<IEnumerable<Candle>> GetCandlesAsync(int pageIndex, int pageSize, CancellationToken ct);
+        Task AddCandleAsync(Candle candle, CancellationToken ct);
+        Task AddCandlesAsync(IEnumerable<Candle> candles, CancellationToken ct);
     }
 }

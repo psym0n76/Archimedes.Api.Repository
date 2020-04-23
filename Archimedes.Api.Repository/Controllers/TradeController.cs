@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
+using System.Threading;
 using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
@@ -28,9 +30,9 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet()]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<IEnumerable<TradeDto>>> GetTrades(CancellationToken ct)
         {
-            var trade = _unit.Trade.GetTrades(1, 100);
+            var trade = await _unit.Trade.GetTradesAsync(1, 100, ct);
 
             if (trade == null)
             {
@@ -48,9 +50,9 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<TradeDto>> GetTrade(int id, CancellationToken ct)
         {
-            var trade = _unit.Trade.GetTrade(id);
+            var trade = await _unit.Trade.GetTradeAsync(id, ct);
 
             if (trade == null)
             {
@@ -69,15 +71,14 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post([FromBody] IEnumerable<TradeDto> tradeDto)
+        public ActionResult PostTrades([FromBody] IEnumerable<TradeDto> tradeDto, CancellationToken ct)
         {
-            var trade = _mapper.Map<IEnumerable<Trade>>(tradeDto);
-            _unit.Trade.AddTrades(trade);
+            var trade = _mapper.Map<List<Trade>>(tradeDto);
 
-            var records = _unit.Complete();
+            _unit.Trade.AddTradesAsync(trade, ct);
+            _unit.SaveChangesAsync();
 
-            _logger.LogInformation($"Added {records} Trade records");
-            return Ok();
+            return CreatedAtAction("GetTrades", new {id = 2 });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
@@ -24,18 +25,16 @@ namespace Archimedes.Api.Repository.Controllers
             _logger = logger;
         }
 
-        // GET: api/Candle
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet()]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesAsync(CancellationToken ct)
         {
-            _logger.LogInformation("Get Candles");
-            var candle = _unit.Candle.GetCandles(1, 100);
+            var candle = await _unit.Candle.GetCandlesAsync(1, 100, ct);
 
             if (candle == null)
             {
-                _logger.LogError("Candle data not found.");
+                _logger.LogError("Candle not found.");
                 return NotFound();
             }
 
@@ -44,13 +43,12 @@ namespace Archimedes.Api.Repository.Controllers
             return Ok(candleDto);
         }
 
-        // GET: api/Candle/5
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<CandleDto>> GetCandleAsync(int id, CancellationToken ct)
         {
-            var result = _unit.Candle.GetCandle(id);
+            var result = await _unit.Candle.GetCandleAsync(id, ct);
 
             if (result == null)
             {

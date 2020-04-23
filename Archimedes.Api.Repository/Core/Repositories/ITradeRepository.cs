@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Archimedes.Api.Repository
 {
-    public interface ITradeRepository 
+    public interface ITradeRepository
     {
-        Trade GetTrade(int id);
-        IEnumerable<Trade> GetTrades(int pageIndex, int pageSize);
-        void AddTrade(Trade candle);
-        void AddTrades(IEnumerable<Trade> candles);
+        Task<Trade> GetTradeAsync(int id, CancellationToken ct);
+        Task<IEnumerable<Trade>> GetTradesAsync(int pageIndex, int pageSize, CancellationToken ct);
+        Task AddTradeAsync(Trade trade, CancellationToken ct);
+        Task AddTradesAsync(IEnumerable<Trade> trades, CancellationToken ct);
     }
 }

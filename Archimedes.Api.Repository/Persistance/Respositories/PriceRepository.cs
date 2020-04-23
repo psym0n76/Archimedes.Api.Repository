@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,33 +16,54 @@ namespace Archimedes.Api.Repository
 
         public ArchimedesContext FxDatabaseContext => Context as ArchimedesContext;
 
-        public async Task<Price> GetPrice(long id)
+        public async Task<Price> GetPriceAsync(long id, CancellationToken ct)
         {
-            return await FxDatabaseContext.Prices.FindAsync(id);
+            return await FxDatabaseContext.Prices.FindAsync(id, ct);
         }
 
-        public async Task<IEnumerable<Price>> GetPrices(int pageIndex, int pageSize)
+        public async Task<IEnumerable<Price>> GetPricesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
             return await FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize)
-                .ToListAsync();
+                .ToListAsync(ct);
         }
 
-        public async Task<IEnumerable<Price>> GetPrices(Expression<Func<Price, bool>> predicate)
+        public async Task<IEnumerable<Price>> GetPricesAsync(Expression<Func<Price, bool>> predicate,
+            CancellationToken ct)
         {
-            return await FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToListAsync();
+            return await FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToListAsync(ct);
         }
 
-        public async Task AddPrice(Price price)
+        public async Task<DateTime?> GetLastUpdated(string market, string granularity, CancellationToken ct)
+        {
+            var response = await GetPricesAsync(a => a.Market == market && a.Granularity == granularity, ct);
+            return response?.Max(a => a.Timestamp);
+            
+        }
+
+        public async Task<IEnumerable<Price>> GetMarketGranularityPricesDate(string market, string granularity,
+            DateTimeOffset fromDate, DateTimeOffset toDate,
+            CancellationToken ct)
+        {
+
+            var prices =
+                await GetPricesAsync(
+                    a => a.Market == market && a.Timestamp > fromDate && a.Timestamp <= toDate &&
+                         a.Granularity == granularity, ct);
+
+            return prices;
+        }
+
+        public async Task AddPriceAsync(Price price)
         {
             await FxDatabaseContext.Prices.AddAsync(price);
         }
 
-        public async Task AddPrices(IEnumerable<Price> prices)
+        public async Task AddPricesAsync(List<Price> prices)
         {
             await FxDatabaseContext.Prices.AddRangeAsync(prices);
         }
 
-        public void RemovePrices(IEnumerable<Price> prices)
+        public void RemovePrices(List<Price> prices)
         {
             FxDatabaseContext.Prices.RemoveRange(prices);
         }

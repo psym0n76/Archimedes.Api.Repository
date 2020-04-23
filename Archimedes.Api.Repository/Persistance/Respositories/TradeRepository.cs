@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Archimedes.Api.Repository
 {
-    public class TradeRepository : Repository<Trade>,ITradeRepository
+    public class TradeRepository : Repository<Trade>, ITradeRepository
     {
         public TradeRepository(DbContext context) : base(context)
         {
@@ -12,24 +14,24 @@ namespace Archimedes.Api.Repository
 
         public ArchimedesContext FxDatabaseContext => Context as ArchimedesContext;
 
-        public Trade GetTrade(int id)
+        public async Task<Trade> GetTradeAsync(int id, CancellationToken ct)
         {
-            return FxDatabaseContext.Trades.Find(id);
+            return await FxDatabaseContext.Trades.FindAsync(id, ct);
         }
 
-        public IEnumerable<Trade> GetTrades(int pageIndex, int pageSize)
+        public async Task<IEnumerable<Trade>> GetTradesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
-            return FxDatabaseContext.Trades.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return await FxDatabaseContext.Trades.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
-        public void AddTrade(Trade trade)
+        public async Task AddTradeAsync(Trade trade, CancellationToken ct)
         {
-            FxDatabaseContext.Trades.Add(trade);
+            await FxDatabaseContext.Trades.AddAsync(trade, ct);
         }
 
-        public void AddTrades(IEnumerable<Trade> trades)
+        public async Task AddTradesAsync(IEnumerable<Trade> trades, CancellationToken ct)
         {
-            FxDatabaseContext.Trades.AddRange(trades);
+            await FxDatabaseContext.Trades.AddRangeAsync(trades, ct);
         }
     }
 }

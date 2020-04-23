@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 namespace Archimedes.Api.Repository.Controllers
 {
     [ApiVersion("1.0")]
-    //[Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class DefaultController : ControllerBase
@@ -25,7 +24,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet()]
-        public IActionResult Get()
+        public ActionResult Get()
         {
             _logger.LogInformation($"{_config.ApplicationName} Version: {_config.AppVersion}");
             return Ok($"{_config.ApplicationName} Version: {_config.AppVersion}");
@@ -36,10 +35,10 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public ActionResult Get(int id)
         {
             _logger.LogInformation($"{_config.ApplicationName} Version: {_config.AppVersion}");
-            return Ok($"{_config.ApplicationName} Version: {_config.AppVersion}");
+            return Ok($"{_config.ApplicationName} Version: {_config.AppVersion} Id:{id}");
         }
     }
 }

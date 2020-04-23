@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Data.SqlClient;
+using System.Threading;
 
 namespace Archimedes.Api.Repository.Tests
 {
@@ -13,7 +14,7 @@ namespace Archimedes.Api.Repository.Tests
     {
         private static Price _price;
         private static Price _priceTwo;
-        private static IEnumerable<Price> _prices;
+        private static List<Price> _prices;
         private const string Connection = "Server=localhost\\SQLEXPRESS;Database=Archimedes;Integrated Security=SSPI;";
 
         [Test]
@@ -22,12 +23,12 @@ namespace Archimedes.Api.Repository.Tests
             try
             {
                 var repo = GetRepository();
-                await repo.AddPrices(_prices);
+                await repo.AddPricesAsync(_prices);
                 await repo.FxDatabaseContext.SaveChangesAsync();
                 DeleteTestData();
                 Assert.IsTrue(true);
             }
-            catch 
+            catch
             {
                 Assert.IsTrue(false);
             }
@@ -38,9 +39,9 @@ namespace Archimedes.Api.Repository.Tests
         {
             var repo = GetRepository();
             AddTestData();
-            var  result = await repo.GetPrices(x => x.Market == "TEST_GBPUSD");
+            var result = await repo.GetPricesAsync(x => x.Market == "TEST_GBPUSD", CancellationToken.None);
 
-            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>), result);
             Assert.IsTrue(result.Count() == 5);
             DeleteTestData();
         }
@@ -50,9 +51,9 @@ namespace Archimedes.Api.Repository.Tests
         {
             var repo = GetRepository();
             AddTestData();
-            var  result = await repo.GetPrices(x => x.Market == "GBPUSD");
+            var result = await repo.GetPricesAsync(x => x.Market == "GBPUSD", CancellationToken.None);
 
-            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>), result);
             Assert.IsTrue(!result.Any());
             DeleteTestData();
         }
@@ -62,9 +63,9 @@ namespace Archimedes.Api.Repository.Tests
         {
             var repo = GetRepository();
             AddTestData();
-            var result = await repo.GetPrices(1,100);
+            var result = await repo.GetPricesAsync(1, 100, CancellationToken.None);
 
-            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>), result);
             Assert.IsTrue(result.Count() == 5);
             DeleteTestData();
         }
@@ -74,23 +75,23 @@ namespace Archimedes.Api.Repository.Tests
         {
             var repo = GetRepository();
             AddTestData();
-            var result = await repo.GetPrices(1,1);
+            var result = await repo.GetPricesAsync(1, 1, CancellationToken.None);
 
-            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>), result);
             Assert.IsTrue(result.Count() == 1);
             DeleteTestData();
         }
 
         [Test]
-        public  async Task Should_ReturnNilRecords_When_TruncateCalled()
+        public async Task Should_ReturnNilRecords_When_TruncateCalled()
         {
             var repo = GetRepository();
             AddTestData();
             repo.Truncate();
 
-            var  result = await repo.GetPrices(1,100);
+            var result = await repo.GetPricesAsync(1, 100, CancellationToken.None);
 
-            Assert.IsInstanceOf(typeof(IEnumerable<Price>),result);
+            Assert.IsInstanceOf(typeof(IEnumerable<Price>), result);
             Assert.IsTrue(!result.Any());
             DeleteTestData();
         }
@@ -100,7 +101,7 @@ namespace Archimedes.Api.Repository.Tests
             var option = new DbContextOptionsBuilder<ArchimedesContext>();
             option.UseSqlServer(Connection);
 
-            return  new PriceRepository(new ArchimedesContext(option.Options));
+            return new PriceRepository(new ArchimedesContext(option.Options));
         }
 
         [OneTimeSetUp]
@@ -119,7 +120,7 @@ namespace Archimedes.Api.Repository.Tests
                 Granularity = "15",
                 Market = "TEST_GBPUSD",
                 TickQty = 2540,
-                Timestamp = new DateTime(2020,01,01)
+                Timestamp = new DateTime(2020, 01, 01)
             };
 
             _priceTwo = new Price()
@@ -135,10 +136,10 @@ namespace Archimedes.Api.Repository.Tests
                 Granularity = "15",
                 Market = "TEST_GBPUSD",
                 TickQty = 2540,
-                Timestamp = new DateTime(2020,01,01)
+                Timestamp = new DateTime(2020, 01, 01)
             };
 
-            _prices = new List<Price>(){_price,_priceTwo};
+            _prices = new List<Price>() {_price, _priceTwo};
         }
 
         [OneTimeTearDown]
@@ -158,13 +159,14 @@ namespace Archimedes.Api.Repository.Tests
             }
         }
 
-        private static void  AddTestData()
+        private static void AddTestData()
         {
-            const string queryString = "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
-                                       "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
-                                       "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
-                                       "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', N'15', 1.25, 1.24, 1.26, 1.21, 1.25, 1.24, 1.26, 1.21, 100, CAST(N'2020-02-09T00:00:00.0000000' AS DateTime2))" +
-                                       "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', N'15', 1.25, 1.24, 1.26, 1.21, 1.25, 1.24, 1.26, 1.21, 100, CAST(N'2020-02-10T00:00:00.0000000' AS DateTime2))";
+            const string queryString =
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', N'15', 1.25, 1.24, 1.26, 1.21, 1.25, 1.24, 1.26, 1.21, 100, CAST(N'2020-02-09T00:00:00.0000000' AS DateTime2))" +
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', N'15', 1.25, 1.24, 1.26, 1.21, 1.25, 1.24, 1.26, 1.21, 100, CAST(N'2020-02-10T00:00:00.0000000' AS DateTime2))";
 
             using (var connection = new SqlConnection(Connection))
             {

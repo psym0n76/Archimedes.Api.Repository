@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using System.Threading;
 using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
@@ -29,11 +30,10 @@ namespace Archimedes.Api.Repository.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet()]
-        public async Task<IActionResult> Get()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Price>>> GetPricesAsync(CancellationToken ct)
         {
-            _logger.LogInformation($"Request: Get all Prices");
-            var price = await _unit.Price.GetPrices(1, 100);
+            var price = await _unit.Price.GetPricesAsync(1, 100, ct);
 
             if (price == null)
             {
@@ -41,19 +41,17 @@ namespace Archimedes.Api.Repository.Controllers
                 return NotFound();
             }
 
-            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
-
-            return Ok(priceDto);
+            return Ok(price);
         }
 
         // GET: api/Price/5
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<Price>> GetPriceAsync(int id, CancellationToken ct)
         {
             _logger.LogInformation($"Request: Get Prices for Id: {id}");
-            var price = await _unit.Price.GetPrice(id);
+            var price = await _unit.Price.GetPriceAsync(id, ct);
 
             if (price == null)
             {
@@ -61,20 +59,18 @@ namespace Archimedes.Api.Repository.Controllers
                 return NotFound();
             }
 
-            var priceDto = _mapper.Map<PriceDto>(price);
-
-            return Ok(priceDto);
+            return Ok(price);
         }
 
         //GET: api/v1/price/bymarket?market=gbpusd
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("bymarket", Name = "GetMarketPrices")]
-        public async Task<IActionResult> Get(string market)
+        public async Task<ActionResult<IEnumerable<Price>>> GetMarketPricesAsync(string market, CancellationToken ct)
         {
             _logger.LogInformation($"Request: Get all Prices for Market: {market}");
 
-            var price = await _unit.Price.GetPrices(a => a.Market == market);
+            var price = await _unit.Price.GetPricesAsync(a => a.Market == market, ct);
 
             //removed check as cannot be tested
             if (price == null)
@@ -83,32 +79,28 @@ namespace Archimedes.Api.Repository.Controllers
                 return NotFound();
             }
 
-            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(price);
-
-            return Ok(priceDto);
+            return Ok(price);
         }
 
         //GET: api/v1/price/bylastupdated?market=gbpusd&granularity=15
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("bylastupdated", Name = "GetLastUpdated")]
-        public async Task<IActionResult> Get(string market, string granularity)
+        public async Task<ActionResult<DateTime>> GetLastUpdated(string market, string granularity,
+            CancellationToken ct)
         {
             _logger.LogInformation(
                 $"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
 
-            var price = await _unit.Price.GetPrices(a => a.Market == market && a.Granularity == granularity);
+            var lastUpdated = await _unit.Price.GetLastUpdated(market, granularity, ct);
 
-
-            //removed check as cannot be tested
-            if (price == null)
+            if (lastUpdated == null)
             {
                 _logger.LogError($"Price data not found for market: {market}.");
                 return NotFound();
             }
 
-            var priceArray = price as Price[] ?? price.ToArray();
-            return Ok(priceArray.Any() ? priceArray.Max(a => a.Timestamp) : DateTimeOffset.MinValue);
+            return Ok(lastUpdated);
         }
 
         //GET: api/v1/price/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15&fromDate=2020-01-01T05:00:00&toDate=2020-01-01T05:00:00
@@ -116,7 +108,8 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("bymarket_bygranularity_fromdate_todate", Name = "GetMarketGranularityPricesDate")]
-        public async Task<IActionResult> Get(string market, string granularity, string fromDate, string toDate)
+        public async Task<ActionResult<PriceDto>> GetMarketGranularityPricesDate(string market, string granularity, string fromDate, string toDate,
+            CancellationToken ct)
         {
             _logger.LogInformation(
                 $"Request: Get all Prices for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
@@ -131,22 +124,17 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest($"Incorrect ToDate format: {toDate}");
             }
 
-            var prices = await _unit.Price.GetPrices(a =>
-                a.Market == market && a.Timestamp > fromDateOffset && a.Timestamp <= toDateOffset &&
-                a.Granularity == granularity);
+            var prices = await _unit.Price.GetMarketGranularityPricesDate(market, granularity, fromDateOffset, toDateOffset, ct);
 
             // unable to test due to mocking problems returning a null
-            if (prices ==null)
+            if (prices == null)
             {
                 _logger.LogError(
                     $"Price data not found. Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
                 return NotFound();
             }
 
-            var priceDto = _mapper.Map<IEnumerable<PriceDto>>(prices);
-
-            _logger.LogInformation($"Returned {priceDto.Count()} trade records");
-            return Ok(priceDto);
+            return Ok(prices);
         }
 
         // POST: api/Price
@@ -154,27 +142,28 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post([FromBody] IEnumerable<PriceDto> priceDto)
+        public async Task<IActionResult> PostPrice([FromBody] IEnumerable<PriceDto> priceDto, CancellationToken ct)
         {
-            _logger.LogInformation($"Request: Post Prices: {priceDto.Count()}");
+            _logger.LogInformation($"Request: PostPrice Prices: {priceDto.Count()}");
 
             var price = _mapper.Map<IEnumerable<Price>>(priceDto).ToList();
 
-            RemoveDuplicatePriceEntries(price);
+            RemoveDuplicatePriceEntries(price, ct);
 
-            await _unit.Price.AddPrices(price);
-            var records = await _unit.Complete();
+            await _unit.Price.AddPricesAsync(price);
+            var records = await _unit.SaveChangesAsync();
 
             _logger.LogInformation($"Added {records} price records");
             return Ok();
         }
 
-        private void RemoveDuplicatePriceEntries(IList<Price> price)
+        private void RemoveDuplicatePriceEntries(IList<Price> price, CancellationToken ct)
         {
             var granularity = price.Select(a => a.Granularity).SingleOrDefault();
             var market = price.Select(a => a.Market).SingleOrDefault();
 
-            var historicPrices = _unit.Price.GetPrices(a => a.Granularity == granularity && a.Market == market).Result
+            var historicPrices = _unit.Price.GetPricesAsync(a => a.Granularity == granularity && a.Market == market, ct)
+                .Result
                 .ToList();
 
             _logger.LogInformation($"Identified {historicPrices.Count} duplicate price records to delete");
