@@ -4,14 +4,16 @@ using Archimedes.Api.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Archimedes.Api.Repository.Migrations
 {
     [DbContext(typeof(ArchimedesContext))]
-    partial class ArchimedesContextModelSnapshot : ModelSnapshot
+    [Migration("20200423151711_AddTradeFields")]
+    partial class AddTradeFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
