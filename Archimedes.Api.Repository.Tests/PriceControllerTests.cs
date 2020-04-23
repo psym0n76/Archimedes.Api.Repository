@@ -104,7 +104,7 @@ namespace Archimedes.Api.Repository.Tests
             var result = await controller.GetMarketGranularityPricesDate("GBPUSD", "15", "2020-01-01T05:00:00",
                 "2020-01-01T10:00:00", CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
@@ -116,7 +116,7 @@ namespace Archimedes.Api.Repository.Tests
             var result = await controller.GetMarketGranularityPricesDate("GBPUSD", "15", "bad", "2020-01-01T10:00:00",
                 CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
             Assert.That(result.Result, Is.InstanceOf<BadRequestObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
@@ -139,7 +139,7 @@ namespace Archimedes.Api.Repository.Tests
                 CancellationToken.None);
 
             Assert.IsNotNull(result);
-            Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
             Assert.That(result.Result, Is.InstanceOf<BadRequestObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
