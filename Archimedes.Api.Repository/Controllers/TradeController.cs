@@ -42,7 +42,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             var tradeDto = _mapper.Map<IEnumerable<TradeDto>>(trade);
 
-            _logger.LogInformation($"Returned {tradeDto} Trade records");
+            _logger.LogInformation($"Returned {tradeDto.Count()} Trade records");
             return Ok(tradeDto);
         }
 
@@ -78,7 +78,7 @@ namespace Archimedes.Api.Repository.Controllers
             _unit.Trade.AddTradesAsync(trade, ct);
             _unit.SaveChangesAsync();
 
-            return CreatedAtAction("GetTrades", new {id = 2 });
+            return CreatedAtAction(nameof(GetTrades), new {id = 2 });
         }
     }
 }
