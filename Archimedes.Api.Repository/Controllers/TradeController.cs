@@ -3,8 +3,6 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
-using Archimedes.Library.Message.Dto;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,12 +15,10 @@ namespace Archimedes.Api.Repository.Controllers
     public class TradeController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
-        private readonly IMapper _mapper;
         private readonly ILogger<TradeController> _logger;
 
-        public TradeController(IMapper mapper, IUnitOfWork unit, ILogger<TradeController> logger)
+        public TradeController(IUnitOfWork unit, ILogger<TradeController> logger)
         {
-            _mapper = mapper;
             _unit = unit;
             _logger = logger;
         }
@@ -30,7 +26,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<TradeDto>>> GetTrades(CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(CancellationToken ct)
         {
             var trade = await _unit.Trade.GetTradesAsync(1, 100, ct);
 
@@ -40,17 +36,17 @@ namespace Archimedes.Api.Repository.Controllers
                 return NotFound();
             }
 
-            var tradeDto = _mapper.Map<IEnumerable<TradeDto>>(trade);
+            //var tradeDto = _mapper.Map<IEnumerable<TradeDto>>(trade);
 
-            _logger.LogInformation($"Returned {tradeDto.Count()} Trade records");
-            return Ok(tradeDto);
+            _logger.LogInformation($"Returned {trade.Count()} Trade records");
+            return Ok(trade);
         }
 
         // GET: api/Trade/5
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<TradeDto>> GetTrade(int id, CancellationToken ct)
+        public async Task<ActionResult<Trade>> GetTrade(int id, CancellationToken ct)
         {
             var trade = await _unit.Trade.GetTradeAsync(id, ct);
 
@@ -60,10 +56,10 @@ namespace Archimedes.Api.Repository.Controllers
                 return NotFound();
             }
 
-            var tradeDto = _mapper.Map<TradeDto>(trade);
+            //var tradeDto = _mapper.Map<Trade>(trade);
 
             _logger.LogInformation("Returned 1 Trade record");
-            return Ok(tradeDto);
+            return Ok(trade);
         }
 
         // POST: api/Trade
@@ -71,9 +67,9 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult PostTrades([FromBody] IEnumerable<TradeDto> tradeDto, CancellationToken ct)
+        public ActionResult PostTrades([FromBody] IEnumerable<Trade> trade, CancellationToken ct)
         {
-            var trade = _mapper.Map<List<Trade>>(tradeDto);
+           //var trade = _mapper.Map<List<Trade>>(tradeDto);
 
             _unit.Trade.AddTradesAsync(trade, ct);
             _unit.SaveChangesAsync();

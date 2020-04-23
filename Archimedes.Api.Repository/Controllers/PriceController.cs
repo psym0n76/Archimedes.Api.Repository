@@ -4,8 +4,6 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
-using Archimedes.Library.Message.Dto;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,12 +16,10 @@ namespace Archimedes.Api.Repository.Controllers
     public class PriceController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
-        private readonly IMapper _mapper;
         private readonly ILogger<PriceController> _logger;
 
-        public PriceController(IMapper mapper, IUnitOfWork unit, ILogger<PriceController> logger)
+        public PriceController(IUnitOfWork unit, ILogger<PriceController> logger)
         {
-            _mapper = mapper;
             _unit = unit;
             _logger = logger;
         }
@@ -108,7 +104,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("bymarket_bygranularity_fromdate_todate", Name = "GetMarketGranularityPricesDate")]
-        public async Task<ActionResult<PriceDto>> GetMarketGranularityPricesDate(string market, string granularity, string fromDate, string toDate,
+        public async Task<ActionResult<Price>> GetMarketGranularityPricesDate(string market, string granularity, string fromDate, string toDate,
             CancellationToken ct)
         {
             _logger.LogInformation(
@@ -142,11 +138,11 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PostPrice([FromBody] IEnumerable<PriceDto> priceDto, CancellationToken ct)
+        public async Task<IActionResult> PostPrice([FromBody] IList<Price> price, CancellationToken ct)
         {
-            _logger.LogInformation($"Request: PostPrice Prices: {priceDto.Count()}");
+            _logger.LogInformation($"Request: PostPrice Prices: {price.Count()}");
 
-            var price = _mapper.Map<IEnumerable<Price>>(priceDto).ToList();
+            //var price = _mapper.Map<IEnumerable<Price>>(priceDto).ToList();
 
             RemoveDuplicatePriceEntries(price, ct);
 

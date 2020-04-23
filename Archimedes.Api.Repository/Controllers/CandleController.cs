@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Archimedes.Library.Message.Dto;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,12 +13,10 @@ namespace Archimedes.Api.Repository.Controllers
     public class CandleController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
-        private readonly IMapper _mapper;
         private readonly ILogger<CandleController> _logger;
 
-        public CandleController(IMapper mapper, IUnitOfWork unit, ILogger<CandleController> logger)
+        public CandleController(IUnitOfWork unit, ILogger<CandleController> logger)
         {
-            _mapper = mapper;
             _unit = unit;
             _logger = logger;
         }
@@ -28,7 +24,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesAsync(CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<Candle>>> GetCandlesAsync(CancellationToken ct)
         {
             var candle = await _unit.Candle.GetCandlesAsync(1, 100, ct);
 
@@ -38,27 +34,27 @@ namespace Archimedes.Api.Repository.Controllers
                 return NotFound();
             }
 
-            var candleDto = _mapper.Map<IEnumerable<CandleDto>>(candle);
+            //var candleDto = _mapper.Map<IEnumerable<CandleDto>>(candle);
 
-            return Ok(candleDto);
+            return Ok(candle);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<CandleDto>> GetCandleAsync(int id, CancellationToken ct)
+        public async Task<ActionResult<Candle>> GetCandleAsync(int id, CancellationToken ct)
         {
-            var result = await _unit.Candle.GetCandleAsync(id, ct);
+            var candle = await _unit.Candle.GetCandleAsync(id, ct);
 
-            if (result == null)
+            if (candle == null)
             {
                 _logger.LogError($"Candle data not found for Id: {id}");
                 return NotFound();
             }
 
-            var candleDto = _mapper.Map<CandleDto>(result);
+            //var candleDto = _mapper.Map<Candle>(result);
 
-            return Ok(candleDto);
+            return Ok(candle);
         }
     }
 }
