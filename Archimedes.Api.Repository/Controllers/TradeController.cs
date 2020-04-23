@@ -23,45 +23,40 @@ namespace Archimedes.Api.Repository.Controllers
             _logger = logger;
         }
 
+        [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(ApiVersion apiVersion, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(CancellationToken ct)
         {
             var trade = await _unit.Trade.GetTradesAsync(1, 100, ct);
 
-            if (trade == null)
+            if (trade != null)
             {
-                _logger.LogError("Trade data not found.");
-                return NotFound();
+                _logger.LogInformation($"Returned {trade.Count()} Trade records");
+                return Ok(trade);
             }
 
-            //var tradeDto = _mapper.Map<IEnumerable<TradeDto>>(trade);
-
-            _logger.LogInformation($"Returned {trade.Count()} Trade records");
-            return Ok(trade);
+            _logger.LogError("Trade data not found.");
+            return NotFound();
         }
 
-        // GET: api/Trade/5
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Trade>> GetTrade(int id, ApiVersion apiVersion, CancellationToken ct)
+        public async Task<ActionResult<Trade>> GetTrade(int id, CancellationToken ct)
         {
             var trade = await _unit.Trade.GetTradeAsync(id, ct);
 
-            if (trade == null)
+            if (trade != null)
             {
-                _logger.LogError($"Trade data not found for Id: {id}");
-                return NotFound();
+                _logger.LogInformation("Returned 1 Trade record");
+                return Ok(trade);
             }
 
-            //var tradeDto = _mapper.Map<Trade>(trade);
-
-            _logger.LogInformation("Returned 1 Trade record");
-            return Ok(trade);
+            _logger.LogError($"Trade data not found for Id: {id}");
+            return NotFound();
         }
 
-        // POST: api/Trade
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -71,7 +66,8 @@ namespace Archimedes.Api.Repository.Controllers
             _unit.Trade.AddTradesAsync(trade, ct);
             _unit.SaveChanges();
 
-            return CreatedAtAction(nameof(GetTrades), new {id = 0 , version = apiVersion.ToString()}, trade);
+            // leave the re-route in as an example how to do it
+            return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trade);
         }
     }
 }

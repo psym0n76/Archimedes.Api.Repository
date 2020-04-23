@@ -146,7 +146,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             RemoveDuplicatePriceEntries(price, ct);
 
-            await _unit.Price.AddPricesAsync(price);
+            await _unit.Price.AddPricesAsync(price,ct);
             var records =_unit.SaveChanges();
 
             _logger.LogInformation($"Added {records} price records");

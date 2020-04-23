@@ -23,7 +23,7 @@ namespace Archimedes.Api.Repository.Tests
             try
             {
                 var repo = GetRepository();
-                await repo.AddPricesAsync(_prices);
+                await repo.AddPricesAsync(_prices,CancellationToken.None);
                 await repo.FxDatabaseContext.SaveChangesAsync();
                 DeleteTestData();
                 Assert.IsTrue(true);

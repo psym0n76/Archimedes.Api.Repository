@@ -268,7 +268,7 @@ namespace Archimedes.Api.Repository.Tests
             var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
-            mockUnitOfWork.Setup(m => m.Price.AddPriceAsync(new Price()));
+            mockUnitOfWork.Setup(m => m.Price.AddPriceAsync(new Price(),CancellationToken.None));
 
             return new PriceController(mockUnitOfWork.Object, mockLogger.Object);
         }

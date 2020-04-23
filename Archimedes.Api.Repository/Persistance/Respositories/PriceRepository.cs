@@ -18,7 +18,8 @@ namespace Archimedes.Api.Repository
 
         public async Task<Price> GetPriceAsync(long id, CancellationToken ct)
         {
-            return await FxDatabaseContext.Prices.FindAsync(id, ct);
+            ct.ThrowIfCancellationRequested();
+            return await FxDatabaseContext.Prices.FindAsync(id);
         }
 
         public async Task<IEnumerable<Price>> GetPricesAsync(int pageIndex, int pageSize, CancellationToken ct)
@@ -53,14 +54,15 @@ namespace Archimedes.Api.Repository
             return prices;
         }
 
-        public async Task AddPriceAsync(Price price)
+        public async Task AddPriceAsync(Price price, CancellationToken ct)
         {
-            await FxDatabaseContext.Prices.AddAsync(price);
+            ct.ThrowIfCancellationRequested();
+            await FxDatabaseContext.Prices.AddAsync(price,ct);
         }
 
-        public async Task AddPricesAsync(IList<Price> prices)
+        public async Task AddPricesAsync(IList<Price> prices, CancellationToken ct)
         {
-            await FxDatabaseContext.Prices.AddRangeAsync(prices);
+            await FxDatabaseContext.Prices.AddRangeAsync(prices,ct);
         }
 
         public void RemovePrices(IList<Price> prices)
