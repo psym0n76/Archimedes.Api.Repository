@@ -4,14 +4,16 @@ using Archimedes.Api.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Archimedes.Api.Repository.Migrations
 {
     [DbContext(typeof(ArchimedesContext))]
-    partial class ArchimedesContextModelSnapshot : ModelSnapshot
+    [Migration("20200423152330_addedpricetotrade")]
+    partial class addedpricetotrade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,7 +128,7 @@ namespace Archimedes.Api.Repository.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("ClosePrice")
-                        .HasColumnType("decimal(5, 5)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Direction")
                         .HasColumnType("nvarchar(max)");
@@ -138,7 +140,7 @@ namespace Archimedes.Api.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("OpenPrice")
-                        .HasColumnType("decimal(5, 5)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Strategy")
                         .HasColumnType("nvarchar(max)");
