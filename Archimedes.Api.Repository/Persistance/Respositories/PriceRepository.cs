@@ -58,12 +58,12 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.Prices.AddAsync(price);
         }
 
-        public async Task AddPricesAsync(List<Price> prices)
+        public async Task AddPricesAsync(IList<Price> prices)
         {
             await FxDatabaseContext.Prices.AddRangeAsync(prices);
         }
 
-        public void RemovePrices(List<Price> prices)
+        public void RemovePrices(IList<Price> prices)
         {
             FxDatabaseContext.Prices.RemoveRange(prices);
         }
