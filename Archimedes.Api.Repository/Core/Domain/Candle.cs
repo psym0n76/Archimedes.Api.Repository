@@ -9,7 +9,9 @@ namespace Archimedes.Api.Repository
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string Granularity { get; set; }
         public string Market { get; set; }
         public DateTime Timestamp { get; set; }
     }
