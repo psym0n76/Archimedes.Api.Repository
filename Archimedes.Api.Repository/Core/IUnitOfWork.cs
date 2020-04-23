@@ -8,6 +8,6 @@ namespace Archimedes.Api.Repository
         IPriceRepository Price { get; }
         ICandleRepository Candle { get; }
         ITradeRepository Trade { get; }
-        Task<int> SaveChangesAsync();
+        int SaveChanges();
     }
 }

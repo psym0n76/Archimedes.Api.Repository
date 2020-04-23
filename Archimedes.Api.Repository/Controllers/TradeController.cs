@@ -25,8 +25,7 @@ namespace Archimedes.Api.Repository.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet()]
-        public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(ApiVersion apiVersion, CancellationToken ct)
         {
             var trade = await _unit.Trade.GetTradesAsync(1, 100, ct);
 
@@ -46,7 +45,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Trade>> GetTrade(int id, CancellationToken ct)
+        public async Task<ActionResult<Trade>> GetTrade(int id, ApiVersion apiVersion, CancellationToken ct)
         {
             var trade = await _unit.Trade.GetTradeAsync(id, ct);
 
@@ -67,14 +66,12 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult PostTrades([FromBody] IEnumerable<Trade> trade, CancellationToken ct)
+        public ActionResult PostTrades([FromBody] IList<Trade> trade, ApiVersion apiVersion, CancellationToken ct)
         {
-           //var trade = _mapper.Map<List<Trade>>(tradeDto);
-
             _unit.Trade.AddTradesAsync(trade, ct);
-            _unit.SaveChangesAsync();
+            _unit.SaveChanges();
 
-            return CreatedAtAction(nameof(GetTrades), new {id = 2 });
+            return CreatedAtAction(nameof(GetTrades), new {id = 0 , version = apiVersion.ToString()}, trade);
         }
     }
 }
