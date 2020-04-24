@@ -22,20 +22,14 @@ namespace Archimedes.Api.Repository
 
         public async Task<IEnumerable<Trade>> GetTradesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
-            //ct.ThrowIfCancellationRequested();
-            return await FxDatabaseContext.Trades.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
-        }
-
-        public async Task AddTradeAsync(Trade trade, CancellationToken ct)
-        {
             ct.ThrowIfCancellationRequested();
-            await FxDatabaseContext.Trades.AddAsync(trade, ct);
+            return await FxDatabaseContext.Trades.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
         public async Task AddTradesAsync(IEnumerable<Trade> trades, CancellationToken ct)
         {
-            //ct.ThrowIfCancellationRequested();
-            await FxDatabaseContext.Trades.AddRangeAsync(trades,ct);
+            ct.ThrowIfCancellationRequested();
+            await FxDatabaseContext.Trades.AddRangeAsync(trades, ct);
         }
     }
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Archimedes.Api.Repository.Controllers;
-using Archimedes.Library.Message.Dto;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -148,18 +146,17 @@ namespace Archimedes.Api.Repository.Tests
         public async Task Should_ReturnOk_When_PostMethod()
         {
             var controller = PriceControllerPost();
-            var result = await controller.PostPrice(new List<Price>(), CancellationToken.None);
+            var result = await controller.PostPrices(new List<Price>(), new ApiVersion(new DateTime()), CancellationToken.None);
 
             Assert.IsNotNull(result);
             Assert.IsInstanceOf(typeof(ActionResult), result);
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<CreatedAtActionResult>(result);
         }
 
 
-        private PriceController PriceControllerGet()
+        private static PriceController PriceControllerGet()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.GetPricesAsync(1, 100, CancellationToken.None))
@@ -168,22 +165,19 @@ namespace Archimedes.Api.Repository.Tests
             return new PriceController(mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private PriceController PriceControllerGetMarket()
+        private static PriceController PriceControllerGetMarket()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
-            mockUnitOfWork.Setup(m => m.Price.GetPricesAsync(price => price.Market == "GBPUSD", CancellationToken.None))
-                .ReturnsAsync(GetListOfPrices);
+            mockUnitOfWork.Setup(m => m.Price.GetMarketPrices(It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(GetListOfPrices);
 
             return new PriceController(mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private PriceController PriceControllerGetMarketDateGranularity()
+        private static PriceController PriceControllerGetMarketDateGranularity()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.GetPricesAsync(a =>
@@ -195,14 +189,10 @@ namespace Archimedes.Api.Repository.Tests
             return new PriceController(mockUnitOfWork.Object, mockLogger.Object);
         }
 
-        private PriceController PriceControllerGetLastUpdated()
+        private static PriceController PriceControllerGetLastUpdated()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
-
-            mockUnitOfWork.Setup(m => m.Price.GetPricesAsync(a =>
-                a.Market == "GBPUSD" && a.Granularity == "15", CancellationToken.None)).ReturnsAsync(GetListOfPrices);
 
             mockUnitOfWork
                 .Setup(a => a.Price.GetLastUpdated(It.IsAny<string>(), It.IsAny<string>(), CancellationToken.None))
@@ -214,7 +204,6 @@ namespace Archimedes.Api.Repository.Tests
         private static PriceController PriceControllerGetMarketDateGranularityNull()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.GetPricesAsync(a =>
@@ -229,7 +218,6 @@ namespace Archimedes.Api.Repository.Tests
         private static PriceController PriceControllerGetMarketNull()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.GetPricesAsync(price => price.Market == "GBPUSD", CancellationToken.None))
@@ -241,7 +229,6 @@ namespace Archimedes.Api.Repository.Tests
         private static PriceController PriceControllerGetNull()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.GetPriceAsync(It.IsAny<long>(), CancellationToken.None))
@@ -253,7 +240,6 @@ namespace Archimedes.Api.Repository.Tests
         private static PriceController PriceControllerGetId(int id)
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.GetPriceAsync(id, CancellationToken.None))
@@ -265,7 +251,6 @@ namespace Archimedes.Api.Repository.Tests
         private static PriceController PriceControllerPost()
         {
             var mockUnitOfWork = new Mock<IUnitOfWork>();
-            var mockMapper = new Mock<IMapper>();
             var mockLogger = new Mock<ILogger<PriceController>>();
 
             mockUnitOfWork.Setup(m => m.Price.AddPriceAsync(new Price(),CancellationToken.None));

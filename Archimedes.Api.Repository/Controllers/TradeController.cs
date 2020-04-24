@@ -43,7 +43,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Trade>> GetTrade(int id, CancellationToken ct)
+        public async Task<ActionResult<Trade>> GetTradeAsync(int id, CancellationToken ct)
         {
             var trade = await _unit.Trade.GetTradeAsync(id, ct);
 
@@ -66,7 +66,7 @@ namespace Archimedes.Api.Repository.Controllers
             _unit.Trade.AddTradesAsync(trade, ct);
             _unit.SaveChanges();
 
-            // leave the re-route in as an example how to do it
+            // leave the re-route in as an example how to do it - cannot have name GetTRadesAsync
             return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trade);
         }
     }

@@ -23,20 +23,18 @@ namespace Archimedes.Api.Repository.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet()]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Candle>>> GetCandlesAsync(CancellationToken ct)
         {
             var candle = await _unit.Candle.GetCandlesAsync(1, 100, ct);
 
-            if (candle == null)
+            if (candle != null)
             {
-                _logger.LogError("Candle not found.");
-                return NotFound();
+                return Ok(candle);
             }
 
-            //var candleDto = _mapper.Map<IEnumerable<CandleDto>>(candle);
-
-            return Ok(candle);
+            _logger.LogError("Candle not found.");
+            return NotFound();
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -46,15 +44,14 @@ namespace Archimedes.Api.Repository.Controllers
         {
             var candle = await _unit.Candle.GetCandleAsync(id, ct);
 
-            if (candle == null)
+            if (candle != null)
             {
-                _logger.LogError($"Candle data not found for Id: {id}");
-                return NotFound();
+                return Ok(candle);
+
             }
 
-            //var candleDto = _mapper.Map<Candle>(result);
-
-            return Ok(candle);
+            _logger.LogError($"Candle data not found for Id: {id}");
+            return NotFound();
         }
     }
 }
