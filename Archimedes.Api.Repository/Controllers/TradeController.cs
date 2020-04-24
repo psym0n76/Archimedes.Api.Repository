@@ -36,7 +36,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return Ok(trades);
             }
 
-            _logger.LogError("Trade data not found.");
+            _logger.LogError("Trade not found.");
             return NotFound();
         }
 
@@ -53,7 +53,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return Ok(trade);
             }
 
-            _logger.LogError($"Trade data not found for Id: {id}");
+            _logger.LogError($"Trade not found Id: {id}");
             return NotFound();
         }
 

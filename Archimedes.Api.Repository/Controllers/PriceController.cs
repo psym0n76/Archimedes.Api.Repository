@@ -35,7 +35,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return Ok(prices);
             }
 
-            _logger.LogError("Price data not found");
+            _logger.LogError("Price not found");
             return NotFound();
         }
 
@@ -68,7 +68,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return Ok(marketPrices);
             }
 
-            _logger.LogError($"Price data not found for market: {market}");
+            _logger.LogError($"Price not found for market: {market}");
             return NotFound();
         }
 
@@ -89,7 +89,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return Ok(lastUpdated);
             }
 
-            _logger.LogError($"Price data not found for market: {market}.");
+            _logger.LogError($"Price not found for market: {market}.");
             return NotFound();
         }
 
@@ -124,7 +124,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
 
             _logger.LogError(
-                $"Price data not found. Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
+                $"Price not found. Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
             return NotFound();
         }
 
