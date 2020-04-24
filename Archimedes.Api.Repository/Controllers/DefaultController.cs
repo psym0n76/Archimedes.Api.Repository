@@ -14,16 +14,15 @@ namespace Archimedes.Api.Repository.Controllers
         private readonly Config _config;
         private readonly ILogger<CandleController> _logger;
 
-        // GET: api/Repository
         public DefaultController(IOptions<Config> config, ILogger<CandleController> logger)
         {
             _config = config.Value;
             _logger = logger;
         }
 
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet()]
         public ActionResult Get()
         {
             _logger.LogInformation($"{_config.ApplicationName} Version: {_config.AppVersion}");
@@ -31,10 +30,9 @@ namespace Archimedes.Api.Repository.Controllers
 
         }
 
-        // GET: api/Repository/5
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
             _logger.LogInformation($"{_config.ApplicationName} Version: {_config.AppVersion}");

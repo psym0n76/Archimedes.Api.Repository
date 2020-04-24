@@ -23,7 +23,7 @@ namespace Archimedes.Api.Repository.Controllers
             _logger = logger;
         }
 
-        [HttpGet()]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(CancellationToken ct)

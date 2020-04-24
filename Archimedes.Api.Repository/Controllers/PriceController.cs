@@ -23,9 +23,9 @@ namespace Archimedes.Api.Repository.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet]
         public async Task<ActionResult<IEnumerable<Price>>> GetPrices(CancellationToken ct)
         {
             var prices = await _unit.Price.GetPricesAsync(1, 100, ct);
@@ -39,10 +39,9 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
-        // GET: api/Price/5
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{id}")]
         public async Task<ActionResult<Price>> GetPriceAsync(int id, CancellationToken ct)
         {
             var price = await _unit.Price.GetPriceAsync(id, ct);
@@ -57,9 +56,9 @@ namespace Archimedes.Api.Repository.Controllers
         }
 
         //GET: api/v1/price/bymarket?market=gbpusd
+        [HttpGet("bymarket", Name = nameof(GetMarketPricesAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("bymarket", Name = nameof(GetMarketPricesAsync))]
         public async Task<ActionResult<IEnumerable<Price>>> GetMarketPricesAsync(string market, CancellationToken ct)
         {
             var marketPrices = await _unit.Price.GetMarketPrices(market, ct);
@@ -74,9 +73,9 @@ namespace Archimedes.Api.Repository.Controllers
         }
 
         //GET: api/v1/price/bylastupdated?market=gbpusd&granularity=15
+        [HttpGet("bylastupdated", Name = nameof(GetLastUpdated))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("bylastupdated", Name = nameof(GetLastUpdated))]
         public async Task<ActionResult<DateTime>> GetLastUpdated(string market, string granularity,
             CancellationToken ct)
         {
@@ -95,10 +94,10 @@ namespace Archimedes.Api.Repository.Controllers
         }
 
         //GET: api/v1/price/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15&fromDate=2020-01-01T05:00:00&toDate=2020-01-01T05:00:00
+        [HttpGet("bymarket_bygranularity_fromdate_todate", Name = nameof(GetMarketGranularityPricesDate))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpGet("bymarket_bygranularity_fromdate_todate", Name = nameof(GetMarketGranularityPricesDate))]
         public async Task<ActionResult<Price>> GetMarketGranularityPricesDate(string market, string granularity,
             string fromDate, string toDate,
             CancellationToken ct)
@@ -136,7 +135,6 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult> PostPrices([FromBody] IList<Price> price, ApiVersion apiVersion,
             CancellationToken ct)
         {
-
             await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
             _unit.SaveChanges();
             await _unit.Price.AddPricesAsync(price, ct);

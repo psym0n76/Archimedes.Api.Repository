@@ -45,7 +45,6 @@ namespace Archimedes.Api.Repository
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddMvc().SetCompatibilityVersion(version: CompatibilityVersion.Version_3_0);
 
-            //API versioning
             services.AddApiVersioning(
                 version =>
                 {
