@@ -28,14 +28,14 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Price>>> GetPrices(CancellationToken ct)
         {
-            var price = await _unit.Price.GetPricesAsync(1, 100, ct);
+            var prices = await _unit.Price.GetPricesAsync(1, 100, ct);
 
-            if (price != null)
+            if (prices != null)
             {
-                return Ok(price);
+                return Ok(prices);
             }
 
-            _logger.LogError("Price data not found.");
+            _logger.LogError("Price data not found");
             return NotFound();
         }
 
@@ -45,7 +45,6 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Price>> GetPriceAsync(int id, CancellationToken ct)
         {
-            _logger.LogInformation($"Request: Get Prices for Id: {id}");
             var price = await _unit.Price.GetPriceAsync(id, ct);
 
             if (price != null)
@@ -53,7 +52,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return Ok(price);
             }
 
-            _logger.LogError($"Price data not found for Id: {id}");
+            _logger.LogError($"Price not found for Id: {id}");
             return NotFound();
         }
 
@@ -63,16 +62,14 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bymarket", Name = nameof(GetMarketPricesAsync))]
         public async Task<ActionResult<IEnumerable<Price>>> GetMarketPricesAsync(string market, CancellationToken ct)
         {
-            _logger.LogInformation($"Request: Get all Prices for Market: {market}");
+            var marketPrices = await _unit.Price.GetMarketPrices(market, ct);
 
-            var price = await _unit.Price.GetMarketPrices(market, ct);
-
-            if (price != null)
+            if (marketPrices != null)
             {
-                return Ok(price);
+                return Ok(marketPrices);
             }
 
-            _logger.LogError($"Price data not found for market: {market}.");
+            _logger.LogError($"Price data not found for market: {market}");
             return NotFound();
         }
 
@@ -132,8 +129,6 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
-
-        // POST: api/Price
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -147,6 +142,7 @@ namespace Archimedes.Api.Repository.Controllers
             await _unit.Price.AddPricesAsync(price, ct);
             _unit.SaveChanges();
 
+            // re-direct will not work but i wont the 201 response + records added 
             return CreatedAtAction(nameof(GetPrices), new {id = 0, version = apiVersion.ToString()}, price);
         }
     }

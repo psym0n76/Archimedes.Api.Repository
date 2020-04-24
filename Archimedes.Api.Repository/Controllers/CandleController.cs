@@ -26,14 +26,14 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Candle>>> GetCandlesAsync(CancellationToken ct)
         {
-            var candle = await _unit.Candle.GetCandlesAsync(1, 100, ct);
+            var candles = await _unit.Candle.GetCandlesAsync(1, 100, ct);
 
-            if (candle != null)
+            if (candles != null)
             {
-                return Ok(candle);
+                return Ok(candles);
             }
 
-            _logger.LogError("Candle not found.");
+            _logger.LogError("Candles not found");
             return NotFound();
         }
 
@@ -47,10 +47,9 @@ namespace Archimedes.Api.Repository.Controllers
             if (candle != null)
             {
                 return Ok(candle);
-
             }
 
-            _logger.LogError($"Candle data not found for Id: {id}");
+            _logger.LogError($"Candle not found for Id: {id}");
             return NotFound();
         }
     }

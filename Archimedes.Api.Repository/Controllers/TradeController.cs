@@ -28,12 +28,12 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(CancellationToken ct)
         {
-            var trade = await _unit.Trade.GetTradesAsync(1, 100, ct);
+            var trades = await _unit.Trade.GetTradesAsync(1, 100, ct);
 
-            if (trade != null)
+            if (trades != null)
             {
-                _logger.LogInformation($"Returned {trade.Count()} Trade records");
-                return Ok(trade);
+                _logger.LogInformation($"Returned {trades.Count()} Trade records");
+                return Ok(trades);
             }
 
             _logger.LogError("Trade data not found.");
@@ -66,7 +66,7 @@ namespace Archimedes.Api.Repository.Controllers
             _unit.Trade.AddTradesAsync(trade, ct);
             _unit.SaveChanges();
 
-            // leave the re-route in as an example how to do it - cannot have name GetTRadesAsync
+            // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
             return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trade);
         }
     }
