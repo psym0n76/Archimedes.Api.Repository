@@ -13,7 +13,8 @@ namespace Archimedes.Api.Repository
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("Initialise Main");
+                logger.Info("Initialise Main");
+
                 CreateWebHostBuilder(args).Build().Run();
             }
             catch (Exception e)
