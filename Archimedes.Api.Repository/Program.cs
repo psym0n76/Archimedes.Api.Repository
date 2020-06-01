@@ -20,7 +20,6 @@ namespace Archimedes.Api.Repository
             catch (Exception e)
             {
                 logger.Error(e, "Stopped program because of exception");
-                throw new ApplicationException("Stopped program because of exception");
             }
             finally
             {
