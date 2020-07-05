@@ -144,10 +144,18 @@ namespace Archimedes.Api.Repository.Controllers
 
             _logger.LogInformation($"Received Price update {price.Count}");
 
-            await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
-            _unit.SaveChanges();
-            await _unit.Price.AddPricesAsync(price, ct);
-            _unit.SaveChanges();
+            try
+            {
+                await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
+                _unit.SaveChanges();
+                await _unit.Price.AddPricesAsync(price, ct);
+                _unit.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
 
             // re-direct will not work but i wont the 201 response + records added 
             return CreatedAtAction(nameof(GetPrices), new {id = 0, version = apiVersion.ToString()}, price);
