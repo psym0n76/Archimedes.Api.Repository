@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Message.Dto;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,11 +18,13 @@ namespace Archimedes.Api.Repository.Controllers
     {
         private readonly IUnitOfWork _unit;
         private readonly ILogger<PriceController> _logger;
+        private readonly IMapper _mapper;
 
-        public PriceController(IUnitOfWork unit, ILogger<PriceController> logger)
+        public PriceController(IUnitOfWork unit, ILogger<PriceController> logger, IMapper mapper)
         {
             _unit = unit;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -132,15 +136,17 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> PostPrices([FromBody] IList<Price> price, ApiVersion apiVersion,
+        public async Task<ActionResult> PostPrices([FromBody] IList<PriceDto> priceDto, ApiVersion apiVersion,
             CancellationToken ct)
         {
 
-            if (price == null)
+            if (priceDto == null)
             {
                 _logger.LogError($"Received Empty Price update");
                 return null;
             }
+
+            var price = _mapper.Map<IList<Price>>(priceDto);
 
             _logger.LogInformation($"Received Price update {price.Count}");
 
