@@ -135,6 +135,15 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult> PostPrices([FromBody] IList<Price> price, ApiVersion apiVersion,
             CancellationToken ct)
         {
+
+            if (price == null)
+            {
+                _logger.LogError($"Received Empty Price update");
+                return null;
+            }
+
+            _logger.LogInformation($"Received Price update {price.Count}");
+
             await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
             _unit.SaveChanges();
             await _unit.Price.AddPricesAsync(price, ct);
