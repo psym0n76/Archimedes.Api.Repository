@@ -148,7 +148,11 @@ namespace Archimedes.Api.Repository.Controllers
 
             var price = _mapper.Map<IList<Price>>(priceDto);
 
-            _logger.LogInformation($"Received Price update {price}");
+            foreach (var p in price)
+            {
+                _logger.LogInformation($"Received Price update: \n {p}");
+            }
+
 
             try
             {
