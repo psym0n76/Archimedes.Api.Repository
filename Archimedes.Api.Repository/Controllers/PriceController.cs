@@ -128,7 +128,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
 
             _logger.LogError(
-                $"Price not found. Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
+                $"Price not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity} {nameof(fromDate)}: {fromDate} {nameof(toDate)}: {toDate}");
             return NotFound();
         }
 
