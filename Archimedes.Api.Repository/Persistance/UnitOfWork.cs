@@ -12,6 +12,7 @@ namespace Archimedes.Api.Repository
             Price = new PriceRepository(_context);
             Candle = new CandleRepository(_context);
             Trade = new TradeRepository(_context);
+            Market = new MarketRepository(_context);
         }
 
         public void Dispose()
@@ -22,6 +23,8 @@ namespace Archimedes.Api.Repository
         public IPriceRepository Price { get; }
         public ITradeRepository Trade { get; }
         public ICandleRepository Candle { get; set; }
+
+        public IMarketRepository Market { get; set; }
         public  int SaveChanges()
         {
             return  _context.SaveChanges();
