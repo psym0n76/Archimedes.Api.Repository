@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Archimedes.Api.Repository.Migrations
 {
     [DbContext(typeof(ArchimedesContext))]
-    [Migration("20200130214635_initialcreate")]
+    [Migration("20200710211741_initialcreate")]
     partial class initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -28,15 +28,78 @@ namespace Archimedes.Api.Repository.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<double>("AskClose")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AskHigh")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AskLow")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AskOpen")
+                        .HasColumnType("float");
+
+                    b.Property<double>("BidClose")
+                        .HasColumnType("float");
+
+                    b.Property<double>("BidHigh")
+                        .HasColumnType("float");
+
+                    b.Property<double>("BidLow")
+                        .HasColumnType("float");
+
+                    b.Property<double>("BidOpen")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("DateFrom")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Granularity")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Market")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("TickQty")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.ToTable("Candles");
+                });
+
+            modelBuilder.Entity("Archimedes.Api.Repository.Market", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Interval")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("MaxDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TimeFrame")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Markets");
                 });
 
             modelBuilder.Entity("Archimedes.Api.Repository.Price", b =>
@@ -94,11 +157,26 @@ namespace Archimedes.Api.Repository.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<decimal>("ClosePrice")
+                        .HasColumnType("decimal(5, 5)");
+
                     b.Property<string>("Direction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Granularity")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Market")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("OpenPrice")
+                        .HasColumnType("decimal(5, 5)");
+
+                    b.Property<string>("Strategy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

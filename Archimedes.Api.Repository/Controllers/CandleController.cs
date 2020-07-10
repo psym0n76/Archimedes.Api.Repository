@@ -77,16 +77,16 @@ namespace Archimedes.Api.Repository.Controllers
         }
 
         //GET: api/v1/candle/bylastupdated?market=gbpusd&granularity=15
-        [HttpGet("bylastupdated", Name = nameof(GetLastUpdated))]
+        [HttpGet("bylastupdated", Name = nameof(GetLastCandleUpdated))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<DateTime>> GetLastUpdated(string market, string granularity,
+        public async Task<ActionResult<DateTime>> GetLastCandleUpdated(string market, string granularity,
             CancellationToken ct)
         {
             _logger.LogInformation(
                 $"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
 
-            var lastUpdated = await _unit.Candle.GetLastUpdated(market, granularity, ct);
+            var lastUpdated = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct);
 
             if (lastUpdated != null)
             {

@@ -17,7 +17,7 @@ namespace Archimedes.Api.Repository
         Task<List<Candle>> GetCandlesAsync(Expression<Func<Candle, bool>> predicate, CancellationToken ct);
         void RemoveCandles(List<Candle> candle);
         Task RemoveDuplicateCandleEntries(List<Candle> candles, CancellationToken ct);
-        Task<System.DateTime?> GetLastUpdated(string market, string granularity, CancellationToken ct);
+        Task<System.DateTime?> GetLastCandleUpdated(string market, string granularity, CancellationToken ct);
 
         Task<List<Candle>> GetMarketGranularityCandlesDate(string market, string granularity,
             DateTimeOffset fromDate,
