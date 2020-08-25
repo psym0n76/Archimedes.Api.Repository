@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Message.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -50,6 +52,22 @@ namespace Archimedes.Api.Repository.Controllers
             }
 
             _logger.LogError($"Candle not found for Id: {id}");
+            return NotFound();
+        }
+
+        [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateMarketMaxDate([FromBody] MarketDto market, CancellationToken ct)
+        {
+            var markets = await _unit.Market.GetMarketsAsync(1,1000,ct);
+
+            if (markets != null)
+            {
+                return Ok(market);
+            }
+
             return NotFound();
         }
     }

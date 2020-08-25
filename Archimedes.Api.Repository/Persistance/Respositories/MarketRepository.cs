@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,6 +38,16 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             await FxDatabaseContext.Markets.AddRangeAsync(markets, ct);
+        }
+
+        public async Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            var market = await GetMarketAsync(marketId, ct);
+            market.MaxDate = maxDate;
+
+            FxDatabaseContext.Markets.Update(market);
         }
     }
 }

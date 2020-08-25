@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,5 +11,6 @@ namespace Archimedes.Api.Repository
         Task<IEnumerable<Market>> GetMarketsAsync(int pageIndex, int pageSize, CancellationToken ct);
         Task AddMarketAsync(Market market, CancellationToken ct);
         Task AddMarketsAsync(IEnumerable<Market> markets, CancellationToken ct);
+        Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, CancellationToken ct = default);
     }
 }

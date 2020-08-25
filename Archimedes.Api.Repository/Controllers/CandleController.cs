@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -120,7 +121,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
 
             var candles =
-                await _unit.Candle.GetMarketGranularityCandlesDate(market, granularity, fromDateOffset, toDateOffset, ct);
+                await _unit.Candle.GetMarketGranularityCandlesDate(market, granularity, fromDateOffset, toDateOffset,
+                    ct);
 
             if (candles != null)
             {
@@ -139,12 +141,8 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult> PostCandles([FromBody] IList<CandleDto> candleDto, ApiVersion apiVersion,
             CancellationToken ct)
         {
-
-            if (candleDto == null)
-            {
-                _logger.LogError($"Received Empty Candle update");
-                return null;
-            }
+            var marketId = candleDto.Select(a => a.MarketId).FirstOrDefault();
+            var maxDate = candleDto.Max(a => a.Timestamp);
 
             foreach (var p in candleDto)
             {
@@ -158,6 +156,8 @@ namespace Archimedes.Api.Repository.Controllers
                 await _unit.Candle.RemoveDuplicateCandleEntries(candle, ct);
                 _unit.SaveChanges();
                 await _unit.Candle.AddCandlesAsync(candle, ct);
+                _unit.SaveChanges();
+                await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, ct);
                 _unit.SaveChanges();
             }
             catch (Exception e)
