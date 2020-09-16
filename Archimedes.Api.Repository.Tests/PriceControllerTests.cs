@@ -23,7 +23,7 @@ namespace Archimedes.Api.Repository.Tests
             var controller = PriceControllerGetId(1);
             var result = await controller.GetPriceAsync(1, CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
         }
 
@@ -34,7 +34,7 @@ namespace Archimedes.Api.Repository.Tests
             var result = await controller.GetPriceAsync(1, CancellationToken.None);
 
 
-            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
             Assert.That(result.Result, Is.InstanceOf<NotFoundResult>());
             Assert.That(result.Value, Is.Null); // not populated ???
 
@@ -46,7 +46,7 @@ namespace Archimedes.Api.Repository.Tests
             var controller = PriceControllerGet();
             var result = await controller.GetPriceAsync(4, CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
             Assert.That(result.Result, Is.InstanceOf<NotFoundResult>());
         }
 
@@ -56,7 +56,7 @@ namespace Archimedes.Api.Repository.Tests
             var controller = PriceControllerGetNull();
             var result = await controller.GetPriceAsync(10, CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
             Assert.That(result.Result, Is.InstanceOf<NotFoundResult>());
             Assert.That(result.Value, Is.Null);
         }
@@ -92,7 +92,7 @@ namespace Archimedes.Api.Repository.Tests
             var controller = PriceControllerGetMarket();
             var result = await controller.GetMarketPricesAsync("GBPUSD", CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ActionResult<IEnumerable<Price>>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<IEnumerable<PriceDto>>>());
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
@@ -104,7 +104,7 @@ namespace Archimedes.Api.Repository.Tests
             var result = await controller.GetMarketGranularityPricesDate("GBPUSD", "15", "2020-01-01T05:00:00",
                 "2020-01-01T10:00:00", CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<IEnumerable<PriceDto>>>());
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
@@ -116,7 +116,7 @@ namespace Archimedes.Api.Repository.Tests
             var result = await controller.GetMarketGranularityPricesDate("GBPUSD", "15", "bad", "2020-01-01T10:00:00",
                 CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<IEnumerable<PriceDto>>>());
             Assert.That(result.Result, Is.InstanceOf<BadRequestObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
@@ -139,7 +139,7 @@ namespace Archimedes.Api.Repository.Tests
                 CancellationToken.None);
 
             Assert.IsNotNull(result);
-            Assert.That(result, Is.InstanceOf<ActionResult<Price>>());
+            Assert.That(result, Is.InstanceOf<ActionResult<IEnumerable<PriceDto>>>());
             Assert.That(result.Result, Is.InstanceOf<BadRequestObjectResult>());
             Assert.That(result.Value, Is.Null);
         }

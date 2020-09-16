@@ -31,13 +31,13 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Candle>>> GetCandles(CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandles(CancellationToken ct)
         {
             var candles = await _unit.Candle.GetCandlesAsync(1, 100, ct);
 
             if (candles != null)
             {
-                return Ok(candles);
+                return Ok(MapCandles(candles));
             }
 
             _logger.LogError("Candles not found");
@@ -53,7 +53,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (candle != null)
             {
-                return Ok(candle);
+                return Ok(MapCandle(candle));
             }
 
             _logger.LogError($"Candle not found for Id: {id}");
@@ -64,13 +64,13 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bymarket", Name = nameof(GetMarketCandlesAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<Candle>>> GetMarketCandlesAsync(string market, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<CandleDto>>> GetMarketCandlesAsync(string market, CancellationToken ct)
         {
             var marketCandles = await _unit.Candle.GetMarketCandles(market, ct);
 
             if (marketCandles != null)
             {
-                return Ok(marketCandles);
+                return Ok(MapCandles(marketCandles));
             }
 
             _logger.LogError($"Candle not found for market: {market}");
@@ -103,7 +103,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Candle>> GetMarketGranularityCandlesDate(string market, string granularity,
+        public async Task<ActionResult<CandleDto>> GetMarketGranularityCandlesDate(string market, string granularity,
             string fromDate, string toDate,
             CancellationToken ct)
         {
@@ -126,7 +126,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (candles != null)
             {
-                return Ok(candles);
+                return Ok(MapCandles(candles));
             }
 
             _logger.LogError(
@@ -168,6 +168,16 @@ namespace Archimedes.Api.Repository.Controllers
 
             // re-direct will not work but i wont the 201 response + records added 
             return CreatedAtAction(nameof(GetCandles), new {id = 0, version = apiVersion.ToString()}, candle);
+        }
+
+        private CandleDto MapCandle(Candle candle)
+        {
+            return _mapper.Map<CandleDto>(candle);
+        }
+
+        private IEnumerable<CandleDto> MapCandles(IEnumerable<Candle> candles)
+        {
+            return _mapper.Map<IEnumerable<CandleDto>>(candles);
         }
     }
 }

@@ -30,13 +30,13 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<Price>>> GetPrices(CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<PriceDto>>> GetPrices(CancellationToken ct)
         {
             var prices = await _unit.Price.GetPricesAsync(1, 100, ct);
 
             if (prices != null)
             {
-                return Ok(prices);
+                return Ok(MapPrices(prices));
             }
 
             _logger.LogError("Price not found");
@@ -46,13 +46,13 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Price>> GetPriceAsync(int id, CancellationToken ct)
+        public async Task<ActionResult<PriceDto>> GetPriceAsync(int id, CancellationToken ct)
         {
             var price = await _unit.Price.GetPriceAsync(id, ct);
 
             if (price != null)
             {
-                return Ok(price);
+                return Ok(MapPrice(price));
             }
 
             _logger.LogError($"Price not found for Id: {id}");
@@ -63,13 +63,13 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bymarket", Name = nameof(GetMarketPricesAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<Price>>> GetMarketPricesAsync(string market, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<PriceDto>>> GetMarketPricesAsync(string market, CancellationToken ct)
         {
             var marketPrices = await _unit.Price.GetMarketPrices(market, ct);
 
             if (marketPrices != null)
             {
-                return Ok(marketPrices);
+                return Ok(MapPrices(marketPrices));
             }
 
             _logger.LogError($"Price not found for market: {market}");
@@ -102,7 +102,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Price>> GetMarketGranularityPricesDate(string market, string granularity,
+        public async Task<ActionResult<IEnumerable<PriceDto>>> GetMarketGranularityPricesDate(string market, string granularity,
             string fromDate, string toDate,
             CancellationToken ct)
         {
@@ -124,7 +124,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             if (prices != null)
             {
-                return Ok(prices);
+                return Ok(MapPrices(prices));
             }
 
             _logger.LogError(
@@ -168,6 +168,16 @@ namespace Archimedes.Api.Repository.Controllers
 
             // re-direct will not work but i wont the 201 response + records added 
             return CreatedAtAction(nameof(GetPrices), new {id = 0, version = apiVersion.ToString()}, price);
+        }
+
+        private PriceDto MapPrice(Price price)
+        {
+            return _mapper.Map<PriceDto>(price);
+        }
+
+        private IEnumerable<PriceDto> MapPrices(IEnumerable<Price> prices)
+        {
+            return _mapper.Map<IEnumerable<PriceDto>>(prices);
         }
     }
 }
