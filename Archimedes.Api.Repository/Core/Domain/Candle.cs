@@ -18,6 +18,8 @@ namespace Archimedes.Api.Repository
         /// </summary>
         public string  Market { get; set; }
 
+        public string  MarketId { get; set; }
+
         /// <summary>
         /// The market
         /// </summary>
