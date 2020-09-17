@@ -36,8 +36,6 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
-
-
         }
 
         [HttpGet("{id}")]

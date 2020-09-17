@@ -109,7 +109,6 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult<DateTime>> GetLastCandleUpdated(string market, string granularity,
             CancellationToken ct)
         {
-
             try
             {
                 _logger.LogInformation(
