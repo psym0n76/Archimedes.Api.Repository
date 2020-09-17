@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Archimedes.Library.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -25,8 +26,16 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult Get()
         {
-            _logger.LogInformation($"{_config.ApplicationName} Version: {_config.AppVersion}");
-            return Ok($"{_config.ApplicationName} Version: {_config.AppVersion}");
+            try
+            {
+                _logger.LogInformation($"{_config.ApplicationName} Version: {_config.AppVersion}");
+                return Ok($"{_config.ApplicationName} Version: {_config.AppVersion}");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
         }
     }
 }

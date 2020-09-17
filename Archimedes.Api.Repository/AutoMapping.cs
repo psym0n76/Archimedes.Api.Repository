@@ -10,6 +10,7 @@ namespace Archimedes.Api.Repository
             CreateMap<Price, PriceDto>();
             CreateMap<Trade, TradeDto>();
             CreateMap<Candle, CandleDto>();
+            CreateMap<CandleDto, Candle>();
             CreateMap<Market, MarketDto>();
         }
     }

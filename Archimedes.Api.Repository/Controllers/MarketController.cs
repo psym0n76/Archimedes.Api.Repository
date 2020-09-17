@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,11 +32,19 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MarketDto>>> GetMarketsAsync(CancellationToken ct)
         {
-            var markets = await _unit.Market.GetMarketsAsync(1, 100, ct);
-
-            if (markets != null)
+            try
             {
-                return Ok(MapMarkets(markets));
+                var markets = await _unit.Market.GetMarketsAsync(1, 100, ct);
+
+                if (markets != null)
+                {
+                    return Ok(MapMarkets(markets));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError("Markets not found");
@@ -47,11 +56,19 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MarketDto>> GetMarketAsync(int id, CancellationToken ct)
         {
-            var market = await _unit.Market.GetMarketAsync(id, ct);
-
-            if (market != null)
+            try
             {
-                return Ok(MapMarket(market));
+                var market = await _unit.Market.GetMarketAsync(id, ct);
+
+                if (market != null)
+                {
+                    return Ok(MapMarket(market));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError($"Market not found for Id: {id}");
@@ -64,12 +81,20 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateMarketMaxDate([FromBody] MarketDto market, CancellationToken ct)
         {
-            // this si not used i think
-            var markets = await _unit.Market.GetMarketsAsync(1,1000,ct);
-
-            if (markets != null)
+            try
             {
-                return Ok(market);
+                // this si not used i think
+                var markets = await _unit.Market.GetMarketsAsync(1,1000,ct);
+
+                if (markets != null)
+                {
+                    return Ok(market);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             return NotFound();

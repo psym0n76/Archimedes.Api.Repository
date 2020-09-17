@@ -32,11 +32,19 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<PriceDto>>> GetPrices(CancellationToken ct)
         {
-            var prices = await _unit.Price.GetPricesAsync(1, 100, ct);
-
-            if (prices != null)
+            try
             {
-                return Ok(MapPrices(prices));
+                var prices = await _unit.Price.GetPricesAsync(1, 100, ct);
+
+                if (prices != null)
+                {
+                    return Ok(MapPrices(prices));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError("Price not found");
@@ -48,11 +56,19 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PriceDto>> GetPriceAsync(int id, CancellationToken ct)
         {
-            var price = await _unit.Price.GetPriceAsync(id, ct);
-
-            if (price != null)
+            try
             {
-                return Ok(MapPrice(price));
+                var price = await _unit.Price.GetPriceAsync(id, ct);
+
+                if (price != null)
+                {
+                    return Ok(MapPrice(price));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError($"Price not found for Id: {id}");
@@ -65,11 +81,19 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<PriceDto>>> GetMarketPricesAsync(string market, CancellationToken ct)
         {
-            var marketPrices = await _unit.Price.GetMarketPrices(market, ct);
-
-            if (marketPrices != null)
+            try
             {
-                return Ok(MapPrices(marketPrices));
+                var marketPrices = await _unit.Price.GetMarketPrices(market, ct);
+
+                if (marketPrices != null)
+                {
+                    return Ok(MapPrices(marketPrices));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError($"Price not found for market: {market}");
@@ -83,14 +107,23 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult<DateTime>> GetLastUpdated(string market, string granularity,
             CancellationToken ct)
         {
-            _logger.LogInformation(
-                $"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
 
-            var lastUpdated = await _unit.Price.GetLastUpdated(market, granularity, ct);
-
-            if (lastUpdated != null)
+            try
             {
-                return Ok(lastUpdated);
+                _logger.LogInformation(
+                    $"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
+
+                var lastUpdated = await _unit.Price.GetLastUpdated(market, granularity, ct);
+
+                if (lastUpdated != null)
+                {
+                    return Ok(lastUpdated);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError($"Price not found for market: {market}.");
@@ -106,25 +139,34 @@ namespace Archimedes.Api.Repository.Controllers
             string fromDate, string toDate,
             CancellationToken ct)
         {
-            _logger.LogInformation(
-                $"Request: Get all Prices for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
 
-            if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
+            try
             {
-                return BadRequest($"Incorrect FromDate format: {fromDate}");
+                _logger.LogInformation(
+                    $"Request: Get all Prices for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
+
+                if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
+                {
+                    return BadRequest($"Incorrect FromDate format: {fromDate}");
+                }
+
+                if (!DateTimeOffset.TryParse(toDate, out var toDateOffset))
+                {
+                    return BadRequest($"Incorrect ToDate format: {toDate}");
+                }
+
+                var prices =
+                    await _unit.Price.GetMarketGranularityPricesDate(market, granularity, fromDateOffset, toDateOffset, ct);
+
+                if (prices != null)
+                {
+                    return Ok(MapPrices(prices));
+                }
             }
-
-            if (!DateTimeOffset.TryParse(toDate, out var toDateOffset))
+            catch (Exception e)
             {
-                return BadRequest($"Incorrect ToDate format: {toDate}");
-            }
-
-            var prices =
-                await _unit.Price.GetMarketGranularityPricesDate(market, granularity, fromDateOffset, toDateOffset, ct);
-
-            if (prices != null)
-            {
-                return Ok(MapPrices(prices));
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError(
@@ -139,35 +181,35 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult> PostPrices([FromBody] IList<PriceDto> priceDto, ApiVersion apiVersion,
             CancellationToken ct)
         {
-
-            if (priceDto == null)
-            {
-                _logger.LogError($"Received Empty Price update");
-                return null;
-            }
-
-            foreach (var p in priceDto)
-            {
-                _logger.LogInformation($"Received Price update: \n {p}");
-            }
-
-            var price = _mapper.Map<IList<Price>>(priceDto);
-
             try
             {
+                if (priceDto == null)
+                {
+                    _logger.LogError($"Received Empty Price update");
+                    return null;
+                }
+
+                foreach (var p in priceDto)
+                {
+                    _logger.LogInformation($"Received Price update: \n {p}");
+                }
+
+                var price = _mapper.Map<IList<Price>>(priceDto);
+
+
                 await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
                 _unit.SaveChanges();
                 await _unit.Price.AddPricesAsync(price, ct);
                 _unit.SaveChanges();
+
+                // re-direct will not work but i wont the 201 response + records added 
+                return CreatedAtAction(nameof(GetPrices), new {id = 0, version = apiVersion.ToString()}, price);
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
-
-            // re-direct will not work but i wont the 201 response + records added 
-            return CreatedAtAction(nameof(GetPrices), new {id = 0, version = apiVersion.ToString()}, price);
         }
 
         private PriceDto MapPrice(Price price)

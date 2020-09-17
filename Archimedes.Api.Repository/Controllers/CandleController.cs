@@ -33,11 +33,19 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandles(CancellationToken ct)
         {
-            var candles = await _unit.Candle.GetCandlesAsync(1, 100, ct);
-
-            if (candles != null)
+            try
             {
-                return Ok(MapCandles(candles));
+                var candles = await _unit.Candle.GetCandlesAsync(1, 100, ct);
+
+                if (candles != null)
+                {
+                    return Ok(MapCandles(candles));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError("Candles not found");
@@ -49,11 +57,19 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Candle>> GetCandleAsync(int id, CancellationToken ct)
         {
-            var candle = await _unit.Candle.GetCandleAsync(id, ct);
-
-            if (candle != null)
+            try
             {
-                return Ok(MapCandle(candle));
+                var candle = await _unit.Candle.GetCandleAsync(id, ct);
+
+                if (candle != null)
+                {
+                    return Ok(MapCandle(candle));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError($"Candle not found for Id: {id}");
@@ -64,13 +80,22 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bymarket", Name = nameof(GetMarketCandlesAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CandleDto>>> GetMarketCandlesAsync(string market, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<CandleDto>>> GetMarketCandlesAsync(string market,
+            CancellationToken ct)
         {
-            var marketCandles = await _unit.Candle.GetMarketCandles(market, ct);
-
-            if (marketCandles != null)
+            try
             {
-                return Ok(MapCandles(marketCandles));
+                var marketCandles = await _unit.Candle.GetMarketCandles(market, ct);
+
+                if (marketCandles != null)
+                {
+                    return Ok(MapCandles(marketCandles));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError($"Candle not found for market: {market}");
@@ -84,14 +109,23 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult<DateTime>> GetLastCandleUpdated(string market, string granularity,
             CancellationToken ct)
         {
-            _logger.LogInformation(
-                $"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
 
-            var lastUpdated = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct);
-
-            if (lastUpdated != null)
+            try
             {
-                return Ok(lastUpdated);
+                _logger.LogInformation(
+                    $"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
+
+                var lastUpdated = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct);
+
+                if (lastUpdated != null)
+                {
+                    return Ok(lastUpdated);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError($"Candle not found for market: {market}.");
@@ -107,26 +141,35 @@ namespace Archimedes.Api.Repository.Controllers
             string fromDate, string toDate,
             CancellationToken ct)
         {
-            _logger.LogInformation(
-                $"Request: Get all Candles for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
-
-            if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
+            try
             {
-                return BadRequest($"Incorrect FromDate format: {fromDate}");
+                _logger.LogInformation(
+                    $"Request: Get all Candles for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
+
+                if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
+                {
+                    return BadRequest($"Incorrect FromDate format: {fromDate}");
+                }
+
+                if (!DateTimeOffset.TryParse(toDate, out var toDateOffset))
+                {
+                    return BadRequest($"Incorrect ToDate format: {toDate}");
+                }
+
+                var candles =
+                    await _unit.Candle.GetMarketGranularityCandlesDate(market, granularity, fromDateOffset,
+                        toDateOffset,
+                        ct);
+
+                if (candles != null)
+                {
+                    return Ok(MapCandles(candles));
+                }
             }
-
-            if (!DateTimeOffset.TryParse(toDate, out var toDateOffset))
+            catch (Exception e)
             {
-                return BadRequest($"Incorrect ToDate format: {toDate}");
-            }
-
-            var candles =
-                await _unit.Candle.GetMarketGranularityCandlesDate(market, granularity, fromDateOffset, toDateOffset,
-                    ct);
-
-            if (candles != null)
-            {
-                return Ok(MapCandles(candles));
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError(
@@ -141,33 +184,33 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult> PostCandles([FromBody] IList<CandleDto> candleDto, ApiVersion apiVersion,
             CancellationToken ct)
         {
-            var marketId = candleDto.Select(a => a.MarketId).FirstOrDefault();
-            var maxDate = candleDto.Max(a => a.Timestamp);
-
-            foreach (var p in candleDto)
-            {
-                _logger.LogInformation($"Received Candle update: \n {p}");
-            }
-
-            var candle = _mapper.Map<List<Candle>>(candleDto);
-
             try
             {
+                var marketId = candleDto.Select(a => a.MarketId).FirstOrDefault();
+                var maxDate = candleDto.Max(a => a.Timestamp);
+
+                foreach (var p in candleDto)
+                {
+                    _logger.LogInformation($"Received Candle update: \n {p}");
+                }
+
+                var candle = _mapper.Map<List<Candle>>(candleDto);
+
                 await _unit.Candle.RemoveDuplicateCandleEntries(candle, ct);
                 _unit.SaveChanges();
                 await _unit.Candle.AddCandlesAsync(candle, ct);
                 _unit.SaveChanges();
                 await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, ct);
                 _unit.SaveChanges();
+
+                // re-direct will not work but i wont the 201 response + records added 
+                return CreatedAtAction(nameof(GetCandles), new {id = 0, version = apiVersion.ToString()}, candle);
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
-
-            // re-direct will not work but i wont the 201 response + records added 
-            return CreatedAtAction(nameof(GetCandles), new {id = 0, version = apiVersion.ToString()}, candle);
         }
 
         private CandleDto MapCandle(Candle candle)

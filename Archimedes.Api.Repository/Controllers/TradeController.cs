@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading;
@@ -28,12 +29,20 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(CancellationToken ct)
         {
-            var trades = await _unit.Trade.GetTradesAsync(1, 100, ct);
-
-            if (trades != null)
+            try
             {
-                _logger.LogInformation($"Returned {trades.Count()} Trade records");
-                return Ok(trades);
+                var trades = await _unit.Trade.GetTradesAsync(1, 100, ct);
+
+                if (trades != null)
+                {
+                    _logger.LogInformation($"Returned {trades.Count()} Trade records");
+                    return Ok(trades);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError("Trade not found.");
@@ -45,12 +54,20 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Trade>> GetTradeAsync(int id, CancellationToken ct)
         {
-            var trade = await _unit.Trade.GetTradeAsync(id, ct);
-
-            if (trade != null)
+            try
             {
-                _logger.LogInformation("Returned 1 Trade record");
-                return Ok(trade);
+                var trade = await _unit.Trade.GetTradeAsync(id, ct);
+
+                if (trade != null)
+                {
+                    _logger.LogInformation("Returned 1 Trade record");
+                    return Ok(trade);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
             }
 
             _logger.LogError($"Trade not found Id: {id}");
@@ -63,11 +80,19 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult PostTrades([FromBody] IList<Trade> trade, ApiVersion apiVersion, CancellationToken ct)
         {
-            _unit.Trade.AddTradesAsync(trade, ct);
-            _unit.SaveChanges();
+            try
+            {
+                _unit.Trade.AddTradesAsync(trade, ct);
+                _unit.SaveChanges();
 
-            // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
-            return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trade);
+                // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
+                return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trade);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
         }
     }
 }
