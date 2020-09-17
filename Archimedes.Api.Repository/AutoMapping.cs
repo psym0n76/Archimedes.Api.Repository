@@ -8,10 +8,16 @@ namespace Archimedes.Api.Repository
         public AutoMapping()
         {
             CreateMap<Price, PriceDto>();
+            CreateMap<PriceDto, Price>();
+
             CreateMap<Trade, TradeDto>();
+            CreateMap<TradeDto, Trade>();
+
             CreateMap<Candle, CandleDto>();
             CreateMap<CandleDto, Candle>();
+
             CreateMap<Market, MarketDto>();
+            CreateMap<MarketDto, Market>();
         }
     }
 }
