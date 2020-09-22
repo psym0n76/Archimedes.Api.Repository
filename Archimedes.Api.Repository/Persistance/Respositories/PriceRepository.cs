@@ -40,7 +40,7 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             var response = await GetPricesAsync(a => a.Market == market && a.Granularity == granularity, ct);
-            return response?.Max(a => a.Timestamp);
+            return response?.Max(a => a.TimeStamp);
 
         }
 
@@ -60,7 +60,7 @@ namespace Archimedes.Api.Repository
             ct.ThrowIfCancellationRequested();
             var prices =
                 await GetPricesAsync(
-                    a => a.Market == market && a.Timestamp > fromDate && a.Timestamp <= toDate &&
+                    a => a.Market == market && a.TimeStamp > fromDate && a.TimeStamp <= toDate &&
                          a.Granularity == granularity, ct);
 
             return prices;
@@ -95,7 +95,7 @@ namespace Archimedes.Api.Repository
             if (historicPrices.Any())
             {
 
-                var duplicatedPrices = historicPrices.Join(price, hist => hist.Timestamp, current => current.Timestamp,
+                var duplicatedPrices = historicPrices.Join(price, hist => hist.TimeStamp, current => current.TimeStamp,
                     (hist, current) => new Price
                     {
                         Id = hist.Id,
@@ -109,7 +109,7 @@ namespace Archimedes.Api.Repository
                         BidHigh = hist.BidHigh,
                         BidLow = hist.BidLow,
                         BidClose = hist.BidClose,
-                        Timestamp = hist.Timestamp
+                        TimeStamp = hist.TimeStamp
                     }).ToList();
 
                 RemovePrices(duplicatedPrices);

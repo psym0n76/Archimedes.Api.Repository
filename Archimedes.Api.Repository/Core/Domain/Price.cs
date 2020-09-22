@@ -73,6 +73,6 @@ namespace Archimedes.Api.Repository
         /// <summary>
         /// The price timestamp.
         /// </summary>
-        public DateTime Timestamp { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

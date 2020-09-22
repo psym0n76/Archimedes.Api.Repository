@@ -4,14 +4,16 @@ using Archimedes.Api.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Archimedes.Api.Repository.Migrations
 {
     [DbContext(typeof(ArchimedesContext))]
-    partial class ArchimedesContextModelSnapshot : ModelSnapshot
+    [Migration("20200922114012_addtimestamp")]
+    partial class addtimestamp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,7 +70,7 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<double>("TickQty")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("TimeStamp")
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -149,7 +151,7 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<double>("TickQty")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("TimeStamp")
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -182,7 +184,7 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<string>("Strategy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("TimeStamp")
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

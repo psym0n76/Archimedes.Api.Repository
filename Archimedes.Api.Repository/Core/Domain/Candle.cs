@@ -69,5 +69,7 @@ namespace Archimedes.Api.Repository
         /// The candle tick quantity value.
         /// </summary>
         public double TickQty { get; set; }
+
+        public DateTime TimeStamp { get; set; }
     }
 }

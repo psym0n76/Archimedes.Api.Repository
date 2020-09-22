@@ -17,6 +17,6 @@ namespace Archimedes.Api.Repository
 
         [Column(TypeName = "decimal(5, 5)")] public decimal OpenPrice { get; set; }
         [Column(TypeName = "decimal(5, 5)")] public decimal ClosePrice { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

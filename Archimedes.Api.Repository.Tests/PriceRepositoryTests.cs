@@ -120,7 +120,7 @@ namespace Archimedes.Api.Repository.Tests
                 Granularity = "15",
                 Market = "TEST_GBPUSD",
                 TickQty = 2540,
-                Timestamp = new DateTime(2020, 01, 01)
+                TimeStamp = new DateTime(2020, 01, 01)
             };
 
             _priceTwo = new Price()
@@ -136,7 +136,7 @@ namespace Archimedes.Api.Repository.Tests
                 Granularity = "15",
                 Market = "TEST_GBPUSD",
                 TickQty = 2540,
-                Timestamp = new DateTime(2020, 01, 01)
+                TimeStamp = new DateTime(2020, 01, 01)
             };
 
             _prices = new List<Price>() {_price, _priceTwo};
@@ -150,30 +150,26 @@ namespace Archimedes.Api.Repository.Tests
 
         private static void DeleteTestData()
         {
-            using (var connection = new SqlConnection(Connection))
-            {
-                const string queryString = "DELETE FROM PRICES WHERE Market = 'TEST_GBPUSD'";
-                var command = new SqlCommand(queryString, connection);
-                command.Connection.Open();
-                command.ExecuteNonQuery();
-            }
+            using var connection = new SqlConnection(Connection);
+            const string queryString = "DELETE FROM PRICES WHERE Market = 'TEST_GBPUSD'";
+            var command = new SqlCommand(queryString, connection);
+            command.Connection.Open();
+            command.ExecuteNonQuery();
         }
 
         private static void AddTestData()
         {
             const string queryString =
-                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
-                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
-                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
-                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', N'15', 1.25, 1.24, 1.26, 1.21, 1.25, 1.24, 1.26, 1.21, 100, CAST(N'2020-02-09T00:00:00.0000000' AS DateTime2))" +
-                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [Timestamp]) VALUES (N'TEST_GBPUSD', N'15', 1.25, 1.24, 1.26, 1.21, 1.25, 1.24, 1.26, 1.21, 100, CAST(N'2020-02-10T00:00:00.0000000' AS DateTime2))";
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [TimeStamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [TimeStamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [TimeStamp]) VALUES (N'TEST_GBPUSD', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, CAST(N'0001-01-01T00:00:00.0000000' AS DateTime2))" +
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [TimeStamp]) VALUES (N'TEST_GBPUSD', N'15', 1.25, 1.24, 1.26, 1.21, 1.25, 1.24, 1.26, 1.21, 100, CAST(N'2020-02-09T00:00:00.0000000' AS DateTime2))" +
+                "INSERT [dbo].[Prices] ([Market], [Granularity], [BidOpen], [BidClose], [BidHigh], [BidLow], [AskOpen], [AskClose], [AskHigh], [AskLow], [TickQty], [TimeStamp]) VALUES (N'TEST_GBPUSD', N'15', 1.25, 1.24, 1.26, 1.21, 1.25, 1.24, 1.26, 1.21, 100, CAST(N'2020-02-10T00:00:00.0000000' AS DateTime2))";
 
-            using (var connection = new SqlConnection(Connection))
-            {
-                var command = new SqlCommand(queryString, connection);
-                command.Connection.Open();
-                command.ExecuteNonQuery();
-            }
+            using var connection = new SqlConnection(Connection);
+            var command = new SqlCommand(queryString, connection);
+            command.Connection.Open();
+            command.ExecuteNonQuery();
         }
     }
 }

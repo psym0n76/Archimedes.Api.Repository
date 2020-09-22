@@ -188,8 +188,8 @@ namespace Archimedes.Api.Repository.Tests
 
             mockUnitOfWork.Setup(m => m.Price.GetPricesAsync(a =>
                 a.Market == "GBPUSD"
-                && a.Timestamp > new DateTime(2020, 01, 20, 10, 00, 00)
-                && a.Timestamp <= new DateTime(2020, 05, 20, 10, 00, 00) &&
+                && a.TimeStamp > new DateTime(2020, 01, 20, 10, 00, 00)
+                && a.TimeStamp <= new DateTime(2020, 05, 20, 10, 00, 00) &&
                 a.Granularity == "15", CancellationToken.None)).ReturnsAsync(GetListOfPrices);
 
             return new PriceController(mockUnitOfWork.Object, mockLogger.Object,mockMapper.Object);
@@ -216,8 +216,8 @@ namespace Archimedes.Api.Repository.Tests
 
             mockUnitOfWork.Setup(m => m.Price.GetPricesAsync(a =>
                 a.Market == "GBPUSD"
-                && a.Timestamp > new DateTime(2020, 01, 20, 10, 00, 00)
-                && a.Timestamp <= new DateTime(2020, 05, 20, 10, 00, 00) &&
+                && a.TimeStamp > new DateTime(2020, 01, 20, 10, 00, 00)
+                && a.TimeStamp <= new DateTime(2020, 05, 20, 10, 00, 00) &&
                 a.Granularity == "15", CancellationToken.None)).ReturnsAsync(default(List<Price>));
 
             return new PriceController(mockUnitOfWork.Object, mockLogger.Object,mockMapper.Object);
@@ -293,7 +293,7 @@ namespace Archimedes.Api.Repository.Tests
                 Id = 1,
                 Market = "GBPUSD",
                 TickQty = 2540,
-                Timestamp = new DateTime(2020, 01, 01)
+                TimeStamp = new DateTime(2020, 01, 01)
             };
 
             var price2 = new Price()
@@ -310,7 +310,7 @@ namespace Archimedes.Api.Repository.Tests
                 Id = 1,
                 Market = "GBPUSD",
                 TickQty = 2540,
-                Timestamp = new DateTime(2020, 01, 01)
+                TimeStamp = new DateTime(2020, 01, 01)
             };
 
             prices.Add(price1);
@@ -336,7 +336,7 @@ namespace Archimedes.Api.Repository.Tests
                 Id = 1,
                 Market = "GBPUSD",
                 TickQty = 2540,
-                Timestamp = new DateTime(2020, 01, 01)
+                TimeStamp = new DateTime(2020, 01, 01)
             };
 
             return price1;
