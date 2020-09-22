@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/v1/default",
+      "launchUrl": "api/v1/health",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "Archimedes.Api.Repository": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/v1/default",
+      "launchUrl": "api/v1/health",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
