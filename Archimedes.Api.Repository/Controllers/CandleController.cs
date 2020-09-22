@@ -186,7 +186,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 var marketId = candleDto.Select(a => a.MarketId).FirstOrDefault();
-                var maxDate = candleDto.Max(a => a.Timestamp);
+                var maxDate = candleDto.Max(a => a.TimeStamp);
 
                 foreach (var p in candleDto)
                 {
