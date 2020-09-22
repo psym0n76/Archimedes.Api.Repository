@@ -8,8 +8,9 @@ using Microsoft.Extensions.Options;
 
 namespace Archimedes.Api.Repository.Controllers
 {
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Route("api/[controller]")]
     public class HealthController : ControllerBase
     {
         private readonly ILogger<HealthController> _logger;
