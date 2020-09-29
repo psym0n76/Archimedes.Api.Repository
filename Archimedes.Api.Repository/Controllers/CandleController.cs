@@ -39,7 +39,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles));
+                    return Ok(MapCandles(candles.OrderBy(order=>order.TimeStamp)));
                 }
             }
             catch (Exception e)
@@ -177,7 +177,7 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
-        //GET: api/v1/candle/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15
+        //GET: api/v1/candle/bymarket_bygranularity?market=gbpusd&granularity=15
         [HttpGet("bymarket_bygranularity", Name = nameof(GetMarketGranularityCandles))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -194,7 +194,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles));
+                    return Ok(MapCandles(candles.OrderBy(order=>order.TimeStamp)));
                 }
             }
             catch (Exception e)
