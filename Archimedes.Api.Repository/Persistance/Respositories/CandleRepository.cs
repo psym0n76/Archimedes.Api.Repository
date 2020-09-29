@@ -118,5 +118,16 @@ namespace Archimedes.Api.Repository
                 FxDatabaseContext.SaveChanges();
             }
         }
+
+        public async Task<List<Candle>> GetMarketGranularityCandles(string market, string granularity,
+            CancellationToken ct)
+        {
+
+            ct.ThrowIfCancellationRequested();
+
+            var candles = await GetCandlesAsync(a => a.Market == market && a.Granularity == granularity, ct);
+
+            return candles;
+        }
     }
 }

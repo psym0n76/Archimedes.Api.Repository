@@ -171,8 +171,41 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest();
             }
 
+
             _logger.LogError(
                 $"Candle not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity} {nameof(fromDate)}: {fromDate} {nameof(toDate)}: {toDate}");
+            return NotFound();
+        }
+
+        //GET: api/v1/candle/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15
+        [HttpGet("bymarket_bygranularity", Name = nameof(GetMarketGranularityCandles))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CandleDto>> GetMarketGranularityCandles(string market, string granularity, CancellationToken ct)
+        {
+            try
+            {
+                _logger.LogInformation(
+                    $"Request: Get all Candles for Market: {market} Granularity: {granularity}");
+
+                var candles =
+                    await _unit.Candle.GetMarketGranularityCandles(market, granularity, ct);
+
+                if (candles != null)
+                {
+                    return Ok(MapCandles(candles));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+
+            _logger.LogError(
+                $"Candle not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity}");
             return NotFound();
         }
 

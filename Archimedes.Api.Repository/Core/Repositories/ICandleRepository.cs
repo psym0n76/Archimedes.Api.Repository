@@ -24,6 +24,8 @@ namespace Archimedes.Api.Repository
             DateTimeOffset toDate,
             CancellationToken ct);
 
+        Task<List<Candle>> GetMarketGranularityCandles(string market, string granularity, CancellationToken ct);
+
         Task<List<Candle>> GetMarketCandles(string market, CancellationToken ct);
     }
 }
