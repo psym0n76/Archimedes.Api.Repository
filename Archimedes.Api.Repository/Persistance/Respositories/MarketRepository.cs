@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using DateTime = System.DateTime;
 
 namespace Archimedes.Api.Repository
 {
@@ -47,6 +48,7 @@ namespace Archimedes.Api.Repository
             var market = await GetMarketAsync(marketId, ct);
 
             market.MaxDate = maxDate;
+            market.LastUpdated = DateTime.Now;
 
             FxDatabaseContext.Markets.Update(market);
         }
