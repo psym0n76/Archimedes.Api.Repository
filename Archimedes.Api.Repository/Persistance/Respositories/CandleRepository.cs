@@ -62,7 +62,7 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             var response = await GetCandlesAsync(a => a.Market == market && a.Granularity == granularity, ct);
-            return response?.Max(a => a.DateTo);
+            return response?.Max(a => a.ToDate);
 
         }
 
@@ -73,7 +73,7 @@ namespace Archimedes.Api.Repository
             ct.ThrowIfCancellationRequested();
             var candles =
                 await GetCandlesAsync(
-                    a => a.Market == market && a.DateFrom > fromDate && a.DateTo <= toDate &&
+                    a => a.Market == market && a.FromDate > fromDate && a.ToDate <= toDate &&
                          a.Granularity == granularity, ct);
 
             return candles;
@@ -96,7 +96,7 @@ namespace Archimedes.Api.Repository
             if (historicCandles.Any())
             {
 
-                var duplicatedCandles = historicCandles.Join(candle, hist => hist.DateFrom, current => current.DateFrom,
+                var duplicatedCandles = historicCandles.Join(candle, hist => hist.FromDate, current => current.FromDate,
                     (hist, current) => new Candle
                     {
                         Id = hist.Id,
@@ -110,8 +110,8 @@ namespace Archimedes.Api.Repository
                         BidHigh = hist.BidHigh,
                         BidLow = hist.BidLow,
                         BidClose = hist.BidClose,
-                        DateFrom = hist.DateFrom,
-                        DateTo = hist.DateTo
+                        FromDate = hist.FromDate,
+                        ToDate = hist.ToDate
                     }).ToList();
 
                 RemoveCandles(duplicatedCandles);

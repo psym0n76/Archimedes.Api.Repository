@@ -10,8 +10,8 @@ namespace Archimedes.Api.Repository
         [Key]
         public int Id { get; set; }
 
-        public DateTime DateFrom { get; set; }  
-        public DateTime DateTo { get; set; }  
+        public DateTime FromDate { get; set; }  
+        public DateTime ToDate { get; set; }  
 
         /// <summary>
         /// The market
