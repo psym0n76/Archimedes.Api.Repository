@@ -45,6 +45,7 @@ namespace Archimedes.Api.Repository
             ct.ThrowIfCancellationRequested();
 
             var market = await GetMarketAsync(marketId, ct);
+
             market.MaxDate = maxDate;
 
             FxDatabaseContext.Markets.Update(market);

@@ -226,6 +226,8 @@ namespace Archimedes.Api.Repository.Controllers
                     _logger.LogInformation($"Received Candle update: \n {p}");
                 }
 
+                // bug here
+
                 var candle = _mapper.Map<List<Candle>>(candleDto);
 
                 await _unit.Candle.RemoveDuplicateCandleEntries(candle, ct);

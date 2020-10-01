@@ -39,7 +39,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             try
             {
-                _logger.LogInformation($"Health monitor:\n{health}");
+                //_logger.LogInformation($"Health monitor:\n{health}");
                 return Ok(health);
             }
             catch (Exception e)
