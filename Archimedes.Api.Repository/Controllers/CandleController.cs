@@ -35,7 +35,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                var candles = await _unit.Candle.GetCandlesAsync(1, 100, ct);
+                var candles = await _unit.Candle.GetCandlesAsync(1, 10000, ct);
 
                 if (candles != null)
                 {
