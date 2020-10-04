@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,58 @@ namespace Archimedes.Api.Repository.Controllers
                 if (markets != null)
                 {
                     return Ok(MapMarkets(markets));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+            _logger.LogError("Markets not found");
+            return NotFound();
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("bymarket_distinct", Name = nameof(GetMarketsDistinctAsync))]
+        public async Task<ActionResult<IEnumerable<string>>> GetMarketsDistinctAsync(CancellationToken ct)
+        {
+            try
+            {
+                var markets = await _unit.Market.GetMarketsAsync(1, 1000, ct);
+
+                if (markets != null)
+                {
+                    var distinctMarkets =  markets.Select(a => a.Name).Distinct();
+
+                    return Ok(distinctMarkets);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+            _logger.LogError("Markets not found");
+            return NotFound();
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("bygranularity_distinct", Name = nameof(GetGranularityDistinctAsync))]
+        public async Task<ActionResult<IEnumerable<string>>> GetGranularityDistinctAsync(CancellationToken ct)
+        {
+            try
+            {
+                var markets = await _unit.Market.GetMarketsAsync(1, 1000, ct);
+
+                if (markets != null)
+                {
+                    var distinctGranularity =  markets.Select(a => a.Interval).Distinct();
+
+                    return Ok(distinctGranularity);
                 }
             }
             catch (Exception e)

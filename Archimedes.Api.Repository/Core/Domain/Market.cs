@@ -13,6 +13,7 @@ namespace Archimedes.Api.Repository
         public string Name { get; set; }
         public int Interval { get; set; }
         public string TimeFrame { get; set; }
+        public string Granularity { get; set; }
         public bool Active { get; set; }
         public DateTime MaxDate { get; set; }
         public DateTime LastUpdated { get; set; }
