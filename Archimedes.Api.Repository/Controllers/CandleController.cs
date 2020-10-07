@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Api.Repository.Migrations;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -236,8 +237,14 @@ namespace Archimedes.Api.Repository.Controllers
                 await _unit.Candle.AddCandlesAsync(candle, ct);
                 _unit.SaveChanges();
 
-                var minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct);
-                var candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct);
+
+                var minDate = new DateTime();
+                var candleCount = 0;
+
+                var minDateTask = Task.Run(async() => minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct) ,ct); 
+                var candleCountTask = Task.Run(async() => candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct) ,ct);
+
+                Task.WaitAll(minDateTask, candleCountTask);
 
                 await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, minDate, candleCount, ct);
                 _unit.SaveChanges();
