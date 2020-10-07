@@ -47,8 +47,8 @@ namespace Archimedes.Api.Repository
 
             var market = await GetMarketAsync(marketId, ct);
 
-            market.MaxDate = maxDate;
-            market.LastUpdated = DateTime.Now;
+            market.MaxDate = DateTime.Parse(maxDate.ToString("yyyy-mm-dd hh:mm:ss"));
+            market.LastUpdated = DateTime.Parse(DateTime.Now.ToString("yyyy-mm-dd hh:mm:ss"));
 
             FxDatabaseContext.Markets.Update(market);
         }

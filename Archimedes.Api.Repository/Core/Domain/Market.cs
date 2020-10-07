@@ -16,6 +16,8 @@ namespace Archimedes.Api.Repository
         public string Granularity { get; set; }
         public bool Active { get; set; }
         public DateTime MaxDate { get; set; }
+        public DateTime MinDate { get; set; }
+        public int Quantity { get; set; }
         public DateTime LastUpdated { get; set; }
     }
 }
