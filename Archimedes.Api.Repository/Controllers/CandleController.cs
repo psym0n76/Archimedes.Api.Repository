@@ -238,14 +238,17 @@ namespace Archimedes.Api.Repository.Controllers
                 await _unit.Candle.AddCandlesAsync(candle, ct);
                 _unit.SaveChanges();
 
+                //var minDate = new DateTime();
+                //var candleCount = 0;
 
-                var minDate = new DateTime();
-                var candleCount = 0;
+                //var minDateTask = Task.Run(async() => minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct) ,ct); 
+                //var candleCountTask = Task.Run(async() => candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct) ,ct);
 
-                var minDateTask = Task.Run(async() => minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct) ,ct); 
-                var candleCountTask = Task.Run(async() => candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct) ,ct);
+                //Task.WaitAll(minDateTask, candleCountTask);
 
-                Task.WaitAll(minDateTask, candleCountTask);
+                var minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct);
+                var candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct);
+
 
                 await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, minDate, candleCount, ct);
                 _unit.SaveChanges();
