@@ -39,7 +39,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles.OrderBy(order=>order.TimeStamp)));
+                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
                 }
             }
             catch (Exception e)
@@ -182,7 +182,8 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CandleDto>> GetMarketGranularityCandles(string market, string granularity, CancellationToken ct)
+        public async Task<ActionResult<CandleDto>> GetMarketGranularityCandles(string market, string granularity,
+            CancellationToken ct)
         {
             try
             {
@@ -194,7 +195,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles.OrderBy(order=>order.TimeStamp)));
+                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
                 }
             }
             catch (Exception e)
@@ -219,7 +220,9 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 var marketId = candleDto.Select(a => a.MarketId).FirstOrDefault();
+                var market = candleDto.Select(a => a.Market).FirstOrDefault();
                 var maxDate = candleDto.Max(a => a.TimeStamp);
+                var granularity = candleDto.Select(a => a.Granularity).FirstOrDefault();
 
                 foreach (var p in candleDto)
                 {
@@ -232,7 +235,11 @@ namespace Archimedes.Api.Repository.Controllers
                 _unit.SaveChanges();
                 await _unit.Candle.AddCandlesAsync(candle, ct);
                 _unit.SaveChanges();
-                await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, ct);
+
+                var minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct);
+                var candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct);
+
+                await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, minDate, candleCount, ct);
                 _unit.SaveChanges();
 
                 // re-direct will not work but i wont the 201 response + records added 

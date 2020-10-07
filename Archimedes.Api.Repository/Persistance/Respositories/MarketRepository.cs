@@ -41,7 +41,8 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.Markets.AddRangeAsync(markets, ct);
         }
 
-        public async Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, CancellationToken ct = default)
+        public async Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, DateTime minDate, int candleCount,
+            CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
 
@@ -49,6 +50,8 @@ namespace Archimedes.Api.Repository
 
             market.MaxDate = DateTime.Parse(maxDate.ToString("yyyy-MM-dd hh:mm:ss"));
             market.LastUpdated = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+            market.MinDate = DateTime.Parse(minDate.ToString("yyyy-MM-dd hh:mm:ss"));;
+            market.Quantity = candleCount;
 
             FxDatabaseContext.Markets.Update(market);
         }

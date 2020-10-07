@@ -11,6 +11,8 @@ namespace Archimedes.Api.Repository
         Task<IEnumerable<Market>> GetMarketsAsync(int pageIndex, int pageSize, CancellationToken ct);
         Task AddMarketAsync(Market market, CancellationToken ct);
         Task AddMarketsAsync(IEnumerable<Market> markets, CancellationToken ct);
-        Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, CancellationToken ct = default);
+
+        Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, DateTime minDate, int candleCount,
+            CancellationToken ct = default);
     }
 }
