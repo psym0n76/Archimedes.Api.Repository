@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
-using Archimedes.Api.Repository.Migrations;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -225,9 +224,11 @@ namespace Archimedes.Api.Repository.Controllers
                 var maxDate = candleDto.Max(a => a.TimeStamp);
                 var granularity = candleDto.Select(a => a.Granularity).FirstOrDefault();
 
+                _logger.LogInformation($"Received Candle update:");
+
                 foreach (var p in candleDto)
                 {
-                    _logger.LogInformation($"Received Candle update: \n {p}");
+                    _logger.LogInformation($" {p}");
                 }
 
                 var candle = _mapper.Map<List<Candle>>(candleDto);
