@@ -155,7 +155,7 @@ namespace Archimedes.Api.Repository.Controllers
 
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateMarket([FromBody] MarketDto marketDto, CancellationToken ct)
         {
