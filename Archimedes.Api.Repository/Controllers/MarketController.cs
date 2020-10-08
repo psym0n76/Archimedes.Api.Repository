@@ -161,6 +161,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logger.LogInformation($"Received Market update\n {marketDto}");
                 var market = _mapper.Map<Market>(marketDto);
 
                 await _unit.Market.UpdateMarket(market,ct);
