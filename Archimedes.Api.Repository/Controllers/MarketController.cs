@@ -153,6 +153,28 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateMarket([FromBody] MarketDto marketDto, CancellationToken ct)
+        {
+            try
+            {
+                var market = _mapper.Map<Market>(marketDto);
+
+                await _unit.Market.UpdateMarket(market,ct);
+
+                _unit.SaveChanges();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+        }
+
         private MarketDto MapMarket(Market market)
         {
             return _mapper.Map<MarketDto>(market);

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using DateTime = System.DateTime;
+using Microsoft.VisualBasic;
 
 namespace Archimedes.Api.Repository
 {
@@ -39,6 +39,24 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             await FxDatabaseContext.Markets.AddRangeAsync(markets, ct);
+        }
+
+        public async Task UpdateMarket(Market updated, CancellationToken ct)
+        {
+            var market = await GetMarketAsync(updated.Id, ct);
+
+            market.Interval = updated.Interval;
+            market.Active = updated.Active;
+            market.Granularity = updated.Granularity;
+            market.MaxDate = updated.MaxDate;
+            market.MinDate = updated.MinDate;
+            market.Name = updated.Name;
+            market.Quantity = updated.Quantity;
+            market.TimeFrame = updated.TimeFrame;
+
+            market.LastUpdated = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            FxDatabaseContext.Markets.Update(market);
         }
 
         public async Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, DateTime minDate, int candleCount,
