@@ -214,7 +214,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("candle_metrics", Name = nameof(GetCandleMetrics))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<MarketDto>> GetCandleMetrics(string market, string granularity,
+        public async Task<ActionResult<CandleMetricDto>> GetCandleMetrics(string market, string granularity,
             CancellationToken ct)
         {
             try
@@ -222,7 +222,7 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogInformation(
                     $"Request: Get all Candle metrics for Market: {market} Granularity: {granularity}");
 
-                var result = new MarketDto
+                var result = new CandleMetricDto()
                 {
                     MinDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct),
                     Quantity = await _unit.Candle.GetCandleCount(market, granularity, ct),
