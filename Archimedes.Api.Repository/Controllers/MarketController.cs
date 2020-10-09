@@ -176,6 +176,29 @@ namespace Archimedes.Api.Repository.Controllers
             }
         }
 
+        [HttpPut("market_metrics", Name = nameof(UpdateMarketMetrics))]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateMarketMetrics([FromBody] MarketDto marketDto, CancellationToken ct)
+        {
+            try
+            {
+                _logger.LogInformation($"Received Market update\n {marketDto}");
+                var market = _mapper.Map<Market>(marketDto);
+
+                await _unit.Market.UpdateMarketMetrics(market, ct);
+
+                _unit.SaveChanges();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+        }
+
         private MarketDto MapMarket(Market market)
         {
             return _mapper.Map<MarketDto>(market);

@@ -40,6 +40,7 @@ namespace Archimedes.Api.Repository
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.CaptureStartupErrors(false);
                 }).UseNLog();
     }
 }

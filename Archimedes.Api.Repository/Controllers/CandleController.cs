@@ -210,6 +210,34 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
+        //GET: api/v1/candle/candle_count?market=GBP/USD&granularity=15Min
+        [HttpGet("candle_metrics", Name = nameof(GetCandleMetrics))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<MarketDto>> GetCandleMetrics(string market, string granularity,
+            CancellationToken ct)
+        {
+            try
+            {
+                _logger.LogInformation(
+                    $"Request: Get all Candle metrics for Market: {market} Granularity: {granularity}");
+
+                var result = new MarketDto
+                {
+                    MinDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct),
+                    Quantity = await _unit.Candle.GetCandleCount(market, granularity, ct),
+                    MaxDate = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct)
+                };
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+        }
+
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -219,10 +247,10 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                var marketId = candleDto.Select(a => a.MarketId).FirstOrDefault();
-                var market = candleDto.Select(a => a.Market).FirstOrDefault();
-                var maxDate = candleDto.Max(a => a.TimeStamp);
-                var granularity = candleDto.Select(a => a.Granularity).FirstOrDefault();
+                //var marketId = candleDto.Select(a => a.MarketId).FirstOrDefault();
+                //var market = candleDto.Select(a => a.Market).FirstOrDefault();
+                //var maxDate = candleDto.Max(a => a.TimeStamp);
+                //var granularity = candleDto.Select(a => a.Granularity).FirstOrDefault();
 
                 _logger.LogInformation($"Received Candle update:");
 
@@ -238,11 +266,11 @@ namespace Archimedes.Api.Repository.Controllers
                 await _unit.Candle.AddCandlesAsync(candle, ct);
                 _unit.SaveChanges();
 
-                var minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct);
-                var candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct);
+                //var minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct);
+                //var candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct);
 
-                await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, minDate, candleCount, ct);
-                _unit.SaveChanges();
+                //await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, minDate, candleCount, ct);
+                //_unit.SaveChanges();
 
                 // re-direct will not work but i wont the 201 response + records added 
                 return CreatedAtAction(nameof(GetCandles), new {id = 0, version = apiVersion.ToString()}, candle);
