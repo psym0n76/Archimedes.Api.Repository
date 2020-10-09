@@ -247,11 +247,6 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                //var marketId = candleDto.Select(a => a.MarketId).FirstOrDefault();
-                //var market = candleDto.Select(a => a.Market).FirstOrDefault();
-                //var maxDate = candleDto.Max(a => a.TimeStamp);
-                //var granularity = candleDto.Select(a => a.Granularity).FirstOrDefault();
-
                 _logger.LogInformation($"Received Candle update:");
 
                 foreach (var p in candleDto)
@@ -265,12 +260,6 @@ namespace Archimedes.Api.Repository.Controllers
                 _unit.SaveChanges();
                 await _unit.Candle.AddCandlesAsync(candle, ct);
                 _unit.SaveChanges();
-
-                //var minDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct);
-                //var candleCount = await _unit.Candle.GetCandleCount(market, granularity, ct);
-
-                //await _unit.Market.UpdateMarketMaxDateAsync(marketId, maxDate, minDate, candleCount, ct);
-                //_unit.SaveChanges();
 
                 // re-direct will not work but i wont the 201 response + records added 
                 return CreatedAtAction(nameof(GetCandles), new {id = 0, version = apiVersion.ToString()}, candle);
