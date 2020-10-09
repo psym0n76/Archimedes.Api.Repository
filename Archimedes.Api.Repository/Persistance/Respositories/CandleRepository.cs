@@ -58,11 +58,11 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.Candles.AddRangeAsync(candles, ct);
         }
 
-        public async Task<DateTime?> GetLastCandleUpdated(string market, string granularity, CancellationToken ct)
+        public async Task<DateTime> GetLastCandleUpdated(string market, string granularity, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             var response = await GetCandlesAsync(a => a.Market == market && a.Granularity == granularity, ct);
-            return response?.Max(a => a.ToDate);
+            return response.Max(a => a.ToDate);
         }
 
         public async Task<int> GetCandleCount(string market, string granularity, CancellationToken ct)
