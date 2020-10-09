@@ -128,31 +128,6 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
-        //[HttpPost]
-        //[Consumes(MediaTypeNames.Application.Json)]
-        //[ProducesResponseType(StatusCodes.Status201Created)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<ActionResult> UpdateMarketMaxDate([FromBody] MarketDto market, CancellationToken ct)
-        //{
-        //    try
-        //    {
-        //        // this si not used i think
-        //        var markets = await _unit.Market.GetMarketsAsync(1,1000,ct);
-
-        //        if (markets != null)
-        //        {
-        //            return Ok(market);
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        _logger.LogError($"Error {e.Message} {e.StackTrace}");
-        //        return BadRequest();
-        //    }
-
-        //    return NotFound();
-        //}
-
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
