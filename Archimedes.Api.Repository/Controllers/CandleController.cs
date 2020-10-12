@@ -89,7 +89,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (marketCandles != null)
                 {
-                    return Ok(MapCandles(marketCandles));
+                    return Ok(MapCandles(marketCandles.OrderBy(a=>a.TimeStamp)));
                 }
             }
             catch (Exception e)
@@ -162,7 +162,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles));
+                    return Ok(MapCandles(candles.OrderBy(a=>a.TimeStamp)));
                 }
             }
             catch (Exception e)
