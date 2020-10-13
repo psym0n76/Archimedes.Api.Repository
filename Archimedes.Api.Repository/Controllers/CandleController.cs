@@ -260,7 +260,7 @@ namespace Archimedes.Api.Repository.Controllers
             foreach (var p in candleDto)
             {
                 log.Append(
-                    $"{nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Market)}: {p.Market}  {nameof(p.Granularity)}: {p.Granularity} {nameof(p.BidOpen)}: {p.BidOpen} {nameof(p.BidHigh)}: {p.BidHigh} {nameof(p.BidLow)}: {p.BidLow} {nameof(p.BidClose)}: {p.BidClose}\n");
+                    $"  {nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Market)}: {p.Market}  {nameof(p.Granularity)}: {p.Granularity} {nameof(p.BidOpen)}: {p.BidOpen} {nameof(p.BidHigh)}: {p.BidHigh} {nameof(p.BidLow)}: {p.BidLow} {nameof(p.BidClose)}: {p.BidClose}\n");
             }
 
             _logger.LogInformation($"Received Candle ADD:\n\n {nameof(candleDto)}\n  {log}");
