@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
@@ -233,12 +234,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation($"Received Candle ADD:");
-
-                foreach (var p in candleDto)
-                {
-                    _logger.LogInformation($" {p}");
-                }
+                AddLog(candleDto);
 
                 var candle = _mapper.Map<List<Candle>>(candleDto);
 
@@ -255,6 +251,19 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
+        }
+
+        private void AddLog(IList<CandleDto> candleDto)
+        {
+            var log = new StringBuilder();
+
+            foreach (var p in candleDto)
+            {
+                log.Append(
+                    $"{nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Market)}: {p.Market}  {nameof(p.Granularity)}: {p.Granularity} {nameof(p.BidOpen)}: {p.BidOpen} {nameof(p.BidHigh)}: {p.BidHigh} {nameof(p.BidLow)}: {p.BidLow} {nameof(p.BidClose)}: {p.BidClose}\n");
+            }
+
+            _logger.LogInformation($"Received Candle ADD:\n {nameof(candleDto)}\n  {log}");
         }
 
         private CandleDto MapCandle(Candle candle)
