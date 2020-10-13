@@ -266,7 +266,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             log.Append($"\n ADDED {candleDto.Count} Candle(s)");
 
-            _logger.LogInformation($"Received Candle ADD:\n\n {nameof(candleDto)}\n  {log}");
+            _logger.LogInformation($"Received Candle ADD:\n\n {nameof(candleDto)}\n  {log}\n");
         }
 
         private CandleDto MapCandle(Candle candle)
