@@ -5,6 +5,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Api.Repository.Migrations;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -262,6 +263,8 @@ namespace Archimedes.Api.Repository.Controllers
                 log.Append(
                     $"  {nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Market)}: {p.Market}  {nameof(p.Granularity)}: {p.Granularity} {nameof(p.BidOpen)}: {p.BidOpen} {nameof(p.BidHigh)}: {p.BidHigh} {nameof(p.BidLow)}: {p.BidLow} {nameof(p.BidClose)}: {p.BidClose}\n");
             }
+
+            log.Append($"\n ADDED {candleDto.Count} Candle(s)");
 
             _logger.LogInformation($"Received Candle ADD:\n\n {nameof(candleDto)}\n  {log}");
         }
