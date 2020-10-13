@@ -233,7 +233,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation($"Received Candle ADD: {candleDto}");
+                _logger.LogInformation($"Received Candle ADD:");
 
                 foreach (var p in candleDto)
                 {
