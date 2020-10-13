@@ -71,5 +71,7 @@ namespace Archimedes.Api.Repository
         public double TickQty { get; set; }
 
         public DateTime TimeStamp { get; set; }
+
+        public DateTime LastUpdated { get; set; }
     }
 }
