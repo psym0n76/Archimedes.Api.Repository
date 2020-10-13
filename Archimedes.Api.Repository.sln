@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archimedes.Api.Repository", "Archimedes.Api.Repository\Archimedes.Api.Repository.csproj", "{3DCABFFD-D472-47E9-A1E1-9472CE4DF1F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archimedes.Api.Repository.Tests", "Archimedes.Api.Repository.Tests\Archimedes.Api.Repository.Tests.csproj", "{B2BB0141-AC26-4201-9EC6-45C1CBCA6043}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archimedes.Api.Repository.Tests", "Archimedes.Api.Repository.Tests\Archimedes.Api.Repository.Tests.csproj", "{B2BB0141-AC26-4201-9EC6-45C1CBCA6043}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FEEFD957-D6DF-4363-B438-9F652E04A254}"
+	ProjectSection(SolutionItems) = preProject
+		.filenesting.json = .filenesting.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

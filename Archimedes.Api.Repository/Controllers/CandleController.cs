@@ -263,7 +263,7 @@ namespace Archimedes.Api.Repository.Controllers
                     $"{nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Market)}: {p.Market}  {nameof(p.Granularity)}: {p.Granularity} {nameof(p.BidOpen)}: {p.BidOpen} {nameof(p.BidHigh)}: {p.BidHigh} {nameof(p.BidLow)}: {p.BidLow} {nameof(p.BidClose)}: {p.BidClose}\n");
             }
 
-            _logger.LogInformation($"Received Candle ADD:\n {nameof(candleDto)}\n  {log}");
+            _logger.LogInformation($"Received Candle ADD:\n\n {nameof(candleDto)}\n  {log}");
         }
 
         private CandleDto MapCandle(Candle candle)
