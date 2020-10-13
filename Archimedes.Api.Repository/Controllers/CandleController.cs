@@ -5,7 +5,6 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Archimedes.Api.Repository.Migrations;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
