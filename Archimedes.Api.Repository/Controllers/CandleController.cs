@@ -111,9 +111,6 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation(
-                    $"Request: Get Last Updated Price for Market: {market} and Granularity: {granularity}");
-
                 var lastUpdated = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct);
 
                 if (lastUpdated != null)
@@ -127,7 +124,6 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest();
             }
 
-            _logger.LogError($"Candle not found for market: {market}.");
             return NotFound();
         }
 
@@ -142,9 +138,6 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation(
-                    $"Request: Get all Candles for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
-
                 if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
                 {
                     return BadRequest($"Incorrect FromDate format: {fromDate}");
@@ -171,7 +164,6 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest();
             }
 
-
             _logger.LogError(
                 $"Candle not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity} {nameof(fromDate)}: {fromDate} {nameof(toDate)}: {toDate}");
             return NotFound();
@@ -187,9 +179,6 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation(
-                    $"Request: Get all Candles for Market: {market} Granularity: {granularity}");
-
                 var candles =
                     await _unit.Candle.GetMarketGranularityCandles(market, granularity, ct);
 
@@ -219,9 +208,6 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation(
-                    $"Request: Get all Candle metrics for Market: {market} Granularity: {granularity}");
-
                 var result = new CandleMetricDto()
                 {
                     MinDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct),
@@ -247,7 +233,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation($"Received Candle update:");
+                _logger.LogInformation($"Received Candle ADD: {candleDto}");
 
                 foreach (var p in candleDto)
                 {
