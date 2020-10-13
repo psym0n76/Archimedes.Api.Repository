@@ -62,7 +62,7 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             var response = await GetCandlesAsync(a => a.Market == market && a.Granularity == granularity, ct);
-            return response.Max(a => a.ToDate);
+            return response.Max(a => a.FromDate);
         }
 
         public async Task<int> GetCandleCount(string market, string granularity, CancellationToken ct)
