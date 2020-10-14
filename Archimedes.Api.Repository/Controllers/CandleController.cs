@@ -36,11 +36,11 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                var candles = await _unit.Candle.GetCandlesAsync(1, 10000, ct);
+                var candles = await _unit.Candle.GetCandlesAsync(1, 5000, ct);
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
+                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)).Take(5000));
                 }
             }
             catch (Exception e)
@@ -185,7 +185,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
+                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)).Take(2500));
                 }
             }
             catch (Exception e)
