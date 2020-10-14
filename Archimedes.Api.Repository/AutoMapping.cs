@@ -18,6 +18,9 @@ namespace Archimedes.Api.Repository
 
             CreateMap<Market, MarketDto>();
             CreateMap<MarketDto, Market>();
+
+            CreateMap<PriceLevel, PriceLevelDto>();
+            CreateMap<PriceLevelDto, PriceLevel>();
         }
     }
 }
