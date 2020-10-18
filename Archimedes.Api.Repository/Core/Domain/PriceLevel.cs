@@ -12,9 +12,15 @@ namespace Archimedes.Api.Repository
 
         public DateTime TimeStamp { get; set; }
 
-        public double Price { get; set; }
+        public double BidPrice { get; set; }
 
-        public double PriceRange { get; set; }
+        public double BidPriceRange { get; set; }
+
+        public double AskPrice { get; set; }
+
+        public double AskPriceRange { get; set; }
+        
+        public string Strategy { get; set; }
 
         public string TradeType { get; set; }
 

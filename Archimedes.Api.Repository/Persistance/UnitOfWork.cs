@@ -22,6 +22,10 @@ namespace Archimedes.Api.Repository
         }
 
         public IPriceRepository Price { get; }
+
+
+
+
         public ITradeRepository Trade { get; }
         public ICandleRepository Candle { get; set; }
         public IPriceLevelRepository PriceLevel { get; set; }
