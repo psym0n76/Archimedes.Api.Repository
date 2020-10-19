@@ -7,11 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archimedes.Api.Repository",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archimedes.Api.Repository.Tests", "Archimedes.Api.Repository.Tests\Archimedes.Api.Repository.Tests.csproj", "{B2BB0141-AC26-4201-9EC6-45C1CBCA6043}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FEEFD957-D6DF-4363-B438-9F652E04A254}"
-	ProjectSection(SolutionItems) = preProject
-		.filenesting.json = .filenesting.json
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
@@ -87,6 +88,9 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 var priceLevels = _mapper.Map<List<PriceLevel>>(priceLevelDto);
+
+                AddLog(priceLevels);
+
                 _unit.PriceLevel.AddPriceLevelsAsync(priceLevels, ct);
                 _unit.SaveChanges();
 
@@ -99,6 +103,21 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogError($"aa Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
+        }
+
+        private void AddLog(IList<PriceLevel> priceLevel)
+        {
+            var log = new StringBuilder();
+
+            foreach (var p in priceLevel)
+            {
+                log.Append(
+                    $"  {nameof(p.Market)}: {p.Market} {nameof(p.Granularity)}: {p.Granularity}  {nameof(p.Active)}: {p.Active} {nameof(p.TradeType)}: {p.TradeType} {nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Strategy)}: {p.Strategy} {nameof(p.BidPrice)}: {p.BidPrice} {nameof(p.BidPriceRange)}: {p.BidPriceRange} {nameof(p.AskPrice)}: {p.AskPrice} {nameof(p.AskPriceRange)}: {p.AskPriceRange} {nameof(p.LastUpdated)}: {p.LastUpdated}\n");
+            }
+
+            log.Append($"\n ADDED {priceLevel.Count} PriceLevel(s)");
+
+            _logger.LogInformation($"Received PriceLevel ADD:\n\n {nameof(priceLevel)}\n  {log}\n");
         }
     }
 }

@@ -10,7 +10,19 @@ namespace Archimedes.Api.Repository
         [Key]
         public int Id { get; set; }
 
+        public string Market { get; set; }
+
+        public string Granularity { get; set; }
+
+        public string Active { get; set; }
+
+        public string TradeType { get; set; }
+
+        public string CandleType { get; set; }
+
         public DateTime TimeStamp { get; set; }
+
+        public string Strategy { get; set; }
 
         public double BidPrice { get; set; }
 
@@ -19,16 +31,6 @@ namespace Archimedes.Api.Repository
         public double AskPrice { get; set; }
 
         public double AskPriceRange { get; set; }
-        
-        public string Strategy { get; set; }
-
-        public string TradeType { get; set; }
-
-        public string Active { get; set; }
-
-        public string Market { get; set; }
-
-        public string Granularity { get; set; }
 
         public DateTime LastUpdated {get; set;}
     }
