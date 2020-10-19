@@ -41,7 +41,7 @@ namespace Archimedes.Api.Repository.Controllers
                 if (priceLevels != null)
                 {
                     _logger.LogInformation($"Returned {priceLevels.Count()} PriceLevel records");
-                    return Ok(priceLevels.OrderByDescending(a=>a.TimeStamp).Take(1000));
+                    return Ok(priceLevels.OrderByDescending(a=>a.TimeStamp));
                 }
             }
             catch (Exception e)
