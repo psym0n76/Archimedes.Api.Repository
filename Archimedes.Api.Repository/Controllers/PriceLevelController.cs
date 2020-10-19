@@ -91,7 +91,8 @@ namespace Archimedes.Api.Repository.Controllers
                 _unit.SaveChanges();
 
                 // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
-                return CreatedAtAction(nameof(GetPriceLevelAsync), new {id = 0, version = apiVersion.ToString()}, priceLevels);
+               //return CreatedAtAction(nameof(GetPriceLevelAsync), new {id = 0, version = apiVersion.ToString()}, priceLevels);
+               return Ok();
             }
             catch (Exception e)
             {
