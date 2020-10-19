@@ -36,7 +36,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 10000, ct);
+                var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 100000, ct);
 
                 if (priceLevels != null)
                 {
