@@ -95,7 +95,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError($"aa Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
         }

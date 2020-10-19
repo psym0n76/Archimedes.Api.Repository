@@ -239,7 +239,7 @@ namespace Archimedes.Api.Repository.Controllers
                 var candle = _mapper.Map<List<Candle>>(candleDto);
 
                 await _unit.Candle.RemoveDuplicateCandleEntries(candle, ct);
-                _unit.SaveChanges();
+                _unit.SaveChanges(); // not sure this is required
                 await _unit.Candle.AddCandlesAsync(candle, ct);
                 _unit.SaveChanges();
 
