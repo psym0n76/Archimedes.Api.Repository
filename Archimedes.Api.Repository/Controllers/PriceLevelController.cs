@@ -32,16 +32,16 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<PriceLevel>>> GetPriceLevels(CancellationToken ct)
+        public async Task<ActionResult<List<PriceLevel>>> GetPriceLevels(CancellationToken ct)
         {
             try
             {
-                var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 100, ct);
+                var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 1000, ct);
 
                 if (priceLevels != null)
                 {
                     _logger.LogInformation($"Returned {priceLevels.Count()} PriceLevel records");
-                    return Ok(priceLevels);
+                    return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
                 }
             }
             catch (Exception e)
@@ -83,7 +83,7 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult PostPriceLevels([FromBody] IList<PriceLevelDto> priceLevelDto, ApiVersion apiVersion, CancellationToken ct)
+        public async Task<ActionResult> PostPriceLevels([FromBody] IList<PriceLevelDto> priceLevelDto, ApiVersion apiVersion, CancellationToken ct)
         {
             try
             {
@@ -91,7 +91,9 @@ namespace Archimedes.Api.Repository.Controllers
 
                 AddLog(priceLevels);
 
-                _unit.PriceLevel.AddPriceLevelsAsync(priceLevels, ct);
+                await _unit.PriceLevel.RemoveDuplicatePriceLevelEntries(priceLevels, ct);
+                _unit.SaveChanges();
+                await _unit.PriceLevel.AddPriceLevelsAsync(priceLevels, ct);
                 _unit.SaveChanges();
 
                 // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
@@ -100,7 +102,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"aa Error {e.Message} {e.StackTrace}");
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
         }
