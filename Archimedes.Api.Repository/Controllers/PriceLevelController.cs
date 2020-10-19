@@ -36,12 +36,12 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 1000, ct);
+                var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 10000, ct);
 
                 if (priceLevels != null)
                 {
                     _logger.LogInformation($"Returned {priceLevels.Count()} PriceLevel records");
-                    return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
+                    return Ok(priceLevels.OrderByDescending(a=>a.TimeStamp).Take(1000));
                 }
             }
             catch (Exception e)

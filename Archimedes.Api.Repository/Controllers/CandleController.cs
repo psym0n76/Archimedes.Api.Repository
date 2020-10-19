@@ -40,7 +40,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)).Take(5000));
+                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp).TakeLast(5000)));
                 }
             }
             catch (Exception e)
