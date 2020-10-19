@@ -185,7 +185,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)).Take(2500));
+                    return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
                 }
             }
             catch (Exception e)
