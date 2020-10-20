@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
@@ -179,6 +180,50 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
+        }
+
+        [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> PostMarkets([FromBody] IList<MarketDto> marketDto, ApiVersion apiVersion,
+            CancellationToken ct)
+        {
+            try
+            {
+                AddLog(marketDto);
+
+                var market = _mapper.Map<List<Market>>(marketDto);
+
+                // await _unit.Candle.RemoveDuplicateCandleEntries(strategy, ct);
+                // _unit.SaveChanges(); // not sure this is required
+                await _unit.Market.AddMarketsAsync(market,ct);
+                _unit.SaveChanges();
+
+                // re-direct will not work but i wont the 201 response + records added 
+                //return CreatedAtAction(nameof(GetStrategyAsync), new {id = 0, version = apiVersion.ToString()}, strategy);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+        }
+
+        private void AddLog(IList<MarketDto> marketDto)
+        {
+            var log = new StringBuilder();
+
+            foreach (var p in marketDto)
+            {
+                log.Append(
+                    $"  {p}\n");
+            }
+
+            log.Append($"\n ADDED {marketDto.Count} Market(s)");
+
+            _logger.LogInformation($"Received Market ADD:\n\n {nameof(marketDto)}\n  {log}\n");
         }
 
         private MarketDto MapMarket(Market market)
