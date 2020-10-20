@@ -40,7 +40,8 @@ namespace Archimedes.Api.Repository
             services.AddAutoMapper(typeof(Startup));
 
             services.AddDbContext<ArchimedesContext>(options =>
-                options.UseSqlServer(config.DatabaseServerConnection));
+                options.UseSqlServer(config.DatabaseServerConnection) 
+                    .EnableSensitiveDataLogging());
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddMvc().SetCompatibilityVersion(version: CompatibilityVersion.Version_3_0);
