@@ -120,7 +120,8 @@ namespace Archimedes.Api.Repository.Controllers
                 _unit.SaveChanges();
 
                 // re-direct will not work but i wont the 201 response + records added 
-                return CreatedAtAction(nameof(GetStrategyAsync), new {id = 0, version = apiVersion.ToString()}, strategy);
+                //return CreatedAtAction(nameof(GetStrategyAsync), new {id = 0, version = apiVersion.ToString()}, strategy);
+                return Ok();
             }
             catch (Exception e)
             {
