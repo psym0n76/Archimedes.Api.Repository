@@ -9,6 +9,9 @@ namespace Archimedes.Api.Repository
     {
         Task<Strategy> GetStrategyAsync(int id, CancellationToken ct);
         Task<IEnumerable<Strategy>> GetStrategiesAsync(int pageIndex, int pageSize, CancellationToken ct);
+
+        Task<IEnumerable<Strategy>> GetStrategiesGranularityMarket(string market, string granularity, CancellationToken ct);
+
         Task AddStrategyAsync(Strategy strategy, CancellationToken ct);
         Task AddStrategiesAsync(IEnumerable<Strategy> strategy, CancellationToken ct);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +22,24 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Strategy.FindAsync(id);
         }
 
+        public async Task<List<Strategy>> GetStrategiesAsync(Expression<Func<Strategy, bool>> predicate,
+            CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            return await FxDatabaseContext.Strategy.AsNoTracking().Where(predicate).ToListAsync(ct);
+        }
+
         public async Task<IEnumerable<Strategy>> GetStrategiesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             return await FxDatabaseContext.Strategy.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+        }
+
+        public async Task<IEnumerable<Strategy>> GetStrategiesGranularityMarket(string market, string granularity,
+            CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            return await GetStrategiesAsync(a => a.Market == market && a.Granularity == granularity, ct);
         }
 
         public async Task AddStrategyAsync(Strategy strategy, CancellationToken ct)

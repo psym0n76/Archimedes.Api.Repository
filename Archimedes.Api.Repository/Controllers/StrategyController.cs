@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Text;
 using System.Threading;
@@ -73,6 +74,36 @@ namespace Archimedes.Api.Repository.Controllers
             }
 
             _logger.LogError($"Strategy not found for Id: {id}");
+            return NotFound();
+        }
+
+        //GET: api/v1/strategy/bymarket_bygranularity?market=gbpusd&granularity=15
+        [HttpGet("bymarket_bygranularity", Name = nameof(GetStrategiesGranularityMarket))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<StrategyDto>> GetStrategiesGranularityMarket(string market, string granularity,
+            CancellationToken ct)
+        {
+            try
+            {
+                var strategies =
+                    await _unit.Strategy.GetStrategiesGranularityMarket(market, granularity, ct);
+
+                if (strategies != null)
+                {
+                    return Ok(MapStrategies(strategies));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+
+            _logger.LogError(
+                $"Candle not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity}");
             return NotFound();
         }
 
