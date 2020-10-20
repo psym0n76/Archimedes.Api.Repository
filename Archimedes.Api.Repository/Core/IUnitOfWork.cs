@@ -9,6 +9,7 @@ namespace Archimedes.Api.Repository
         ITradeRepository Trade { get; }
         IMarketRepository Market { get; }
         IPriceLevelRepository PriceLevel { get; }
+        IStrategyRepository Strategy { get; }
         int SaveChanges();
     }
 }

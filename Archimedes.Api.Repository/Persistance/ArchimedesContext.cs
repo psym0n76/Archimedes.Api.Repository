@@ -9,6 +9,7 @@ namespace Archimedes.Api.Repository
         public DbSet<Candle> Candles { get; set; }
         public DbSet<Market> Markets { get; set; }
         public DbSet<PriceLevel> PriceLevels { get; set; }
+        public DbSet<Strategy> Strategy { get; set; }
         public ArchimedesContext(DbContextOptions<ArchimedesContext> options) : base(options)
         {
         }

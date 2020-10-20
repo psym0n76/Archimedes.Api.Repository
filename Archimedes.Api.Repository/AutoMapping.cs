@@ -21,6 +21,9 @@ namespace Archimedes.Api.Repository
 
             CreateMap<PriceLevel, PriceLevelDto>();
             CreateMap<PriceLevelDto, PriceLevel>();
+
+            CreateMap<Strategy, StrategyDto>();
+            CreateMap<StrategyDto, Strategy>();
         }
     }
 }

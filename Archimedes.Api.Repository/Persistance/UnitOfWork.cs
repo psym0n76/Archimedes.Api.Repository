@@ -1,7 +1,4 @@
-﻿
-using System.Threading.Tasks;
-
-namespace Archimedes.Api.Repository
+﻿namespace Archimedes.Api.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -14,6 +11,7 @@ namespace Archimedes.Api.Repository
             Trade = new TradeRepository(_context);
             Market = new MarketRepository(_context);
             PriceLevel = new PriceLevelRepository(_context);
+            Strategy = new StrategyRepository(_context);
         }
 
         public void Dispose()
@@ -22,15 +20,12 @@ namespace Archimedes.Api.Repository
         }
 
         public IPriceRepository Price { get; }
-
-
-
-
         public ITradeRepository Trade { get; }
-        public ICandleRepository Candle { get; set; }
-        public IPriceLevelRepository PriceLevel { get; set; }
+        public ICandleRepository Candle { get; }
+        public IPriceLevelRepository PriceLevel { get; }
+        public IStrategyRepository Strategy { get;}
+        public IMarketRepository Market { get; }
 
-        public IMarketRepository Market { get; set; }
         public  int SaveChanges()
         {
             return  _context.SaveChanges();
