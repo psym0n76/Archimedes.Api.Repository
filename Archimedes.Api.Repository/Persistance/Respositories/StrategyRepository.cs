@@ -70,7 +70,7 @@ namespace Archimedes.Api.Repository
 
             existing.LastUpdated = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-            FxDatabaseContext.Strategy.Update(strategy);
+            FxDatabaseContext.Strategy.Update(existing);
         }
 
         public Task UpdateStrategyMetrics(Strategy strategy, CancellationToken ct)
