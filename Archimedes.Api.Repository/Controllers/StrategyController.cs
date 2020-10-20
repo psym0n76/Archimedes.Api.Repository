@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Archimedes.Library.Message.Dto;
@@ -98,6 +99,64 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest();
             }
         }
+
+
+        [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> PostStrategies([FromBody] IList<StrategyDto> strategyDto, ApiVersion apiVersion,
+            CancellationToken ct)
+        {
+            try
+            {
+                AddLog(strategyDto);
+
+                var strategy = _mapper.Map<List<Strategy>>(strategyDto);
+
+                // await _unit.Candle.RemoveDuplicateCandleEntries(strategy, ct);
+                // _unit.SaveChanges(); // not sure this is required
+                await _unit.Strategy.AddStrategiesAsync(strategy,ct);
+                _unit.SaveChanges();
+
+                // re-direct will not work but i wont the 201 response + records added 
+                return CreatedAtAction(nameof(GetStrategyAsync), new {id = 0, version = apiVersion.ToString()}, strategy);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+        }
+
+
+        private void AddLog(IList<StrategyDto> strategyDto)
+        {
+            var log = new StringBuilder();
+
+            foreach (var p in strategyDto)
+            {
+                log.Append(
+                    $"  {p}\n");
+            }
+
+            log.Append($"\n ADDED {strategyDto.Count} Strategies");
+
+            _logger.LogInformation($"Received Strategy ADD:\n\n {nameof(strategyDto)}\n  {log}\n");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private StrategyDto MapStrategy(Strategy strategy)
         {
