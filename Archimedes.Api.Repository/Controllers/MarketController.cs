@@ -156,19 +156,22 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> UpdateMarketMetrics([FromBody] CandleMetricDto candleMetricDto, CancellationToken ct)
+        public async Task<ActionResult> UpdateMarketMetrics([FromBody] MarketDto marketDto, CancellationToken ct)
         {
             try
             {
-                _logger.LogInformation($"Received Market Metrics UPDATE: {candleMetricDto}");
 
-                var market = new Market()
-                {
-                    Id = candleMetricDto.MarketId,
-                    MaxDate = candleMetricDto.MaxDate,
-                    MinDate = candleMetricDto.MinDate,
-                    Quantity = candleMetricDto.Quantity
-                };
+                var market = _mapper.Map<Market>(marketDto);
+
+                _logger.LogInformation($"Received Market Metrics UPDATE: {market}");
+
+                //var market = new Market()
+                //{
+                //    Id = candleMetricDto.MarketId,
+                //    MaxDate = candleMetricDto.MaxDate,
+                //    MinDate = candleMetricDto.MinDate,
+                //    Quantity = candleMetricDto.Quantity
+                //};
 
                 await _unit.Market.UpdateMarketMetrics(market, ct);
 
