@@ -160,18 +160,9 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-
                 var market = _mapper.Map<Market>(marketDto);
 
                 _logger.LogInformation($"Received Market Metrics UPDATE: {market}");
-
-                //var market = new Market()
-                //{
-                //    Id = candleMetricDto.MarketId,
-                //    MaxDate = candleMetricDto.MaxDate,
-                //    MinDate = candleMetricDto.MinDate,
-                //    Quantity = candleMetricDto.Quantity
-                //};
 
                 await _unit.Market.UpdateMarketMetrics(market, ct);
 
@@ -198,8 +189,6 @@ namespace Archimedes.Api.Repository.Controllers
 
                 var market = _mapper.Map<List<Market>>(marketDto);
 
-                // await _unit.Candle.RemoveDuplicateCandleEntries(strategy, ct);
-                // _unit.SaveChanges(); // not sure this is required
                 await _unit.Market.AddMarketsAsync(market,ct);
                 _unit.SaveChanges();
 
