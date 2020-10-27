@@ -186,7 +186,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (prices != null)
                 {
-                    var distinctGranularity =  prices.Select(a => a.Granularity).Distinct();
+                    var distinctGranularity = prices.Select(a => a.Market).Distinct();
 
                     return Ok(distinctGranularity);
                 }
