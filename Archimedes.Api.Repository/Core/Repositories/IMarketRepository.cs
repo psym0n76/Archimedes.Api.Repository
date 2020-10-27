@@ -14,6 +14,7 @@ namespace Archimedes.Api.Repository
 
         Task UpdateMarket(Market market, CancellationToken ct);
         Task UpdateMarketMetrics(Market market, CancellationToken ct);
+        Task UpdateMarketStatus(Market updated, CancellationToken ct);
 
         Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, DateTime minDate, int candleCount,
             CancellationToken ct = default);

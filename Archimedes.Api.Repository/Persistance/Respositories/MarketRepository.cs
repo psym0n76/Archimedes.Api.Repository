@@ -70,6 +70,16 @@ namespace Archimedes.Api.Repository
             FxDatabaseContext.Markets.Update(market);
         }
 
+        public async Task UpdateMarketStatus(Market updated, CancellationToken ct)
+        {
+            var market = await GetMarketAsync(updated.Id, ct);
+
+            market.Active = updated.Active;
+            market.LastUpdated = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            FxDatabaseContext.Markets.Update(market);
+        }
+
         public async Task UpdateMarketMaxDateAsync(int marketId, DateTime maxDate, DateTime minDate, int candleCount,
             CancellationToken ct = default)
         {
