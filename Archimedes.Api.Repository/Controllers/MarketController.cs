@@ -176,7 +176,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
         }
 
-        [HttpPut("market_status", Name = nameof(UpdateMarketMetrics))]
+        [HttpPut("market_status", Name = nameof(UpdateMarketStatus))]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

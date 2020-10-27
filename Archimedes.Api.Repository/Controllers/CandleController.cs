@@ -204,12 +204,12 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("candle_metrics", Name = nameof(GetCandleMetrics))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CandleMetricDto>> GetCandleMetrics(string market, string granularity,
+        public async Task<ActionResult<CandleMetricsDto>> GetCandleMetrics(string market, string granularity,
             CancellationToken ct)
         {
             try
             {
-                var result = new CandleMetricDto()
+                var result = new CandleMetricsDto()
                 {
                     MinDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct),
                     Quantity = await _unit.Candle.GetCandleCount(market, granularity, ct),
