@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -171,6 +172,32 @@ namespace Archimedes.Api.Repository.Controllers
 
             _logger.LogError(
                 $"Price not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity} {nameof(fromDate)}: {fromDate} {nameof(toDate)}: {toDate}");
+            return NotFound();
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("bymarket_distinct", Name = nameof(GetMarketDistinctAsync))]
+        public async Task<ActionResult<IEnumerable<PriceDto>>> GetMarketDistinctAsync(CancellationToken ct)
+        {
+            try
+            {
+                var prices = await _unit.Price.GetPricesAsync(1, 100000, ct);
+
+                if (prices != null)
+                {
+                    var distinctGranularity =  prices.Select(a => a.Granularity).Distinct();
+
+                    return Ok(distinctGranularity);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+            _logger.LogError("Prices not found");
             return NotFound();
         }
 
