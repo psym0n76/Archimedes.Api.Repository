@@ -188,7 +188,10 @@ namespace Archimedes.Api.Repository.Controllers
                 {
                     var distinctGranularity = prices.Select(a => a.Market).Distinct();
 
-                    return Ok(distinctGranularity);
+                    // create a priceDto collection
+                    var priceCollection = distinctGranularity.Select(gran => new PriceDto() {Market = gran}).ToList();
+
+                    return Ok(priceCollection);
                 }
             }
             catch (Exception e)
@@ -222,7 +225,6 @@ namespace Archimedes.Api.Repository.Controllers
                 //}
 
                 var price = _mapper.Map<IList<Price>>(priceDto);
-
 
                 await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
                 _unit.SaveChanges();
