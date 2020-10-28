@@ -226,8 +226,8 @@ namespace Archimedes.Api.Repository.Controllers
 
                 var price = _mapper.Map<IList<Price>>(priceDto);
 
-                await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
-                _unit.SaveChanges();
+               // await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
+               // _unit.SaveChanges();
                 await _unit.Price.AddPricesAsync(price, ct);
                 _unit.SaveChanges();
 
