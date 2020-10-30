@@ -36,10 +36,12 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToListAsync(ct);
         }
 
-        public async Task<IList<Price>> GetPricesOlderThanOneHour(CancellationToken ct)
+        public async Task RemovePricesOlderThanOneHour(CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return await GetPricesAsync(a => a.TimeStamp < DateTime.Now.AddHours(-1), ct);
+            var prices =  await GetPricesAsync(a => a.TimeStamp < DateTime.Now.AddHours(-1), ct);
+            RemovePrices(prices);
+            FxDatabaseContext.SaveChanges();
         }
 
         public async Task<DateTime?> GetLastUpdated(string market, string granularity, CancellationToken ct)

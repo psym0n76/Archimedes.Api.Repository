@@ -1,7 +1,5 @@
 ﻿using System;
-using Archimedes.Api.Repository.BackgroundServices;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
@@ -46,7 +44,7 @@ namespace Archimedes.Api.Repository
                 }).UseNLog()
                 .ConfigureServices(services =>
                 {
-                    services.AddHostedService<PriceDeleteService>();
+                    //services.AddHostedService<PriceDeleteService>();
                 }); // this ensures we have logging
     }
 }

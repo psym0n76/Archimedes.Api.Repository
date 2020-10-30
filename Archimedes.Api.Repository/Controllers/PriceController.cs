@@ -204,6 +204,23 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("hour", Name = nameof(DeletePricesAsync))]
+        public async Task<ActionResult<IEnumerable<PriceDto>>> DeletePricesAsync(CancellationToken ct)
+        {
+            try
+            {
+                await _unit.Price.RemovePricesOlderThanOneHour(ct);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+        }
+
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]

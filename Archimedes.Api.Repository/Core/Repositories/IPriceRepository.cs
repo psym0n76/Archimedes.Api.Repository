@@ -11,7 +11,7 @@ namespace Archimedes.Api.Repository
         Task<Price> GetPriceAsync(long id, CancellationToken ct);
         Task<IList<Price>> GetPricesAsync(int pageIndex, int pageSize, CancellationToken ct);
         Task<IList<Price>> GetPricesAsync(Expression<Func<Price, bool>> predicate, CancellationToken ct);
-        Task<IList<Price>> GetPricesOlderThanOneHour(CancellationToken ct);
+        Task RemovePricesOlderThanOneHour(CancellationToken ct);
 
         Task AddPriceAsync(Price price, CancellationToken ct);
         Task AddPricesAsync(IList<Price> prices, CancellationToken ct);
