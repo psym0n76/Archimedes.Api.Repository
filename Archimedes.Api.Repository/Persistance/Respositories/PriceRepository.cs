@@ -36,6 +36,12 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Prices.AsNoTracking().Where(predicate).ToListAsync(ct);
         }
 
+        public async Task<IList<Price>> GetPricesOlderThanOneHour(CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            return await GetPricesAsync(a => a.TimeStamp < DateTime.Now.AddHours(-1), ct);
+        }
+
         public async Task<DateTime?> GetLastUpdated(string market, string granularity, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
@@ -77,6 +83,7 @@ namespace Archimedes.Api.Repository
             ct.ThrowIfCancellationRequested();
             await FxDatabaseContext.Prices.AddRangeAsync(prices, ct);
         }
+
 
         public void RemovePrices(IList<Price> prices)
         {

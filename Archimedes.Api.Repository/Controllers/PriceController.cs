@@ -219,11 +219,6 @@ namespace Archimedes.Api.Repository.Controllers
                     return null;
                 }
 
-                //foreach (var p in priceDto)
-                //{
-                //    _logger.LogInformation($"Received Price update: \n {p}");
-                //}
-
                 var price = _mapper.Map<IList<Price>>(priceDto);
 
                // await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
