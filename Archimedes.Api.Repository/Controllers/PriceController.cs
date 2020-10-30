@@ -212,6 +212,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 await _unit.Price.RemovePricesOlderThanOneHour(ct);
+                _logger.LogError($"DELETED Price from Table");
                 return Ok();
             }
             catch (Exception e)
