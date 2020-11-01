@@ -77,6 +77,31 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
+        //GET: api/v1/candle/bypage?page=1&size50
+        [HttpGet("bypage", Name = nameof(GetCandlesAsync))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesAsync(int page, int size, CancellationToken ct)
+        {
+            try
+            {
+                var candles = await _unit.Candle.GetCandlesAsync(page, size,ct);
+
+                if (candles != null)
+                {
+                    return Ok(MapCandles(candles.OrderBy(a=>a.TimeStamp)));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+            _logger.LogError($"Unable to get Candles");
+            return NotFound();
+        }
+
         //GET: api/v1/candle/bymarket?market=gbpusd
         [HttpGet("bymarket", Name = nameof(GetMarketCandlesAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
