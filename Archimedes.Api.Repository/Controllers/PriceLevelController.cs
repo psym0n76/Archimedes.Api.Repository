@@ -54,7 +54,7 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
-        [HttpGet("bymarket_fromdate")]
+        [HttpGet("byMarket_byFromdate", Name = nameof(GetPriceLevelsByMarketFromDate))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketFromDate(string market, DateTime fromDate, CancellationToken ct)

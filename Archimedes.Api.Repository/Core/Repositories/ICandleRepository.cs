@@ -13,7 +13,7 @@ namespace Archimedes.Api.Repository
         Task AddCandleAsync(Candle candle, CancellationToken ct);
         Task AddCandlesAsync(List<Candle> candles, CancellationToken ct);
 
-
+        Task<List<Candle>> GetCandlesByMarketByFromDate(string market, DateTime fromDate, CancellationToken ct);
         Task<List<Candle>> GetCandlesAsync(Expression<Func<Candle, bool>> predicate, CancellationToken ct);
         void RemoveCandles(List<Candle> candle);
         Task RemoveDuplicateCandleEntries(List<Candle> candles, CancellationToken ct);

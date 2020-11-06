@@ -38,6 +38,14 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Candles.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
+        public async Task<List<Candle>> GetCandlesByMarketByFromDate(string market, DateTime fromDate,
+            CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return await FxDatabaseContext.Candles.AsNoTracking()
+                .Where(a => a.Market == market && a.TimeStamp > fromDate).ToListAsync(ct);
+        }
+
         public async Task<List<Candle>> GetCandlesAsync(Expression<Func<Candle, bool>> predicate,
             CancellationToken ct)
         {

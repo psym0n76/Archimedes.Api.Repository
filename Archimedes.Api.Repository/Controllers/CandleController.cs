@@ -128,6 +128,32 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
+        //GET: api/v1/candle/bymarket?market=gbpusd&byFromDate=""
+        [HttpGet("bymarket_byFromDate", Name = nameof(GetCandlesByMarketByFromDate))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesByMarketByFromDate(string market, DateTime fromDate,
+            CancellationToken ct)
+        {
+            try
+            {
+                var marketCandles = await _unit.Candle.GetCandlesByMarketByFromDate(market, fromDate, ct);
+
+                if (marketCandles != null)
+                {
+                    return Ok(MapCandles(marketCandles.OrderBy(a=>a.TimeStamp)));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+            _logger.LogError($"Candle not found for market: {market}");
+            return NotFound();
+        }
+
         //GET: api/v1/candle/bylastupdated?market=gbpusd&granularity=15
         [HttpGet("bylastupdated", Name = nameof(GetLastCandleUpdated))]
         [ProducesResponseType(StatusCodes.Status200OK)]
