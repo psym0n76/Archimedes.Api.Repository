@@ -54,6 +54,31 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
+        [HttpGet("bymarket_fromdate")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketFromDate(string market, DateTime fromDate, CancellationToken ct)
+        {
+            try
+            {
+                var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByDateAsync(market, fromDate,ct);
+
+                if (priceLevels != null)
+                {
+                    _logger.LogInformation($"Returned {priceLevels.Count()} PriceLevel records");
+                    return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+            _logger.LogError("PriceLevels not found.");
+            return NotFound();
+        }
+
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

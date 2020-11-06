@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace Archimedes.Api.Repository
     {
         Task<PriceLevel> GetPriceLevelAsync(int id, CancellationToken ct);
         Task<List<PriceLevel>> GetPriceLevelsAsync(int pageIndex, int pageSize, CancellationToken ct);
+        Task<List<PriceLevel>> GetPriceLevelsByMarketByDateAsync(string market, DateTime fromDate, CancellationToken ct);
         Task AddPriceLevelsAsync(IEnumerable<PriceLevel> trades, CancellationToken ct);
 
         void RemovePriceLevels(List<PriceLevel> candle);
