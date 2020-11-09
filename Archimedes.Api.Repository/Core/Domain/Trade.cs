@@ -15,7 +15,8 @@ namespace Archimedes.Api.Repository
 
         public bool Success { get; set; }
 
-        [Column(TypeName = "decimal(5, 5)")] public decimal OpenPrice { get; set; }
+        [Column(TypeName = "decimal(5, 5)")] public decimal EntryPrice { get; set; }
+        [Column(TypeName = "decimal(5, 5)")] public decimal TargetPrice { get; set; }
         [Column(TypeName = "decimal(5, 5)")] public decimal ClosePrice { get; set; }
         public DateTime TimeStamp { get; set; }
     }
