@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Archimedes.Api.Repository
 {
@@ -32,6 +33,13 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             return  GetPriceLevelsAsync(a => a.Market == market && a.TimeStamp > fromDate, ct);
+        }
+
+        public Task<List<PriceLevel>> GetPriceLevelsByMarketByGranularityByDateAsync(string market, string granularity, DateTime fromDate,
+            CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            return  GetPriceLevelsAsync(a => a.Market == market && a.Granularity == granularity && a.TimeStamp > fromDate, ct);
         }
 
         public async Task<List<PriceLevel>> GetPriceLevelsAsync(Expression<Func<PriceLevel, bool>> predicate,
@@ -80,6 +88,7 @@ namespace Archimedes.Api.Repository
                 FxDatabaseContext.SaveChanges();
             }
         }
+
 
         public void RemovePriceLevels(List<PriceLevel> priceLevels)
         {
