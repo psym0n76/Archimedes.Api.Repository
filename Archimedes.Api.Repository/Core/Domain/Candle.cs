@@ -10,64 +10,43 @@ namespace Archimedes.Api.Repository
         [Key]
         public int Id { get; set; }
 
-        public DateTime FromDate { get; set; }  
-        public DateTime ToDate { get; set; }  
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
 
-        /// <summary>
-        /// The market
-        /// </summary>
-        public string  Market { get; set; }
 
-        public string  MarketId { get; set; }
+        public string Market { get; set; }
 
-        /// <summary>
-        /// The market
-        /// </summary>
-        public string  Granularity { get; set; }
+        public string MarketId { get; set; }
 
-        /// <summary>
-        /// The candle BidOpen price.
-        /// </summary>
-        public double BidOpen { get; set; }
+        public string Granularity { get; set; }
 
-        /// <summary>
-        /// The candle BidClose price.
-        /// </summary>
-        public double BidClose { get; set; }
 
-        /// <summary>
-        /// The candle BidHigh price.
-        /// </summary>
-        public double BidHigh { get; set; }
+        [Column(TypeName = "decimal(18,5)")]
+        public decimal BidOpen { get; set; }
 
-        /// <summary>
-        /// The candle BidLow price.
-        /// </summary>
-        public double BidLow { get; set; }
+        [Column(TypeName = "decimal(18,5)")]
+        public decimal BidClose { get; set; }
 
-        /// <summary>
-        /// The candle AskOpen price.
-        /// </summary>
-        public double AskOpen { get; set; }
 
-        /// <summary>
-        /// The candle AskClose price.
-        /// </summary>
-        public double AskClose { get; set; }
+        [Column(TypeName = "decimal(18,5)")]
+        public decimal BidHigh { get; set; }
 
-        /// <summary>
-        /// The candle BidHigh price.
-        /// </summary>
-        public double AskHigh { get; set; }
+        [Column(TypeName = "decimal(18,5)")]
+        public decimal BidLow { get; set; }
 
-        /// <summary>
-        /// The candle AskLow price.
-        /// </summary>
-        public double AskLow { get; set; }
+        [Column(TypeName = "decimal(18,5)")]
+        public decimal AskOpen { get; set; }
 
-        /// <summary>
-        /// The candle tick quantity value.
-        /// </summary>
+        [Column(TypeName = "decimal(18,5)")]
+        public decimal AskClose { get; set; }
+
+        [Column(TypeName = "decimal(18,5)")]
+        public decimal AskHigh { get; set; }
+
+        [Column(TypeName = "decimal(18,5)")]
+        public decimal AskLow { get; set; }
+
+
         public double TickQty { get; set; }
 
         public DateTime TimeStamp { get; set; }
