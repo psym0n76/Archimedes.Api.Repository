@@ -44,7 +44,6 @@ namespace Archimedes.Api.Repository
                 }).UseNLog()
                 .ConfigureServices(services =>
                 {
-                    //services.AddHostedService<PriceDeleteService>();
-                }); // this ensures we have logging
+                });
     }
 }

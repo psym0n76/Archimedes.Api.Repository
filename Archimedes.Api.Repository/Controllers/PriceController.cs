@@ -35,7 +35,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                var prices = await _unit.Price.GetPricesAsync(1, 100, ct);
+                var prices = await _unit.Price.GetPricesAsync(1, 100000, ct);
 
                 if (prices != null)
                 {
