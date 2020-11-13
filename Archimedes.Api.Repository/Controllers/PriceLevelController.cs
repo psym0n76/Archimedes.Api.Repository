@@ -164,7 +164,7 @@ namespace Archimedes.Api.Repository.Controllers
             foreach (var p in priceLevel)
             {
                 log.Append(
-                    $"  {nameof(p.Market)}: {p.Market} {nameof(p.Granularity)}: {p.Granularity}  {nameof(p.Active)}: {p.Active} {nameof(p.TradeType)}: {p.TradeType} {nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Strategy)}: {p.Strategy} {nameof(p.BidPrice)}: {p.BidPrice} {nameof(p.BidPriceRange)}: {p.BidPriceRange} {nameof(p.AskPrice)}: {p.AskPrice} {nameof(p.AskPriceRange)}: {p.AskPriceRange} {nameof(p.LastUpdated)}: {p.LastUpdated}\n");
+                    $"  {nameof(p.Market)}: {p.Market} {nameof(p.Granularity)}: {p.Granularity}  {nameof(p.Active)}: {p.Active} {nameof(p.BuySell)}: {p.BuySell} {nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Strategy)}: {p.Strategy} {nameof(p.BidPrice)}: {p.BidPrice} {nameof(p.BidPriceRange)}: {p.BidPriceRange} {nameof(p.AskPrice)}: {p.AskPrice} {nameof(p.AskPriceRange)}: {p.AskPriceRange} {nameof(p.LastUpdated)}: {p.LastUpdated}\n");
             }
 
             log.Append($"\n ADDED {priceLevel.Count} PriceLevel(s)");

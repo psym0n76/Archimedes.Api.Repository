@@ -4,14 +4,16 @@ using Archimedes.Api.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Archimedes.Api.Repository.Migrations
 {
     [DbContext(typeof(ArchimedesContext))]
-    partial class ArchimedesContextModelSnapshot : ModelSnapshot
+    [Migration("20201113122712_moveddoubletodecimal4")]
+    partial class moveddoubletodecimal4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +169,6 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<decimal>("BidPriceRange")
                         .HasColumnType("decimal(18,5)");
 
-                    b.Property<string>("BuySell")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CandleType")
                         .HasColumnType("nvarchar(max)");
 
@@ -187,6 +186,9 @@ namespace Archimedes.Api.Repository.Migrations
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TradeType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

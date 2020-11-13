@@ -16,7 +16,7 @@ namespace Archimedes.Api.Repository
 
         public string Active { get; set; }
 
-        public string TradeType { get; set; }
+        public string BuySell { get; set; }
 
         public string CandleType { get; set; }
 
@@ -24,12 +24,16 @@ namespace Archimedes.Api.Repository
 
         public string Strategy { get; set; }
 
+        [Column(TypeName = "decimal(18,5)")]
         public double BidPrice { get; set; }
 
+        [Column(TypeName = "decimal(18,5)")]
         public double BidPriceRange { get; set; }
 
+        [Column(TypeName = "decimal(18,5)")]
         public double AskPrice { get; set; }
 
+        [Column(TypeName = "decimal(18,5)")]
         public double AskPriceRange { get; set; }
 
         public DateTime LastUpdated {get; set;}

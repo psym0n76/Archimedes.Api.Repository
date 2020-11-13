@@ -110,14 +110,8 @@ namespace Archimedes.Api.Repository
                         Id = hist.Id,
                         Market = hist.Market,
                         Granularity = hist.Granularity,
-                        AskOpen = hist.AskOpen,
-                        AskHigh = hist.AskHigh,
-                        AskLow = hist.AskLow,
-                        AskClose = hist.AskClose,
-                        BidOpen = hist.BidOpen,
-                        BidHigh = hist.BidHigh,
-                        BidLow = hist.BidLow,
-                        BidClose = hist.BidClose,
+                        Ask = hist.Bid,
+                        Bid = hist.Ask,
                         TimeStamp = hist.TimeStamp
                     }).ToList();
 

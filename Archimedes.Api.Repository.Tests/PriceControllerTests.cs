@@ -281,35 +281,19 @@ namespace Archimedes.Api.Repository.Tests
 
             var price1 = new Price()
             {
-                AskClose = 1.25,
-                AskHigh = 1.24,
-                AskLow = 1.24,
-                AskOpen = 1.25,
-                BidClose = 1.24,
-                BidHigh = 1.25,
-                BidOpen = 1.27,
-                BidLow = 1.24,
+
                 Granularity = "15",
                 Id = 1,
                 Market = "GBPUSD",
-                TickQty = 2540,
                 TimeStamp = new DateTime(2020, 01, 01)
             };
 
             var price2 = new Price()
             {
-                AskClose = 1.25,
-                AskHigh = 1.24,
-                AskLow = 1.24,
-                AskOpen = 1.25,
-                BidClose = 1.24,
-                BidHigh = 1.25,
-                BidOpen = 1.27,
-                BidLow = 1.24,
+
                 Granularity = "15",
                 Id = 1,
                 Market = "GBPUSD",
-                TickQty = 2540,
                 TimeStamp = new DateTime(2020, 01, 01)
             };
 
@@ -324,18 +308,10 @@ namespace Archimedes.Api.Repository.Tests
 
             var price1 = new Price()
             {
-                AskClose = 1.25,
-                AskHigh = 1.24,
-                AskLow = 1.24,
-                AskOpen = 1.25,
-                BidClose = 1.24,
-                BidHigh = 1.25,
-                BidOpen = 1.27,
-                BidLow = 1.24,
+
                 Granularity = "15",
                 Id = 1,
                 Market = "GBPUSD",
-                TickQty = 2540,
                 TimeStamp = new DateTime(2020, 01, 01)
             };
 

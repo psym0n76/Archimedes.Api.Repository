@@ -74,7 +74,7 @@ namespace Archimedes.Api.Repository
                         Granularity = hist.Granularity,
                         TimeStamp = hist.TimeStamp,
                         LastUpdated = hist.LastUpdated,
-                        TradeType = hist.TradeType,
+                        BuySell = hist.BuySell,
                         BidPrice = hist.BidPrice,
                         BidPriceRange = hist.BidPriceRange,
                         AskPrice = hist.AskPrice,
