@@ -20,7 +20,7 @@ namespace Archimedes.Api.Repository
 
         public string CandleType { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+
 
         public string Strategy { get; set; }
 
@@ -36,6 +36,8 @@ namespace Archimedes.Api.Repository
         [Column(TypeName = "decimal(18,5)")]
         public double AskPriceRange { get; set; }
 
+
+        public DateTime TimeStamp { get; set; }
         public DateTime LastUpdated {get; set;}
     }
 }
