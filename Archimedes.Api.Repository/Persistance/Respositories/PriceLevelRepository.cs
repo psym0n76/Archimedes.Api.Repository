@@ -85,7 +85,7 @@ namespace Archimedes.Api.Repository
                     }).ToList();
 
                 RemovePriceLevels(duplicatedPriceLevels);
-                FxDatabaseContext.SaveChanges();
+                await FxDatabaseContext.SaveChangesAsync(ct);
             }
         }
 
