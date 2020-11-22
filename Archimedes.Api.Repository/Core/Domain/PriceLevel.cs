@@ -36,6 +36,10 @@ namespace Archimedes.Api.Repository
         [Column(TypeName = "decimal(18,5)")]
         public double AskPriceRange { get; set; }
 
+        public DateTime LastLevelBrokenDate { get; set; }
+        public int BookedTrades { get; set; }
+        public int LevelsBroken { get; set; }
+
 
         public DateTime TimeStamp { get; set; }
         public DateTime LastUpdated {get; set;}
