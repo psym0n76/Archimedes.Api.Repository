@@ -55,6 +55,20 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.PriceLevels.AddRangeAsync(priceLevels, ct);
         }
 
+        public async Task UpdatePriceLevelAsync(PriceLevel priceLevel, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            var level = await FxDatabaseContext.PriceLevels.FindAsync(priceLevel.Id);
+
+            level.Active = priceLevel.Active;
+            level.BookedTrades = priceLevel.BookedTrades;
+            level.LastLevelBrokenDate = priceLevel.LastLevelBrokenDate;
+            level.LastUpdated = DateTime.Now;
+            level.LevelsBroken = priceLevel.LevelsBroken;
+
+            await FxDatabaseContext.SaveChangesAsync(ct);
+        }
+
         public async Task RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevel, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();

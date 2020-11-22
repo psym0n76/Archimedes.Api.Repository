@@ -157,6 +157,28 @@ namespace Archimedes.Api.Repository.Controllers
             }
         }
 
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdatePriceLevel([FromBody] PriceLevelDto priceLevelDto, ApiVersion apiVersion, CancellationToken ct)
+        {
+            try
+            {
+                var priceLevel = _mapper.Map<PriceLevel>(priceLevelDto);
+
+                await _unit.PriceLevel.UpdatePriceLevelAsync(priceLevel, ct);
+                _unit.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+        }
+
         private void AddLog(IList<PriceLevel> priceLevel)
         {
             var log = new StringBuilder();

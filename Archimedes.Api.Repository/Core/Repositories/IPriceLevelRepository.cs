@@ -12,9 +12,11 @@ namespace Archimedes.Api.Repository
         Task<List<PriceLevel>> GetPriceLevelsByMarketByDateAsync(string market, DateTime fromDate, CancellationToken ct);
         Task<List<PriceLevel>> GetPriceLevelsByMarketByGranularityByDateAsync(string market, string granularity, DateTime fromDate, CancellationToken ct);
 
-        Task AddPriceLevelsAsync(IEnumerable<PriceLevel> trades, CancellationToken ct);
+        Task AddPriceLevelsAsync(IEnumerable<PriceLevel> priceLevel, CancellationToken ct);
 
-        void RemovePriceLevels(List<PriceLevel> candle);
+        void RemovePriceLevels(List<PriceLevel> priceLevels);
         Task RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevels, CancellationToken ct);
+
+        Task UpdatePriceLevelAsync(PriceLevel priceLevel, CancellationToken ct);
     }
 }
