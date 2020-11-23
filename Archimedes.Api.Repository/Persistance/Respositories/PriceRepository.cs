@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Message.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace Archimedes.Api.Repository
@@ -41,7 +42,7 @@ namespace Archimedes.Api.Repository
             ct.ThrowIfCancellationRequested();
             var prices =  await GetPricesAsync(a => a.TimeStamp < DateTime.Now.AddHours(-1), ct);
             RemovePrices(prices);
-            FxDatabaseContext.SaveChanges();
+            await FxDatabaseContext.SaveChangesAsync(ct);
         }
 
         public async Task<DateTime?> GetLastUpdated(string market, string granularity, CancellationToken ct)
@@ -49,8 +50,9 @@ namespace Archimedes.Api.Repository
             ct.ThrowIfCancellationRequested();
             var response = await GetPricesAsync(a => a.Market == market && a.Granularity == granularity, ct);
             return response?.Max(a => a.TimeStamp);
-
         }
+
+
 
         public async Task<IEnumerable<Price>> GetMarketPrices(string market, CancellationToken ct)
         {
@@ -59,6 +61,20 @@ namespace Archimedes.Api.Repository
                 await GetPricesAsync(a => a.Market == market, ct);
 
             return prices;
+        }
+
+        public async Task<LastPriceDto> GetLastPriceByMarket(string market, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            var prices =
+                await GetPricesAsync(a => a.Market == market, ct);
+
+            var recentPrice = prices.OrderBy(a => a.TimeStamp).Take(1).Single();
+
+            var lastPriceDto = new LastPriceDto()
+                {Ask = recentPrice.Ask, Bid = recentPrice.Bid, LastUpdated = recentPrice.TimeStamp};
+
+            return lastPriceDto;
         }
 
         public async Task<IEnumerable<Price>> GetMarketGranularityPricesDate(string market, string granularity,
@@ -116,7 +132,7 @@ namespace Archimedes.Api.Repository
                     }).ToList();
 
                 RemovePrices(duplicatedPrices);
-                FxDatabaseContext.SaveChanges();
+                await FxDatabaseContext.SaveChangesAsync(ct);
             }
         }
     }

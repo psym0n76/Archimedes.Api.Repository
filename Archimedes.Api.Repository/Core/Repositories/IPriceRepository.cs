@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Message.Dto;
 
 namespace Archimedes.Api.Repository
 {
@@ -26,5 +27,7 @@ namespace Archimedes.Api.Repository
             CancellationToken ct);
 
         Task<IEnumerable<Price>> GetMarketPrices(string market, CancellationToken ct);
+
+        Task<LastPriceDto> GetLastPriceByMarket(string market, CancellationToken ct);
     }
 }

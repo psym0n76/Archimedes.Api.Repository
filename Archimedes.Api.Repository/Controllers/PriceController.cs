@@ -101,6 +101,32 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
+        //GET: api/v1/price/byLastPrice_byMarket?market=gbpusd
+        [HttpGet("byLastPrice_byMarket", Name = nameof(GetLastPriceByMarket))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<PriceDto>>> GetLastPriceByMarket(string market, CancellationToken ct)
+        {
+            try
+            {
+                var lastPriceDto = await _unit.Price.GetLastPriceByMarket(market,ct);
+
+                if (lastPriceDto != null)
+                {
+                    return Ok(lastPriceDto);
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+
+            _logger.LogError($"Price not found for market: {market}");
+            return NotFound();
+        }
+
         //GET: api/v1/price/bylastupdated?market=gbpusd&granularity=15
         [HttpGet("bylastupdated", Name = nameof(GetLastUpdated))]
         [ProducesResponseType(StatusCodes.Status200OK)]
