@@ -28,6 +28,6 @@ namespace Archimedes.Api.Repository
 
         Task<IEnumerable<Price>> GetMarketPrices(string market, CancellationToken ct);
 
-        Task<LastPriceDto> GetLastPriceByMarket(string market, CancellationToken ct);
+        Task<Price> GetLastPriceByMarket(string market, CancellationToken ct);
     }
 }

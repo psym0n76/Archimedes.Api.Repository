@@ -63,7 +63,7 @@ namespace Archimedes.Api.Repository
             return prices;
         }
 
-        public async Task<LastPriceDto> GetLastPriceByMarket(string market, CancellationToken ct)
+        public async Task<Price> GetLastPriceByMarket(string market, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             var prices =
@@ -71,10 +71,7 @@ namespace Archimedes.Api.Repository
 
             var recentPrice = prices.OrderBy(a => a.TimeStamp).Take(1).Single();
 
-            var lastPriceDto = new LastPriceDto()
-                {Ask = recentPrice.Ask, Bid = recentPrice.Bid, LastUpdated = recentPrice.TimeStamp};
-
-            return lastPriceDto;
+            return recentPrice;
         }
 
         public async Task<IEnumerable<Price>> GetMarketGranularityPricesDate(string market, string granularity,

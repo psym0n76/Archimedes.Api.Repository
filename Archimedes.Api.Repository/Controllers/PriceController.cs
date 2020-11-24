@@ -109,11 +109,11 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                var lastPriceDto = await _unit.Price.GetLastPriceByMarket(market,ct);
+                var price = await _unit.Price.GetLastPriceByMarket(market,ct);
 
-                if (lastPriceDto != null)
+                if (price != null)
                 {
-                    return Ok(lastPriceDto);
+                    return Ok(MapPrice(price));
                 }
 
             }
