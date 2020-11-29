@@ -14,7 +14,7 @@ namespace Archimedes.Api.Repository
 
         public string Granularity { get; set; }
 
-        public string Active { get; set; }
+        public bool Active { get; set; }
 
         public string BuySell { get; set; }
 
