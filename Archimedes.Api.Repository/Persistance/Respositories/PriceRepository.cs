@@ -69,7 +69,7 @@ namespace Archimedes.Api.Repository
             var prices =
                 await GetPricesAsync(a => a.Market == market, ct);
 
-            var recentPrice = prices.OrderBy(a => a.TimeStamp).Take(1).Single();
+            var recentPrice = prices.OrderByDescending(a => a.TimeStamp).Take(1).Single();
 
             return recentPrice;
         }
