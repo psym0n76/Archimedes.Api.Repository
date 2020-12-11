@@ -141,6 +141,8 @@ namespace Archimedes.Api.Repository.Controllers
 
                 AddLog(priceLevels);
 
+                // remove dupolicate items from priceLevels
+
                 await _unit.PriceLevel.RemoveDuplicatePriceLevelEntries(priceLevels, ct);
                 _unit.SaveChanges();
 

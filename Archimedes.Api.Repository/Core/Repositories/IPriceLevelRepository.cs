@@ -9,6 +9,8 @@ namespace Archimedes.Api.Repository
     {
         Task<PriceLevel> GetPriceLevelAsync(int id, CancellationToken ct);
         Task<List<PriceLevel>> GetPriceLevelsAsync(int pageIndex, int pageSize, CancellationToken ct);
+
+        Task<List<PriceLevel>> GetPriceLevelsByTimeStamp(DateTime timestamp, string granularity, string strategy, DateTime fromDate, CancellationToken ct);
         Task<List<PriceLevel>> GetPriceLevelsByMarketByDateAsync(string market, DateTime fromDate, CancellationToken ct);
         Task<List<PriceLevel>> GetPriceLevelsByMarketByGranularityByDateAsync(string market, string granularity, DateTime fromDate, CancellationToken ct);
 

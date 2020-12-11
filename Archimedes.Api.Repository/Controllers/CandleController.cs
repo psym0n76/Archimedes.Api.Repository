@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Logger;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +21,8 @@ namespace Archimedes.Api.Repository.Controllers
         private readonly IUnitOfWork _unit;
         private readonly ILogger<CandleController> _logger;
         private readonly IMapper _mapper;
+        private readonly BatchLog _batchLog = new BatchLog();
+        private string _logId;
 
         public CandleController(IUnitOfWork unit, ILogger<CandleController> logger, IMapper mapper)
         {
@@ -285,14 +287,27 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                AddLog(candleDto);
+                if (candleDto == null)
+                {
+                    return BadRequest();
+                }
+
+                _logId = _batchLog.Start();
 
                 var candle = _mapper.Map<List<Candle>>(candleDto);
 
+                _batchLog.Update(_logId,$"Candle Received: {candle[0].Market} {candle[0].Granularity} StartDate: {candle[0].TimeStamp} EndDate: {candle[^1].TimeStamp} Records: {candle.Count}");
+
                 await _unit.Candle.RemoveDuplicateCandleEntries(candle, ct);
-                _unit.SaveChanges(); // not sure this is required
+                _unit.SaveChanges();
+
+                _batchLog.Update(_logId,"Candle Duplicates Removed");
+
                 await _unit.Candle.AddCandlesAsync(candle, ct);
                 _unit.SaveChanges();
+
+                _batchLog.Update(_logId, "Candle Added");
+                _logger.LogInformation(_batchLog.Print(_logId));
 
                 // re-direct will not work but i wont the 201 response + records added 
                 return CreatedAtAction(nameof(GetCandles), new {id = 0, version = apiVersion.ToString()}, candle);
@@ -302,21 +317,6 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
-        }
-
-        private void AddLog(IList<CandleDto> candleDto)
-        {
-            var log = new StringBuilder();
-
-            foreach (var p in candleDto)
-            {
-                log.Append(
-                    $"  {nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Market)}: {p.Market}  {nameof(p.Granularity)}: {p.Granularity} {nameof(p.BidOpen)}: {p.BidOpen} {nameof(p.BidHigh)}: {p.BidHigh} {nameof(p.BidLow)}: {p.BidLow} {nameof(p.BidClose)}: {p.BidClose}\n");
-            }
-
-            log.Append($"\n ADDED {candleDto.Count} Candle(s)");
-
-            _logger.LogInformation($"Received Candle ADD:\n\n {nameof(candleDto)}\n  {log}\n");
         }
 
         private CandleDto MapCandle(Candle candle)

@@ -29,6 +29,13 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.PriceLevels.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
+        public Task<List<PriceLevel>> GetPriceLevelsByTimeStamp(DateTime timestamp, string granularity, string strategy, DateTime fromDate,
+            CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            return GetPriceLevelsAsync(a => a.TimeStamp == timestamp && a.Granularity == granularity && a.Strategy == strategy, ct);
+        }
+
         public Task<List<PriceLevel>> GetPriceLevelsByMarketByDateAsync(string market, DateTime fromDate, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
