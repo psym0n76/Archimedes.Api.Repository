@@ -162,7 +162,7 @@ namespace Archimedes.Api.Repository.Controllers
             {
                 var market = _mapper.Map<Market>(marketDto);
 
-                _logger.LogInformation($"Received Market Metrics UPDATE: {market}");
+                _logger.LogInformation($"Received Market Update: {marketDto}");
 
                 await _unit.Market.UpdateMarketMetrics(market, ct);
 
@@ -186,7 +186,7 @@ namespace Archimedes.Api.Repository.Controllers
             {
                 var market = _mapper.Map<Market>(marketDto);
 
-                _logger.LogInformation($"Received Market Update: {marketDto}");
+                _logger.LogInformation($"Received Market Status Update: {marketDto}");
 
                 await _unit.Market.UpdateMarketStatus(market, ct);
 
