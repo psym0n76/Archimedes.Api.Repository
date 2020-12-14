@@ -35,11 +35,11 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Strategy.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
-        public async Task<IEnumerable<Strategy>> GetStrategiesGranularityMarket(string market, string granularity,
+        public async Task<IEnumerable<Strategy>> GetActiveStrategiesGranularityMarket(string market, string granularity,
             CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return await GetStrategiesAsync(a => a.Market == market && a.Granularity == granularity, ct);
+            return await GetStrategiesAsync(a => a.Market == market && a.Granularity == granularity && a.Active, ct);
         }
 
         public async Task AddStrategyAsync(Strategy strategy, CancellationToken ct)

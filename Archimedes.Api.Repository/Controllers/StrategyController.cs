@@ -78,17 +78,17 @@ namespace Archimedes.Api.Repository.Controllers
         }
 
         //GET: api/v1/strategy/bymarket_bygranularity?market=gbpusd&granularity=15
-        [HttpGet("bymarket_bygranularity", Name = nameof(GetStrategiesGranularityMarket))]
+        [HttpGet("bymarket_bygranularity", Name = nameof(GetActiveStrategiesGranularityMarket))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<StrategyDto>> GetStrategiesGranularityMarket(string market, string granularity,
+        public async Task<ActionResult<StrategyDto>> GetActiveStrategiesGranularityMarket(string market, string granularity,
             CancellationToken ct)
         {
             try
             {
                 var strategies =
-                    await _unit.Strategy.GetStrategiesGranularityMarket(market, granularity, ct);
+                    await _unit.Strategy.GetActiveStrategiesGranularityMarket(market, granularity, ct);
 
                 if (strategies != null)
                 {
