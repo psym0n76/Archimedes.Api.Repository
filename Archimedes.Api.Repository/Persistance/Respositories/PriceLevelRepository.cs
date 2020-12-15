@@ -76,44 +76,27 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.SaveChangesAsync(ct);
         }
 
-        public async Task RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevel, CancellationToken ct)
+        public async Task<List<PriceLevel>> RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevel, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            var granularity = priceLevel.Select(a => a.Granularity).FirstOrDefault();
-            var market = priceLevel.Select(a => a.Market).FirstOrDefault();
+
+            var granularity = priceLevel[0].Granularity;
+            var market = priceLevel[0].Market;
+            var strategy = priceLevel[0].Strategy;
+            var minTimeStamp = priceLevel.Min(a => a.TimeStamp);
 
             var historicPriceLevels =
-                await GetPriceLevelsAsync(a => a.Granularity == granularity && a.Market == market, ct);
+                await GetPriceLevelsAsync(a => a.Granularity == granularity && a.Market == market && a.Strategy == strategy && a.TimeStamp >= minTimeStamp, ct);
 
-            if (historicPriceLevels.Any())
+            if (!historicPriceLevels.Any()) return priceLevel;
             {
-                var duplicatedPriceLevels = historicPriceLevels.Join(priceLevel, hist => hist.TimeStamp, current => current.TimeStamp,
-                    (hist, current) => new PriceLevel()
-                    {
-                        Id = hist.Id,
-                        Market = hist.Market,
-                        Granularity = hist.Granularity,
-                        TimeStamp = hist.TimeStamp,
-                        LastUpdated = hist.LastUpdated,
-                        BuySell = hist.BuySell,
-                        BidPrice = hist.BidPrice,
-                        BidPriceRange = hist.BidPriceRange,
-                        AskPrice = hist.AskPrice,
-                        AskPriceRange = hist.AskPriceRange,
-                        Strategy = hist.Strategy,
-                        Active = hist.Active,
-                        CandleType = hist.CandleType
-                    }).ToList();
-
-                RemovePriceLevels(duplicatedPriceLevels);
-                await FxDatabaseContext.SaveChangesAsync(ct);
+                foreach (var level in priceLevel.Where(level => !historicPriceLevels.Exists(a => a.TimeStamp == level.TimeStamp)))
+                {
+                    priceLevel.Remove(level);
+                }
             }
-        }
 
-
-        public void RemovePriceLevels(List<PriceLevel> priceLevels)
-        {
-            FxDatabaseContext.PriceLevels.RemoveRange(priceLevels);
+            return priceLevel;
         }
     }
 }

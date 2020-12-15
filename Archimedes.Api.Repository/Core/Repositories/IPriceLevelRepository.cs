@@ -16,8 +16,7 @@ namespace Archimedes.Api.Repository
 
         Task AddPriceLevelsAsync(IEnumerable<PriceLevel> priceLevel, CancellationToken ct);
 
-        void RemovePriceLevels(List<PriceLevel> priceLevels);
-        Task RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevels, CancellationToken ct);
+        Task<List<PriceLevel>> RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevel, CancellationToken ct);
 
         Task UpdatePriceLevelAsync(PriceLevel priceLevel, CancellationToken ct);
     }

@@ -141,12 +141,9 @@ namespace Archimedes.Api.Repository.Controllers
 
                 AddLog(priceLevels);
 
-                // remove dupolicate items from priceLevels
+                var updatedPriceLevels =  await _unit.PriceLevel.RemoveDuplicatePriceLevelEntries(priceLevels, ct);
 
-                await _unit.PriceLevel.RemoveDuplicatePriceLevelEntries(priceLevels, ct);
-                _unit.SaveChanges();
-
-                await _unit.PriceLevel.AddPriceLevelsAsync(priceLevels, ct);
+                await _unit.PriceLevel.AddPriceLevelsAsync(updatedPriceLevels, ct);
                 _unit.SaveChanges();
 
                 // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
