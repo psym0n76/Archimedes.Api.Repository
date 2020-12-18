@@ -84,6 +84,7 @@ namespace Archimedes.Api.Repository
             var market = priceLevel[0].Market;
             var strategy = priceLevel[0].Strategy;
             var minTimeStamp = priceLevel.Min(a => a.TimeStamp);
+            
 
             var historicPriceLevels =
                 await GetPriceLevelsAsync(a => a.Granularity == granularity && a.Market == market && a.Strategy == strategy && a.TimeStamp >= minTimeStamp, ct);
@@ -92,9 +93,10 @@ namespace Archimedes.Api.Repository
             
             if (!historicPriceLevels.Any()) return priceLevel;
             {
+                
                 foreach (var level in priceLevel)
                 {
-                    if (!historicPriceLevels.Exists(a => a.TimeStamp == level.TimeStamp))
+                    if (!historicPriceLevels.Exists(a => a.TimeStamp == level.TimeStamp && a.BuySell == level.BuySell && a.Strategy == level.Strategy))
                     {
                         confirmedPriceLevel.Add(level);
                     }
