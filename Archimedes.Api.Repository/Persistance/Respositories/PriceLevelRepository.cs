@@ -88,15 +88,7 @@ namespace Archimedes.Api.Repository
             var historicPriceLevels =
                 await GetPriceLevelsAsync(a => a.Granularity == granularity && a.Market == market && a.Strategy == strategy && a.TimeStamp >= minTimeStamp, ct);
 
-            if (!historicPriceLevels.Any()) return priceLevel;
-            {
-                foreach (var level in priceLevel.Where(level => !historicPriceLevels.Exists(a => a.TimeStamp == level.TimeStamp)))
-                {
-                    priceLevel.Remove(level);
-                }
-            }
-
-            return priceLevel;
+            return !historicPriceLevels.Any() ? priceLevel : priceLevel.Where(level => !historicPriceLevels.Exists(a => a.TimeStamp == level.TimeStamp)).ToList();
         }
     }
 }
