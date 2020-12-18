@@ -96,7 +96,7 @@ namespace Archimedes.Api.Repository
                 
                 foreach (var level in priceLevel)
                 {
-                    if (!historicPriceLevels.Exists(a => a.TimeStamp == level.TimeStamp && a.BuySell == level.BuySell && a.Strategy == level.Strategy))
+                    if (historicPriceLevels.Exists(a => a.TimeStamp == level.TimeStamp && a.BuySell == level.BuySell && a.Strategy == level.Strategy))
                     {
                         confirmedPriceLevel.Add(level);
                     }
