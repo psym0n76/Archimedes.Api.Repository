@@ -143,6 +143,8 @@ namespace Archimedes.Api.Repository.Controllers
 
                 var updatedPriceLevels =  await _unit.PriceLevel.RemoveDuplicatePriceLevelEntries(priceLevels, ct);
 
+                AddLog(updatedPriceLevels);
+
                 await _unit.PriceLevel.AddPriceLevelsAsync(updatedPriceLevels, ct);
                 _unit.SaveChanges();
 
