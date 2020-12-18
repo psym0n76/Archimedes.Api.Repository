@@ -98,6 +98,9 @@ namespace Archimedes.Api.Repository
                 {
                     if (historicPriceLevels.Exists(a => a.TimeStamp == level.TimeStamp && a.BuySell == level.BuySell && a.Strategy == level.Strategy))
                     {
+                    }
+                    else
+                    {
                         confirmedPriceLevel.Add(level);
                     }
                 }
