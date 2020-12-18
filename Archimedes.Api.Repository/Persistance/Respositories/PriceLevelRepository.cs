@@ -82,12 +82,12 @@ namespace Archimedes.Api.Repository
 
             var granularity = priceLevel[0].Granularity;
             var market = priceLevel[0].Market;
-            var strategy = priceLevel[0].Strategy;
+            //var strategy = priceLevel[0].Strategy;
             var minTimeStamp = priceLevel.Min(a => a.TimeStamp);
             
 
             var historicPriceLevels =
-                await GetPriceLevelsAsync(a => a.Granularity == granularity && a.Market == market && a.Strategy == strategy && a.TimeStamp >= minTimeStamp, ct);
+                await GetPriceLevelsAsync(a => a.Granularity == granularity && a.Market == market && a.TimeStamp >= minTimeStamp, ct);
 
             var confirmedPriceLevel = new List<PriceLevel>();
             
