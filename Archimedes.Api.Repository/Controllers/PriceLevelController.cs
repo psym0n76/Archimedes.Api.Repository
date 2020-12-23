@@ -79,14 +79,14 @@ namespace Archimedes.Api.Repository.Controllers
             return NotFound();
         }
 
-        [HttpGet("byMarket_byGranularity_byFromdate", Name = nameof(GetPriceLevelsByMarketByGranularityFromDate))]
+        [HttpGet("byMarket_byGranularity_byFromdate", Name = nameof(GetPriceLevelsByMarketByGranularityFromDateActive))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketByGranularityFromDate(string market,string granularity, DateTime fromDate, CancellationToken ct)
+        public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketByGranularityFromDateActive(string market,string granularity, DateTime fromDate, CancellationToken ct)
         {
             try
             {
-                var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByGranularityByDateAsync(market,granularity, fromDate,ct);
+                var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByGranularityByDateActiveAsync(market, granularity, fromDate, ct);
 
                 if (priceLevels != null)
                 {
