@@ -16,6 +16,8 @@ namespace Archimedes.Api.Repository
 
         public bool Active { get; set; }
 
+        public bool OutsideOfRange { get; set; }
+
         public string BuySell { get; set; }
 
         public string CandleType { get; set; }
