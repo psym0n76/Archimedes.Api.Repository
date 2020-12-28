@@ -18,6 +18,10 @@ namespace Archimedes.Api.Repository
 
         public bool OutsideOfRange { get; set; }
 
+        public bool LevelBroken { get; set; }
+
+        public bool Trade { get; set; }
+
         public string BuySell { get; set; }
 
         public string CandleType { get; set; }
