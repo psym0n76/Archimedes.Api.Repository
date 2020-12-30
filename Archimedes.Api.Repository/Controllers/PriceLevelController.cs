@@ -167,6 +167,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logger.LogInformation($"Updating: {priceLevelDto.TimeStamp}");
                 var priceLevel = _mapper.Map<PriceLevel>(priceLevelDto);
 
                 await _unit.PriceLevel.UpdatePriceLevelAsync(priceLevel, ct);
