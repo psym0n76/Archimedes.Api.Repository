@@ -80,6 +80,8 @@ namespace Archimedes.Api.Repository
             level.LastLevelBrokenDate = priceLevel.LastLevelBrokenDate;
             level.LastUpdated = DateTime.Now;
             level.LevelsBroken = priceLevel.LevelsBroken;
+            level.LevelBroken = priceLevel.LevelBroken;
+            level.OutsideOfRange = priceLevel.OutsideOfRange;
 
             await FxDatabaseContext.SaveChangesAsync(ct);
         }
