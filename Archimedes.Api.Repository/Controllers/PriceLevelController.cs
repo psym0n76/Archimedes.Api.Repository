@@ -155,7 +155,7 @@ namespace Archimedes.Api.Repository.Controllers
                 
                 var updatedPriceLevels =  await _unit.PriceLevel.RemoveDuplicatePriceLevelEntries(priceLevels, ct);
 
-                _batchLog.Update(_logId, $"Processing price-levels - identified  ({priceLevels.Count} - {updatedPriceLevels.Count}) duplicate(s)");
+                _batchLog.Update(_logId, $"Processing price-levels - identified  ({priceLevels.Count - updatedPriceLevels.Count}) duplicate(s)");
 
                 await _unit.PriceLevel.AddPriceLevelsAsync(updatedPriceLevels, ct);
 
