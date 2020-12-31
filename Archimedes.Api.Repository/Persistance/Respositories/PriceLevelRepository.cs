@@ -75,6 +75,11 @@ namespace Archimedes.Api.Repository
             ct.ThrowIfCancellationRequested();
             var level = await FxDatabaseContext.PriceLevels.FindAsync(priceLevel.Id);
 
+            if (level==null)
+            {
+                throw new ArgumentNullException(nameof(priceLevel), $"Unable to find {priceLevel.Id}");
+            }
+
             level.Active = priceLevel.Active;
             level.BookedTrades = priceLevel.BookedTrades;
             level.LastLevelBrokenDate = priceLevel.LastLevelBrokenDate;
