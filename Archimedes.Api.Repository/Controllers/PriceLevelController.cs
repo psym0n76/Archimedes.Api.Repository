@@ -193,8 +193,6 @@ namespace Archimedes.Api.Repository.Controllers
             }
 
             log.Append($"\n ADDED {priceLevel.Count} PriceLevel(s)");
-
-            _logger.LogInformation($"Received PriceLevel ADD:\n\n{nameof(priceLevel)}\n {log}\n");
         }
     }
 }
