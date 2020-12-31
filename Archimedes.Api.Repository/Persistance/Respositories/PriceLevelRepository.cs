@@ -25,7 +25,8 @@ namespace Archimedes.Api.Repository
         public async Task<List<PriceLevel>> GetPriceLevelsAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return await FxDatabaseContext.PriceLevels.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+            return await FxDatabaseContext.PriceLevels.OrderBy(a=>a.TimeStamp).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+            //return await FxDatabaseContext.PriceLevels.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
         public Task<List<PriceLevel>> GetPriceLevelsByTimeStamp(DateTime timestamp, string granularity, string strategy, DateTime fromDate,

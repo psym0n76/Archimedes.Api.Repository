@@ -166,19 +166,14 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 var lastUpdated = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct);
-
-                if (lastUpdated != null)
-                {
-                    return Ok(lastUpdated);
-                }
+                return Ok(lastUpdated);
+                
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
-
-            return NotFound();
         }
 
         //GET: api/v1/candle/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15&fromDate=2020-01-01T05:00:00&toDate=2020-01-01T05:00:00

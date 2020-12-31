@@ -35,7 +35,8 @@ namespace Archimedes.Api.Repository
             CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            return await FxDatabaseContext.Candles.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+            return await FxDatabaseContext.Candles.OrderBy(a=>a.TimeStamp).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+            //return await FxDatabaseContext.Candles.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
         public async Task<List<Candle>> GetCandlesByMarketByFromDate(string market, DateTime fromDate,

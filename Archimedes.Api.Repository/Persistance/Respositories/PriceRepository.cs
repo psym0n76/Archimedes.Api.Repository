@@ -26,8 +26,8 @@ namespace Archimedes.Api.Repository
         public async Task<IList<Price>> GetPricesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return await FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize)
-                .ToListAsync(ct);
+            return await FxDatabaseContext.Prices.AsNoTracking().OrderBy(a=>a.TimeStamp).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+            //return await FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
         public async Task<IList<Price>> GetPricesAsync(Expression<Func<Price, bool>> predicate,

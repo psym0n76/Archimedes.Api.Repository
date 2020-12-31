@@ -25,7 +25,8 @@ namespace Archimedes.Api.Repository
             CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            return await FxDatabaseContext.Markets.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+            return await FxDatabaseContext.Markets.OrderBy(a=>a.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+            //return await FxDatabaseContext.Markets.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
         public async Task AddMarketAsync(Market market, CancellationToken ct = default)
