@@ -163,7 +163,7 @@ namespace Archimedes.Api.Repository.Controllers
                 
                 _unit.SaveChanges();
 
-                _logger.LogInformation(_batchLog.Print(_logId,"Saved"));
+                _logger.LogInformation(_batchLog.Print(_logId,"SAVED"));
 
                 // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
                //return CreatedAtAction(nameof(GetPriceLevelAsync), new {id = 0, version = apiVersion.ToString()}, priceLevels);
@@ -194,7 +194,7 @@ namespace Archimedes.Api.Repository.Controllers
                 _batchLog.Update(_logId, $"Processing price-level UPDATED {priceLevelDto.TimeStamp}");
                 _unit.SaveChanges();
 
-                _logger.LogInformation(_batchLog.Print(_logId, "Saved"));
+                _logger.LogInformation(_batchLog.Print(_logId, "SAVED"));
 
                 return Ok();
             }

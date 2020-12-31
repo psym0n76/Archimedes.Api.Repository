@@ -5,6 +5,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Logger;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +22,8 @@ namespace Archimedes.Api.Repository.Controllers
         private readonly IUnitOfWork _unit;
         private readonly ILogger<MarketController> _logger;
         private readonly IMapper _mapper;
+        private readonly BatchLog _batchLog = new();
+        private string _logId;
 
         public MarketController(IUnitOfWork unit, ILogger<MarketController> logger, IMapper mapper)
         {
@@ -137,17 +140,24 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation($"Received Market UPDATE: {marketDto}");
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"Processing market UPDATE: {marketDto.Name}");
+
                 var market = _mapper.Map<Market>(marketDto);
 
                 await _unit.Market.UpdateMarket(market,ct);
 
+                _batchLog.Update(_logId, $"Processing market UPDATED: {marketDto.Name}");
+
                 _unit.SaveChanges();
+
+                _batchLog.Print(_logId, $"SAVED");
+
                 return Ok();
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
                 return BadRequest();
             }
         }
@@ -160,13 +170,19 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"Processing market UPDATE: {marketDto.Name}");
+                
                 var market = _mapper.Map<Market>(marketDto);
-
-                _logger.LogInformation($"Received Market Update: {marketDto}");
 
                 await _unit.Market.UpdateMarketMetrics(market, ct);
 
+                _batchLog.Update(_logId, $"Processing market UPDATED: {marketDto.Name}");
+
                 _unit.SaveChanges();
+                
+                _batchLog.Print(_logId, $"SAVED");
+
                 return Ok();
             }
             catch (Exception e)
@@ -184,13 +200,19 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                var market = _mapper.Map<Market>(marketDto);
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"Processing market-status UPDATE: {marketDto.Name}");
 
-                _logger.LogInformation($"Received Market Status Update: {marketDto}");
+                var market = _mapper.Map<Market>(marketDto);
 
                 await _unit.Market.UpdateMarketStatus(market, ct);
 
+                _batchLog.Update(_logId, $"Processing market-status UPDATED: {marketDto.Name}");
+
                 _unit.SaveChanges();
+
+                _batchLog.Print(_logId, $"SAVED");
+                
                 return Ok();
             }
             catch (Exception e)
@@ -209,12 +231,17 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                AddLog(marketDto);
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"Processing markets ADD ({marketDto.Count})");
 
                 var market = _mapper.Map<List<Market>>(marketDto);
 
                 await _unit.Market.AddMarketsAsync(market,ct);
+
+                _batchLog.Update(_logId, $"Processing markets ADDED ({marketDto.Count})");
                 _unit.SaveChanges();
+
+                _batchLog.Print(_logId, $"SAVED");
 
                 // re-direct will not work but i wont the 201 response + records added 
                 //return CreatedAtAction(nameof(GetStrategyAsync), new {id = 0, version = apiVersion.ToString()}, strategy);
@@ -225,21 +252,6 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
                 return BadRequest();
             }
-        }
-
-        private void AddLog(IList<MarketDto> marketDto)
-        {
-            var log = new StringBuilder();
-
-            foreach (var p in marketDto)
-            {
-                log.Append(
-                    $"  {p}\n");
-            }
-
-            log.Append($"\n ADDED {marketDto.Count} Market(s)");
-
-            _logger.LogInformation($"Received Market ADD:\n\n {nameof(marketDto)}\n  {log}\n");
         }
 
         private MarketDto MapMarket(Market market)
