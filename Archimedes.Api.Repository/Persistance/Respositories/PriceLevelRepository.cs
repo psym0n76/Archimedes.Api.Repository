@@ -83,7 +83,7 @@ namespace Archimedes.Api.Repository
             level.LevelBroken = priceLevel.LevelBroken;
             level.OutsideOfRange = priceLevel.OutsideOfRange;
 
-            await FxDatabaseContext.SaveChangesAsync(ct);
+            FxDatabaseContext.PriceLevels.Update(level);
         }
 
         public async Task<List<PriceLevel>> RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevel, CancellationToken ct)
@@ -117,8 +117,6 @@ namespace Archimedes.Api.Repository
             }
 
             return confirmedPriceLevel;
-            
-
         }
     }
 }
