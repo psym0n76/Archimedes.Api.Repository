@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Logger;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +21,8 @@ namespace Archimedes.Api.Repository.Controllers
         private readonly IUnitOfWork _unit;
         private readonly ILogger<PriceLevelController> _logger;
         private readonly IMapper _mapper;
+        private readonly BatchLog _batchLog = new();
+        private string _logId;
 
         public PriceLevelController(IUnitOfWork unit, ILogger<PriceLevelController> logger, IMapper mapper)
         {
@@ -36,22 +38,26 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId =  _batchLog.Start();
+                
                 var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 100000, ct);
 
                 if (priceLevels != null)
                 {
-                    _logger.LogInformation($"Returned {priceLevels.Count()} PriceLevel records");
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
                     return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
                 }
+                
+                _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
+                
+                return NotFound();
+
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId, $"Error {e.Message} {e.StackTrace}"));
                 return BadRequest();
             }
-
-            _logger.LogError("PriceLevels not found.");
-            return NotFound();
         }
 
         [HttpGet("byMarket_byFromdate", Name = nameof(GetPriceLevelsByMarketFromDate))]
@@ -61,21 +67,24 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
                 var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByDateAsync(market, fromDate,ct);
 
                 if (priceLevels != null)
                 {
-                    _logger.LogInformation($"Returned {priceLevels.Count()} PriceLevel records");
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
                     return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                
+                _logger.LogError(_batchLog.Print(_logId, $"Error {e.Message} {e.StackTrace}"));
                 return BadRequest();
             }
 
-            _logger.LogError("PriceLevels not found.");
+            _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
+            
             return NotFound();
         }
 
@@ -86,21 +95,22 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
                 var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByGranularityByDateActiveAsync(market, granularity, fromDate, ct);
 
                 if (priceLevels != null)
                 {
-                    _logger.LogInformation($"Returned {priceLevels.Count()} PriceLevel records");
+                    _logger.LogInformation( _batchLog.Print(_logId,$"Returned {priceLevels.Count()} PriceLevel records"));
                     return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
                 return BadRequest();
             }
 
-            _logger.LogError("PriceLevels not found.");
+            _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
             return NotFound();
         }
 
@@ -111,21 +121,22 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
                 var priceLevel = await _unit.PriceLevel.GetPriceLevelAsync(id, ct);
 
                 if (priceLevel != null)
                 {
-                    _logger.LogInformation("Returned 1 PriceLevel record");
+                    _logger.LogInformation(_batchLog.Print(_logId,$"price-level returned {priceLevel.TimeStamp}"));
                     return Ok(priceLevel);
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
                 return BadRequest();
             }
 
-            _logger.LogError($"PriceLevel not found Id: {id}");
+            _logger.LogError(_batchLog.Print(_logId,$"price-level not found {id}"));
             return NotFound();
         }
 
@@ -137,16 +148,22 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
                 var priceLevels = _mapper.Map<List<PriceLevel>>(priceLevelDto);
 
-                AddLog(priceLevels);
-
+                _batchLog.Update(_logId,$"Processing price-levels ({priceLevels.Count})");
+                
                 var updatedPriceLevels =  await _unit.PriceLevel.RemoveDuplicatePriceLevelEntries(priceLevels, ct);
 
-                AddLog(updatedPriceLevels);
+                _batchLog.Update(_logId, $"Processing price-levels - identified  ({priceLevels.Count} - {updatedPriceLevels.Count}) duplicate(s)");
 
                 await _unit.PriceLevel.AddPriceLevelsAsync(updatedPriceLevels, ct);
+
+                _batchLog.Update(_logId, $"Processing price-levels ({updatedPriceLevels.Count}) POSTED");
+                
                 _unit.SaveChanges();
+
+                _logger.LogInformation(_batchLog.Print(_logId,"Saved"));
 
                 // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
                //return CreatedAtAction(nameof(GetPriceLevelAsync), new {id = 0, version = apiVersion.ToString()}, priceLevels);
@@ -154,7 +171,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
                 return BadRequest();
             }
         }
@@ -167,32 +184,25 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logger.LogInformation($"Updating: {priceLevelDto.TimeStamp}");
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"Processing price-level UPDATE {priceLevelDto.TimeStamp}");
+
                 var priceLevel = _mapper.Map<PriceLevel>(priceLevelDto);
 
                 await _unit.PriceLevel.UpdatePriceLevelAsync(priceLevel, ct);
+
+                _batchLog.Update(_logId, $"Processing price-level UPDATED {priceLevelDto.TimeStamp}");
                 _unit.SaveChanges();
+
+                _logger.LogInformation(_batchLog.Print(_logId, "Saved"));
 
                 return Ok();
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
                 return BadRequest();
             }
-        }
-
-        private void AddLog(IList<PriceLevel> priceLevel)
-        {
-            var log = new StringBuilder();
-
-            foreach (var p in priceLevel)
-            {
-                log.Append(
-                    $"  {nameof(p.Market)}: {p.Market} {nameof(p.Granularity)}: {p.Granularity}  {nameof(p.Active)}: {p.Active} {nameof(p.BuySell)}: {p.BuySell} {nameof(p.TimeStamp)}: {p.TimeStamp} {nameof(p.Strategy)}: {p.Strategy} {nameof(p.BidPrice)}: {p.BidPrice} {nameof(p.BidPriceRange)}: {p.BidPriceRange} {nameof(p.AskPrice)}: {p.AskPrice} {nameof(p.AskPriceRange)}: {p.AskPriceRange} {nameof(p.LastUpdated)}: {p.LastUpdated}\n");
-            }
-
-            log.Append($"\n ADDED {priceLevel.Count} PriceLevel(s)");
         }
     }
 }
