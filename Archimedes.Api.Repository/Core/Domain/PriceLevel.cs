@@ -47,6 +47,10 @@ namespace Archimedes.Api.Repository
 
         public DateTime LevelBrokenDate { get; set; }
 
+        public bool LevelExpired { get; set; }
+
+        public DateTime LevelExpiredDate { get; set; }
+
         public int CandlesElapsedLevelBroken { get; set; }
 
 

@@ -89,6 +89,8 @@ namespace Archimedes.Api.Repository
             level.LastUpdated = priceLevel.LastUpdated;
             level.LevelsBroken = priceLevel.LevelsBroken;
             level.LevelBroken = priceLevel.LevelBroken;
+            level.LevelExpired = priceLevel.LevelExpired;
+            level.LevelExpiredDate = priceLevel.LevelExpiredDate;
             level.OutsideRange = priceLevel.OutsideRange;
             level.OutsideRangeDate = priceLevel.OutsideRangeDate;
 
