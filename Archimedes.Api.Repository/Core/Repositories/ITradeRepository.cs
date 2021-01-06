@@ -9,5 +9,7 @@ namespace Archimedes.Api.Repository
         Task<Trade> GetTradeAsync(int id, CancellationToken ct);
         Task<IEnumerable<Trade>> GetTradesAsync(int pageIndex, int pageSize, CancellationToken ct);
         Task AddTradesAsync(IEnumerable<Trade> trades, CancellationToken ct);
+
+        Task UpdateTradeAsync(Trade tradeDto, CancellationToken ct);
     }
 }

@@ -82,12 +82,15 @@ namespace Archimedes.Api.Repository
             }
 
             level.Active = priceLevel.Active;
-            level.BookedTrades = priceLevel.BookedTrades;
-            level.LastLevelBrokenDate = priceLevel.LastLevelBrokenDate;
+            level.Trade = priceLevel.Trade;
+            level.Trades = priceLevel.Trades;
+            level.LevelBrokenDate = priceLevel.LevelBrokenDate;
+            level.CandlesElapsedLevelBroken = priceLevel.CandlesElapsedLevelBroken;
             level.LastUpdated = DateTime.Now;
             level.LevelsBroken = priceLevel.LevelsBroken;
             level.LevelBroken = priceLevel.LevelBroken;
-            level.OutsideOfRange = priceLevel.OutsideOfRange;
+            level.OutsideRange = priceLevel.OutsideRange;
+            level.OutsideRangeDate = priceLevel.OutsideRangeDate;
 
             FxDatabaseContext.PriceLevels.Update(level);
         }

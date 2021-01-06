@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,25 @@ namespace Archimedes.Api.Repository
             //return await FxDatabaseContext.Trades.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
             return await FxDatabaseContext.Trades.OrderBy(a=>a.TimeStamp).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
+
+
+        public async Task UpdateTradeAsync(Trade tradeDto, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            var trade = await FxDatabaseContext.Trades.FindAsync(tradeDto.Id);
+
+            if (trade == null)
+            {
+                throw new ArgumentNullException(nameof(trade), $"Unable to find {tradeDto.Id}");
+            }
+
+            trade.Success = tradeDto.Success;
+            trade.Price = tradeDto.Price;
+            trade.RiskReward = tradeDto.RiskReward;
+
+            FxDatabaseContext.Trades.Update(trade);
+        }
+
 
         public async Task AddTradesAsync(IEnumerable<Trade> trades, CancellationToken ct)
         {

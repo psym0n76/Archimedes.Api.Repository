@@ -4,6 +4,9 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Logger;
+using Archimedes.Library.Message.Dto;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,11 +20,15 @@ namespace Archimedes.Api.Repository.Controllers
     {
         private readonly IUnitOfWork _unit;
         private readonly ILogger<TradeController> _logger;
+        private readonly BatchLog _batchLog = new();
+        private string _logId;
+        private readonly IMapper _mapper;
 
-        public TradeController(IUnitOfWork unit, ILogger<TradeController> logger)
+        public TradeController(IUnitOfWork unit, ILogger<TradeController> logger, IMapper mapper)
         {
             _unit = unit;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -91,6 +98,36 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateTrade([FromBody] TradeDto tradeDto, ApiVersion apiVersion, CancellationToken ct)
+        {
+            try
+            {
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"Processing trade UPDATE {tradeDto.Timestamp}");
+
+                var trade = _mapper.Map<Trade>(tradeDto);
+
+                await _unit.Trade.UpdateTradeAsync(trade, ct);
+
+                _batchLog.Update(_logId, $"Processing trade UPDATED {tradeDto.Timestamp}");
+                _unit.SaveChanges();
+
+                _logger.LogInformation(_batchLog.Print(_logId, "SAVED"));
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(_batchLog.Print(_logId, $"Error {e.Message} {e.StackTrace}"));
                 return BadRequest();
             }
         }
