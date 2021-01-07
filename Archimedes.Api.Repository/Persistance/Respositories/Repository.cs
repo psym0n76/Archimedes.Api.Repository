@@ -9,6 +9,7 @@ namespace Archimedes.Api.Repository
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         protected readonly DbContext Context;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public Repository(DbContext context)
         {
@@ -17,7 +18,14 @@ namespace Archimedes.Api.Repository
 
         public TEntity Get(long id)
         {
-            return Context.Set<TEntity>().Find(id);
+            try
+            {
+                return Context.Set<TEntity>().Find(id);
+            }
+            catch (Exception e)
+            {
+                return ErrorMessage(e);
+            }
         }
 
         public IEnumerable<TEntity> GetAll()
@@ -33,42 +41,121 @@ namespace Archimedes.Api.Repository
             // 
             // I didn't change it because I wanted the code to look like the videos. But feel free to change
             // this on your own.
-            return Context.Set<TEntity>().ToList();
+
+            try
+            {
+                return Context.Set<TEntity>().ToList();
+            }
+            catch (Exception e)
+            {
+                return ErrorMessages(e);
+            }
+
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return Context.Set<TEntity>().Where(predicate);
+            try
+            {
+                return Context.Set<TEntity>().Where(predicate);
+            }
+            catch (Exception e)
+            {
+                return ErrorMessages(e);
+            }
         }
+
+
 
         public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
         {
-            return Context.Set<TEntity>().SingleOrDefault(predicate);
+            try
+            {
+                return Context.Set<TEntity>().SingleOrDefault(predicate);
+            }
+            catch (Exception a)
+            {
+                return ErrorMessage(a);
+            }
+
         }
 
         public void Add(TEntity entity)
         {
-            Context.Set<TEntity>().Add(entity);
+            try
+            {
+                Context.Set<TEntity>().Add(entity);
+            }
+            catch (Exception e)
+            {
+                ErrorMessages(e);
+            }
         }
 
         public void AddRange(IEnumerable<TEntity> entities)
         {
-            Context.Set<TEntity>().AddRange(entities);
+            try
+            {
+                Context.Set<TEntity>().AddRange(entities);
+            }
+            catch (Exception e)
+            {
+                ErrorMessage(e);
+            }
         }
 
         public void Remove(TEntity entity)
         {
-            Context.Set<TEntity>().Remove(entity);
+            try
+            {
+                Context.Set<TEntity>().Remove(entity);
+            }
+            catch (Exception e)
+            {
+                ErrorMessage(e);
+            }
         }
 
         public void RemoveRange(IEnumerable<TEntity> entities)
         {
-            Context.Set<TEntity>().RemoveRange(entities);
+            try
+            {
+                Context.Set<TEntity>().RemoveRange(entities);
+            }
+            catch (Exception e)
+            {
+                ErrorMessage(e);
+            }
         }
-        // hack adding s to end of table name
+
         public void Truncate()
         {
-            Context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {typeof(TEntity).Name}s");
+            try
+            {
+                // hack adding s to end of table name
+                Context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {typeof(TEntity).Name}s");
+            }
+            catch (Exception e)
+            {
+                ErrorMessage(e);
+            }
+        }
+
+        private static IEnumerable<TEntity> ErrorMessages(Exception e)
+        {
+            Logger.Error(ErrorContent(e));
+            return default;
+        }
+
+        private static string ErrorContent(Exception e)
+        {
+            return $"Error from Repository \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}";
+        }
+
+        private static TEntity ErrorMessage(Exception e)
+        {
+            Logger.Error(ErrorContent(e));
+            return default;
         }
     }
 }

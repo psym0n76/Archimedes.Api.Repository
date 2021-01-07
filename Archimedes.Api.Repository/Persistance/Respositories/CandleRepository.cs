@@ -5,11 +5,14 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Archimedes.Api.Repository
 {
     public class CandleRepository : Repository<Candle>, ICandleRepository
     {
+        private readonly ILogger<CandleRepository> _logger;
+        
         public CandleRepository(DbContext context) : base(context)
         {
         }
