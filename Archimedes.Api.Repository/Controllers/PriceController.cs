@@ -15,6 +15,7 @@ namespace Archimedes.Api.Repository.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class PriceController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
@@ -31,6 +32,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<PriceDto>>> GetPrices(CancellationToken ct)
         {
             try
@@ -45,7 +47,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError("Price not found");
@@ -55,6 +57,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<PriceDto>> GetPriceAsync(int id, CancellationToken ct)
         {
             try
@@ -69,7 +72,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError($"Price not found for Id: {id}");
@@ -80,6 +83,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bymarket", Name = nameof(GetMarketPricesAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<PriceDto>>> GetMarketPricesAsync(string market, CancellationToken ct)
         {
             try
@@ -94,7 +98,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError($"Price not found for market: {market}");
@@ -105,6 +109,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("byLastPrice_byMarket", Name = nameof(GetLastPriceByMarket))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<PriceDto>>> GetLastPriceByMarket(string market, CancellationToken ct)
         {
             try
@@ -120,7 +125,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError($"Price not found for market: {market}");
@@ -131,6 +136,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bylastupdated", Name = nameof(GetLastUpdated))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<DateTime>> GetLastUpdated(string market, string granularity,
             CancellationToken ct)
         {
@@ -150,7 +156,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError($"Price not found for market: {market}.");
@@ -193,7 +199,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError(
@@ -203,6 +209,7 @@ namespace Archimedes.Api.Repository.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("bymarket_distinct", Name = nameof(GetMarketDistinctAsync))]
         public async Task<ActionResult<IEnumerable<PriceDto>>> GetMarketDistinctAsync(CancellationToken ct)
         {
@@ -223,7 +230,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError("Prices not found");
@@ -232,6 +239,7 @@ namespace Archimedes.Api.Repository.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("hour", Name = nameof(DeletePricesAsync))]
         public async Task<ActionResult<IEnumerable<PriceDto>>> DeletePricesAsync(CancellationToken ct)
         {
@@ -244,13 +252,14 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> PostPrices([FromBody] IList<PriceDto> priceDto, ApiVersion apiVersion,
             CancellationToken ct)
@@ -276,7 +285,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
 

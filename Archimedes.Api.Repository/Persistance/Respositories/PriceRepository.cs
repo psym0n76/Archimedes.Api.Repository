@@ -66,6 +66,7 @@ namespace Archimedes.Api.Repository
         public async Task<Price> GetLastPriceByMarket(string market, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
+            
             var prices =
                 await GetPricesAsync(a => a.Market == market, ct);
 
