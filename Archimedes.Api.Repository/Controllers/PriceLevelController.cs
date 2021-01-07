@@ -16,6 +16,7 @@ namespace Archimedes.Api.Repository.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/price-level")]
     [ApiController]
+    [Produces("application/json")]
     public class PriceLevelController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
@@ -34,6 +35,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<PriceLevel>>> GetPriceLevels(CancellationToken ct)
         {
             try
@@ -56,13 +58,14 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error {e.Message} {e.StackTrace}"));
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
 
         [HttpGet("byMarket_byFromdate", Name = nameof(GetPriceLevelsByMarketFromDate))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketFromDate(string market, DateTime fromDate, CancellationToken ct)
         {
             try
@@ -80,7 +83,7 @@ namespace Archimedes.Api.Repository.Controllers
             {
                 
                 _logger.LogError(_batchLog.Print(_logId, $"Error {e.Message} {e.StackTrace}"));
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
@@ -91,6 +94,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("byMarket_byGranularity_byFromdate", Name = nameof(GetPriceLevelsByMarketByGranularityFromDateActive))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketByGranularityFromDateActive(string market,string granularity, DateTime fromDate, CancellationToken ct)
         {
             try
@@ -107,7 +111,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
@@ -117,6 +121,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<PriceLevel>> GetPriceLevelAsync(int id, CancellationToken ct)
         {
             try
@@ -133,7 +138,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
             _logger.LogError(_batchLog.Print(_logId,$"price-level not found {id}"));
@@ -143,6 +148,7 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> PostPriceLevels([FromBody] IList<PriceLevelDto> priceLevelDto, ApiVersion apiVersion, CancellationToken ct)
         {
@@ -172,7 +178,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
 
@@ -201,7 +207,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
-                return BadRequest();
+                return BadRequest(e.Message;
             }
         }
     }
