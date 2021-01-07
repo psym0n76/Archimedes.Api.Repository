@@ -110,7 +110,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<PriceDto>>> GetLastPriceByMarket(string market, CancellationToken ct)
+        public async Task<ActionResult<PriceDto>> GetLastPriceByMarket(string market, CancellationToken ct)
         {
             try
             {
