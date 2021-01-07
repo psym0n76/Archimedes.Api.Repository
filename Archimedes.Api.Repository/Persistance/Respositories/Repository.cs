@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 
 namespace Archimedes.Api.Repository
 {
@@ -14,6 +16,29 @@ namespace Archimedes.Api.Repository
         public Repository(DbContext context)
         {
             Context = context;
+            CheckConnection();
+        }
+
+
+        public void CheckConnection()
+        {
+            const int retry = 10;
+            var retryCounter = 0;
+
+            try
+            {
+                while (!Context.Database.CanConnect() && retryCounter < retry)
+                {
+                    retryCounter++;
+                    Thread.Sleep(1000);
+                    Logger.Warn($"Database connection denied - retry {retryCounter} out of {retry}");
+                }
+
+            }
+            catch (Exception e)
+            {
+                Logger.Error(ErrorContent(e));
+            }
         }
 
         public TEntity Get(long id)
