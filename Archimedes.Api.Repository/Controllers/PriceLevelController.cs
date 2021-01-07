@@ -36,7 +36,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<PriceLevel>>> GetPriceLevels(CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<PriceLevel>>> GetPriceLevels(CancellationToken ct)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error {e.Message} {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
                 return BadRequest(e.Message);
             }
         }
@@ -81,8 +81,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                
-                _logger.LogError(_batchLog.Print(_logId, $"Error {e.Message} {e.StackTrace}"));
+
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
                 return BadRequest(e.Message);
             }
 
@@ -95,7 +95,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketByGranularityFromDateActive(string market,string granularity, DateTime fromDate, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<PriceLevel>>> GetPriceLevelsByMarketByGranularityFromDateActive(string market,string granularity, DateTime fromDate, CancellationToken ct)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
                 return BadRequest(e.Message);
             }
 
@@ -137,7 +137,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
                 return BadRequest(e.Message);
             }
 
@@ -177,7 +177,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
                 return BadRequest(e.Message);
             }
         }
@@ -206,8 +206,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
-                return BadRequest(e.Message;
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                return BadRequest(e.Message);
             }
         }
     }
