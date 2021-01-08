@@ -11,6 +11,7 @@ namespace Archimedes.Api.Repository.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class HealthController : ControllerBase
     {
         private readonly ILogger<HealthController> _logger;
@@ -39,13 +40,12 @@ namespace Archimedes.Api.Repository.Controllers
 
             try
             {
-                //_logger.LogInformation($"Health monitor:\n{health}");
                 return Ok(health);
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest("Error");
+                return BadRequest(e.Message);
             }
         }
     }
