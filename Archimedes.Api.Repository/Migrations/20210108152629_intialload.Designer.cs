@@ -10,47 +10,47 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Archimedes.Api.Repository.Migrations
 {
     [DbContext(typeof(ArchimedesContext))]
-    [Migration("20201020103635_addStrategy")]
-    partial class addStrategy
+    [Migration("20210108152629_intialload")]
+    partial class intialload
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Archimedes.Api.Repository.Candle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
-                    b.Property<double>("AskClose")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AskClose")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<double>("AskHigh")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AskHigh")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<double>("AskLow")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AskLow")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<double>("AskOpen")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AskOpen")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<double>("BidClose")
-                        .HasColumnType("float");
+                    b.Property<decimal>("BidClose")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<double>("BidHigh")
-                        .HasColumnType("float");
+                    b.Property<decimal>("BidHigh")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<double>("BidLow")
-                        .HasColumnType("float");
+                    b.Property<decimal>("BidLow")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<double>("BidOpen")
-                        .HasColumnType("float");
+                    b.Property<decimal>("BidOpen")
+                        .HasColumnType("decimal(18,5)");
 
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("datetime2");
@@ -86,7 +86,7 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -125,43 +125,19 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
-                    b.Property<double>("AskClose")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Ask")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<double>("AskHigh")
-                        .HasColumnType("float");
-
-                    b.Property<double>("AskLow")
-                        .HasColumnType("float");
-
-                    b.Property<double>("AskOpen")
-                        .HasColumnType("float");
-
-                    b.Property<double>("BidClose")
-                        .HasColumnType("float");
-
-                    b.Property<double>("BidHigh")
-                        .HasColumnType("float");
-
-                    b.Property<double>("BidLow")
-                        .HasColumnType("float");
-
-                    b.Property<double>("BidOpen")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Bid")
+                        .HasColumnType("decimal(18,5)");
 
                     b.Property<string>("Granularity")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Market")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MarketId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("TickQty")
-                        .HasColumnType("float");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -176,25 +152,31 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
-                    b.Property<string>("Active")
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("AskPrice")
+                        .HasColumnType("decimal(18,5)");
+
+                    b.Property<decimal>("AskPriceRange")
+                        .HasColumnType("decimal(18,5)");
+
+                    b.Property<decimal>("BidPrice")
+                        .HasColumnType("decimal(18,5)");
+
+                    b.Property<decimal>("BidPriceRange")
+                        .HasColumnType("decimal(18,5)");
+
+                    b.Property<string>("BuySell")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("AskPrice")
-                        .HasColumnType("float");
-
-                    b.Property<double>("AskPriceRange")
-                        .HasColumnType("float");
-
-                    b.Property<double>("BidPrice")
-                        .HasColumnType("float");
-
-                    b.Property<double>("BidPriceRange")
-                        .HasColumnType("float");
 
                     b.Property<string>("CandleType")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CandlesElapsedLevelBroken")
+                        .HasColumnType("int");
 
                     b.Property<string>("Granularity")
                         .HasColumnType("nvarchar(max)");
@@ -202,8 +184,29 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("LevelBroken")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LevelBrokenDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("LevelExpired")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LevelExpiredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LevelsBroken")
+                        .HasColumnType("int");
+
                     b.Property<string>("Market")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("OutsideRange")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("OutsideRangeDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Strategy")
                         .HasColumnType("nvarchar(max)");
@@ -211,8 +214,11 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("TradeType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("Trade")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Trades")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -224,7 +230,7 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -260,28 +266,46 @@ namespace Archimedes.Api.Repository.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
+
+                    b.Property<string>("BuySell")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("ClosePrice")
-                        .HasColumnType("decimal(5, 5)");
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<string>("Direction")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("EntryPrice")
+                        .HasColumnType("decimal(18,5)");
 
-                    b.Property<string>("Granularity")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Market")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("OpenPrice")
-                        .HasColumnType("decimal(5, 5)");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,5)");
+
+                    b.Property<DateTime>("PriceLevelTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("RiskReward")
+                        .HasColumnType("float");
 
                     b.Property<string>("Strategy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Success")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("TargetPrice")
+                        .HasColumnType("decimal(18,5)");
+
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TradeGroupId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
