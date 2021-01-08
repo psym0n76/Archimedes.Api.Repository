@@ -24,7 +24,6 @@ namespace Archimedes.Api.Repository
         public async Task<IEnumerable<Trade>> GetTradesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            //return await FxDatabaseContext.Trades.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
             return await FxDatabaseContext.Trades.OrderBy(a=>a.TimeStamp).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
@@ -42,6 +41,7 @@ namespace Archimedes.Api.Repository
             trade.Success = tradeDto.Success;
             trade.Price = tradeDto.Price;
             trade.RiskReward = tradeDto.RiskReward;
+            trade.LastUpdated = DateTime.Now;
 
             FxDatabaseContext.Trades.Update(trade);
         }

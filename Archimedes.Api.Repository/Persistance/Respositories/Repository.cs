@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
-using NLog;
 
 namespace Archimedes.Api.Repository
 {

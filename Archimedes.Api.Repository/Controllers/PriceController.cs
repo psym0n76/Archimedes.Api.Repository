@@ -22,7 +22,7 @@ namespace Archimedes.Api.Repository.Controllers
         private readonly IUnitOfWork _unit;
         private readonly ILogger<PriceController> _logger;
         private readonly IMapper _mapper;
-        private readonly BatchLog _batchLog = new BatchLog();
+        private readonly BatchLog _batchLog = new();
         private string _logId;
 
         public PriceController(IUnitOfWork unit, ILogger<PriceController> logger, IMapper mapper)
@@ -51,7 +51,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController",e));
                 return BadRequest(e.Message);
             }
 
@@ -78,7 +78,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
                 return BadRequest(e.Message);
             }
 
@@ -106,7 +106,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
                 return BadRequest(e.Message);
             }
 
@@ -135,7 +135,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
                 return BadRequest(e.Message);
             }
 
@@ -166,7 +166,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
                 return BadRequest(e.Message);
             }
 
@@ -212,7 +212,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
                 return BadRequest(e.Message);
             }
 
@@ -244,7 +244,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
                 return BadRequest(e.Message);
             }
 
@@ -268,7 +268,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
                 return BadRequest(e.Message);
             }
         }
@@ -304,7 +304,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
                 return BadRequest(e.Message);
             }
         }

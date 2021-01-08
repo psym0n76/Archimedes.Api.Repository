@@ -16,6 +16,7 @@ namespace Archimedes.Api.Repository.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class CandleController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
@@ -33,11 +34,13 @@ namespace Archimedes.Api.Repository.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandles(CancellationToken ct)
         {
             try
             {
+                _logId = _batchLog.Start();
                 var candles = await _unit.Candle.GetCandlesAsync(1, 1000000, ct);
 
                 if (candles != null)
@@ -47,21 +50,23 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
 
-            _logger.LogError("Candles not found");
+            _logger.LogWarning("Candles not found");
             return NotFound();
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}")]
         public async Task<ActionResult<Candle>> GetCandleAsync(int id, CancellationToken ct)
         {
             try
             {
+                _logId = _batchLog.Start();
                 var candle = await _unit.Candle.GetCandleAsync(id, ct);
 
                 if (candle != null)
@@ -71,11 +76,11 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
 
-            _logger.LogError($"Candle not found for Id: {id}");
+            _logger.LogWarning($"Candle not found for Id: {id}");
             return NotFound();
         }
 
@@ -83,10 +88,12 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bypage", Name = nameof(GetCandlesAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesAsync(int page, int size, CancellationToken ct)
         {
             try
             {
+                _logId = _batchLog.Start();
                 var candles = await _unit.Candle.GetCandlesAsync(page, size,ct);
 
                 if (candles != null)
@@ -96,11 +103,11 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
 
-            _logger.LogError($"Unable to get Candles");
+            _logger.LogWarning($"Unable to get Candles");
             return NotFound();
         }
 
@@ -108,11 +115,13 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bymarket", Name = nameof(GetMarketCandlesAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CandleDto>>> GetMarketCandlesAsync(string market,
             CancellationToken ct)
         {
             try
             {
+                _logId = _batchLog.Start();
                 var marketCandles = await _unit.Candle.GetMarketCandles(market, ct);
 
                 if (marketCandles != null)
@@ -122,11 +131,11 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
 
-            _logger.LogError($"Candle not found for market: {market}");
+            _logger.LogWarning($"Candle not found for market: {market}");
             return NotFound();
         }
 
@@ -134,11 +143,13 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bymarket_byFromDate", Name = nameof(GetCandlesByMarketByFromDate))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesByMarketByFromDate(string market, DateTime fromDate,
             CancellationToken ct)
         {
             try
             {
+                _logId = _batchLog.Start();
                 var marketCandles = await _unit.Candle.GetCandlesByMarketByFromDate(market, fromDate, ct);
 
                 if (marketCandles != null)
@@ -148,11 +159,11 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
 
-            _logger.LogError($"Candle not found for market: {market}");
+            _logger.LogWarning($"Candle not found for market: {market}");
             return NotFound();
         }
 
@@ -160,19 +171,21 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet("bylastupdated", Name = nameof(GetLastCandleUpdated))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<DateTime>> GetLastCandleUpdated(string market, string granularity,
             CancellationToken ct)
         {
             try
             {
+                _logId = _batchLog.Start();
                 var lastUpdated = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct);
                 return Ok(lastUpdated);
                 
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
         }
 
@@ -187,6 +200,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
                 if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
                 {
                     return BadRequest($"Incorrect FromDate format: {fromDate}");
@@ -209,11 +223,11 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
 
-            _logger.LogError(
+            _logger.LogWarning(
                 $"Candle not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity} {nameof(fromDate)}: {fromDate} {nameof(toDate)}: {toDate}");
             return NotFound();
         }
@@ -228,6 +242,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
                 var candles =
                     await _unit.Candle.GetMarketGranularityCandles(market, granularity, ct);
 
@@ -238,12 +253,12 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
 
 
-            _logger.LogError(
+            _logger.LogWarning(
                 $"Candle not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity}");
             return NotFound();
         }
@@ -257,6 +272,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
                 var result = new CandleMetricsDto()
                 {
                     MinDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct),
@@ -268,8 +284,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
         }
 
@@ -282,6 +298,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                _logId = _batchLog.Start();
                 if (candleDto == null)
                 {
                     return BadRequest();
@@ -309,8 +326,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
+                return BadRequest(e.Message);
             }
         }
 
