@@ -41,10 +41,12 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, "Get GetCandles [MAX 1000000 records]");
                 var candles = await _unit.Candle.GetCandlesAsync(1, 1000000, ct);
 
                 if (candles != null)
                 {
+                    _logger.LogInformation(_batchLog.Print(_logId,$"Returned {candles.Count} Candle(s)"));
                     return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
                 }
             }
@@ -54,7 +56,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning("Candles not found");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
             return NotFound();
         }
 
@@ -67,10 +69,12 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"Get GetCandleAsync {id} request");
                 var candle = await _unit.Candle.GetCandleAsync(id, ct);
 
                 if (candle != null)
                 {
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candle.Market} {candle.Granularity} {candle.TimeStamp} Candle"));
                     return Ok(MapCandle(candle));
                 }
             }
@@ -80,7 +84,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning($"Candle not found for Id: {id}");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
             return NotFound();
         }
 
@@ -94,10 +98,12 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"Get GetCandleAsync Page: {page} Size: {size} request");
                 var candles = await _unit.Candle.GetCandlesAsync(page, size,ct);
 
                 if (candles != null)
                 {
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candles.Count} Candle(s)"));
                     return Ok(MapCandles(candles.OrderBy(a=>a.TimeStamp)));
                 }
             }
@@ -107,7 +113,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning($"Unable to get Candles");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
             return NotFound();
         }
 
@@ -122,10 +128,12 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId,$"GET GetMarketCandlesAsync for {market}");
                 var marketCandles = await _unit.Candle.GetMarketCandles(market, ct);
 
                 if (marketCandles != null)
                 {
+                    _logger.LogInformation(_batchLog.Print(_logId,$"Returned {marketCandles.Count} Candles(s)"));
                     return Ok(MapCandles(marketCandles.OrderBy(a=>a.TimeStamp)));
                 }
             }
@@ -135,7 +143,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning($"Candle not found for market: {market}");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
             return NotFound();
         }
 
@@ -150,10 +158,12 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetCandlesByMarketByFromDate for {market} {fromDate}");
                 var marketCandles = await _unit.Candle.GetCandlesByMarketByFromDate(market, fromDate, ct);
 
                 if (marketCandles != null)
                 {
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {marketCandles.Count} Candles(s)"));
                     return Ok(MapCandles(marketCandles.OrderBy(a=>a.TimeStamp)));
                 }
             }
@@ -163,7 +173,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning($"Candle not found for market: {market}");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
             return NotFound();
         }
 
@@ -178,9 +188,10 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetLastCandleUpdated for {market} {granularity}");
                 var lastUpdated = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct);
+                _logger.LogInformation(_batchLog.Print(_logId, $"Returned {lastUpdated}"));
                 return Ok(lastUpdated);
-                
             }
             catch (Exception e)
             {
@@ -201,13 +212,17 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetMarketGranularityCandlesDate for {market} {granularity} {fromDate} {toDate}");
+                
                 if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
                 {
+                    _logger.LogWarning(_batchLog.Print(_logId, $"Incorrect FromDate format: {fromDate}"));
                     return BadRequest($"Incorrect FromDate format: {fromDate}");
                 }
 
                 if (!DateTimeOffset.TryParse(toDate, out var toDateOffset))
                 {
+                    _logger.LogWarning(_batchLog.Print(_logId, $"Incorrect ToDate format: {toDate}"));
                     return BadRequest($"Incorrect ToDate format: {toDate}");
                 }
 
@@ -218,6 +233,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candles.Count} Candles(s)"));
                     return Ok(MapCandles(candles.OrderBy(a=>a.TimeStamp)));
                 }
             }
@@ -227,8 +243,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning(
-                $"Candle not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity} {nameof(fromDate)}: {fromDate} {nameof(toDate)}: {toDate}");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Candle not found"));
             return NotFound();
         }
 
@@ -243,11 +258,14 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetMarketGranularityCandles for {market} {granularity}");
+
                 var candles =
                     await _unit.Candle.GetMarketGranularityCandles(market, granularity, ct);
 
                 if (candles != null)
                 {
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candles.Count} Candles(s)"));
                     return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
                 }
             }
@@ -257,9 +275,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-
-            _logger.LogWarning(
-                $"Candle not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity}");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Candle not found"));
             return NotFound();
         }
 
@@ -273,6 +289,8 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetCandleMetrics for {market} {granularity}");
+                
                 var result = new CandleMetricsDto()
                 {
                     MinDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct),
@@ -280,6 +298,7 @@ namespace Archimedes.Api.Repository.Controllers
                     MaxDate = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct)
                 };
 
+                _batchLog.Update(_logId, $"Returned {result.Quantity} {result.MinDate} {result.MaxDate}");
                 return Ok(result);
             }
             catch (Exception e)
@@ -299,13 +318,8 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                if (candleDto == null)
-                {
-                    return BadRequest();
-                }
-
-                _logId = _batchLog.Start();
-
+                _batchLog.Update(_logId, $"POST PostCandles for {candleDto.Count} Candle(s)");
+                
                 var candle = _mapper.Map<List<Candle>>(candleDto);
 
                 _batchLog.Update(_logId,$"Candle Received: {candle[0].Market} {candle[0].Granularity} StartDate: {candle[0].TimeStamp} EndDate: {candle[^1].TimeStamp} Records: {candle.Count}");
