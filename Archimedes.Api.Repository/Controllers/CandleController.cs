@@ -41,7 +41,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, "Get GetCandles [MAX 1000000 records]");
+                _batchLog.Update(_logId, "GET GetCandles [MAX 1000000 records]");
                 var candles = await _unit.Candle.GetCandlesAsync(1, 1000000, ct);
 
                 if (candles != null)
@@ -69,7 +69,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"Get GetCandleAsync {id} request");
+                _batchLog.Update(_logId, $"GET GetCandleAsync {id} request");
                 var candle = await _unit.Candle.GetCandleAsync(id, ct);
 
                 if (candle != null)
@@ -98,7 +98,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"Get GetCandleAsync Page: {page} Size: {size} request");
+                _batchLog.Update(_logId, $"GET GetCandleAsync Page: {page} Size: {size} request");
                 var candles = await _unit.Candle.GetCandlesAsync(page, size,ct);
 
                 if (candles != null)

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using Archimedes.Library.Domain;
+using Archimedes.Library.Logger;
 using Archimedes.Library.Message.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,8 @@ namespace Archimedes.Api.Repository.Controllers
     {
         private readonly ILogger<HealthController> _logger;
         private readonly Config _config;
+        private readonly BatchLog _batchLog = new();
+        private string _logId;
 
         public HealthController(ILogger<HealthController> logger, IOptions<Config> config)
         {
@@ -26,8 +29,11 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<HealthMonitorDto> Get()
+        public ActionResult<HealthMonitorDto> GetHealth()
         {
+            _logId = _batchLog.Start();
+            _batchLog.Update(_logId, $"GET GetHealth");
+
             var health = new HealthMonitorDto()
             {
                 AppName = _config.ApplicationName,
@@ -40,11 +46,12 @@ namespace Archimedes.Api.Repository.Controllers
 
             try
             {
+                _logger.LogInformation(_batchLog.Print(_logId,$"Returned {health.AppName} {health.StatusMessage}"));
                 return Ok(health);
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId, $"Error from HealthController", e));
                 return BadRequest(e.Message);
             }
         }

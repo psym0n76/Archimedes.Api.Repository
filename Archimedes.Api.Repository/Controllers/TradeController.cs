@@ -16,6 +16,7 @@ namespace Archimedes.Api.Repository.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class TradeController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
@@ -34,50 +35,57 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<Trade>>> GetTrades(CancellationToken ct)
         {
             try
             {
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetTrades [Max 100 Trad]" );
                 var trades = await _unit.Trade.GetTradesAsync(1, 100, ct);
 
                 if (trades != null)
                 {
-                    _logger.LogInformation($"Returned {trades.Count()} Trade records");
+                    _logger.LogInformation($"Returned {trades.Count()} Trade(s)");
                     return Ok(trades);
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId, $"Error from TradeController", e));
                 return BadRequest();
             }
 
-            _logger.LogError("Trade not found.");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Trade not found"));
             return NotFound();
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Trade>> GetTradeAsync(int id, CancellationToken ct)
         {
             try
             {
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetTradeAsync for {id}");
+                
                 var trade = await _unit.Trade.GetTradeAsync(id, ct);
 
                 if (trade != null)
                 {
-                    _logger.LogInformation("Returned 1 Trade record");
+                    _logger.LogInformation($"Returned {trade.Strategy} {trade.BuySell} {trade.TimeStamp} Trade");
                     return Ok(trade);
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId, $"Error from TradeController", e));
                 return BadRequest();
             }
 
-            _logger.LogError($"Trade not found Id: {id}");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Trade not found"));
             return NotFound();
         }
 
@@ -85,19 +93,24 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult PostTrades([FromBody] IList<Trade> trade, ApiVersion apiVersion, CancellationToken ct)
+        public ActionResult PostTrades([FromBody] IList<Trade> trades, ApiVersion apiVersion, CancellationToken ct)
         {
             try
             {
-                _unit.Trade.AddTradesAsync(trade, ct);
+                _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"POST PostTrades {trades.Count} Trade(s)");
+                
+                _unit.Trade.AddTradesAsync(trades, ct);
                 _unit.SaveChanges();
 
+                _logger.LogInformation($"SAVED");
+
                 // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
-                return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trade);
+                return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trades);
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
+                _logger.LogError(_batchLog.Print(_logId, $"Error from TradeController", e));
                 return BadRequest();
             }
         }
@@ -112,13 +125,12 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"Processing trade UPDATE {tradeDto.Timestamp}");
+                _batchLog.Update(_logId, $"PUT UpdateTrade {tradeDto.Strategy} {tradeDto.BuySell} {tradeDto.Timestamp}");
 
                 var trade = _mapper.Map<Trade>(tradeDto);
 
                 await _unit.Trade.UpdateTradeAsync(trade, ct);
 
-                _batchLog.Update(_logId, $"Processing trade UPDATED {tradeDto.Timestamp}");
                 _unit.SaveChanges();
 
                 _logger.LogInformation(_batchLog.Print(_logId, "SAVED"));
@@ -127,7 +139,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error {e.Message} {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from TradeController", e));
                 return BadRequest();
             }
         }

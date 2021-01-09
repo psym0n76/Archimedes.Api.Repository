@@ -5,14 +5,11 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Archimedes.Api.Repository
 {
     public class CandleRepository : Repository<Candle>, ICandleRepository
     {
-        private readonly ILogger<CandleRepository> _logger;
-        
         public CandleRepository(DbContext context) : base(context)
         {
         }
@@ -39,7 +36,6 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             return await FxDatabaseContext.Candles.OrderBy(a=>a.TimeStamp).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
-            //return await FxDatabaseContext.Candles.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
         public async Task<List<Candle>> GetCandlesByMarketByFromDate(string market, DateTime fromDate,
@@ -151,9 +147,7 @@ namespace Archimedes.Api.Repository
 
             ct.ThrowIfCancellationRequested();
 
-            var candles = await GetCandlesAsync(a => a.Market == market && a.Granularity == granularity, ct);
-
-            return candles;
+           return await GetCandlesAsync(a => a.Market == market && a.Granularity == granularity, ct);
         }
     }
 }

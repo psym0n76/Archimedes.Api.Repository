@@ -41,6 +41,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, "GET GetPrices [MAX 1000000 records]");
                 var prices = await _unit.Price.GetPricesAsync(1, 100000, ct);
 
                 if (prices != null)
@@ -68,6 +69,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetPriceAsync for {id}");
                 var price = await _unit.Price.GetPriceAsync(id, ct);
 
                 if (price != null)
@@ -96,6 +98,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetMarketPricesAsync for {market}");
                 var marketPrices = await _unit.Price.GetMarketPrices(market, ct);
 
                 if (marketPrices != null)
@@ -110,7 +113,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogError($"Price not found for market: {market}");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
             return NotFound();
         }
 
@@ -124,11 +127,12 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetLastPriceByMarket for {market}");
                 var price = await _unit.Price.GetLastPriceByMarket(market, ct);
 
                 if (price != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId));
+                    _logger.LogInformation(_batchLog.Print(_logId,$"Returned {price.Bid} {price.Ask} {price.TimeStamp}"));
                     return Ok(MapPrice(price));
                 }
 
@@ -139,7 +143,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogError($"Price not found for market: {market}");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
             return NotFound();
         }
 
@@ -154,13 +158,13 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"GET Last Updated Price for Market: {market} and Granularity: {granularity}");
-                
+                _batchLog.Update(_logId, $"GET GetLastUpdated for {market} {granularity}");
+
                 var lastUpdated = await _unit.Price.GetLastUpdated(market, granularity, ct);
 
                 if (lastUpdated != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId));
+                    _logger.LogInformation(_batchLog.Print(_logId,$"Returned {lastUpdated}"));
                     return Ok(lastUpdated);
                 }
             }
@@ -170,7 +174,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogError($"Price not found for market: {market}.");
+            _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
             return NotFound();
         }
 
@@ -187,7 +191,7 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"Request: Get all Prices for Market: {market} Granularity: {granularity} FromDate: {fromDate} ToDate: {toDate}");
+                _batchLog.Update(_logId, $"GET GetMarketGranularityPricesDate for {market} {granularity} {fromDate} {toDate}");
 
                 if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
                 {
@@ -216,8 +220,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning(_batchLog.Print(_logId, $"Price not found. {nameof(market)}: {market} {nameof(granularity)}: {granularity} {nameof(fromDate)}: {fromDate} {nameof(toDate)}: {toDate}"));
-
+            _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
             return NotFound();
         }
 
@@ -230,6 +233,8 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, "GET GetMarketDistinctAsync [MAX 1000000 records]");
+
                 var prices = await _unit.Price.GetPricesAsync(1, 100000, ct);
 
                 if (prices != null)
@@ -238,7 +243,7 @@ namespace Archimedes.Api.Repository.Controllers
                     // create a priceDto collection
                     var priceCollection = distinctGranularity.Select(gran => new PriceDto() {Market = gran}).ToList();
                     
-                    _logger.LogInformation(_batchLog.Print(_logId));
+                    _logger.LogInformation(_batchLog.Print(_logId,$"Returned {prices.Count} Price(s)"));
                     return Ok(priceCollection);
                 }
             }
@@ -248,7 +253,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning(_batchLog.Print(_logId, "Prices not found"));
+            _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
             return NotFound();
         }
 
@@ -261,9 +266,11 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"DELETE DeletePricesAsync");
+                
                 await _unit.Price.RemovePricesOlderThanOneHour(ct);
                 
-                _logger.LogInformation(_batchLog.Print(_logId,"DELETED: Prices greater than 1 Hour deleted from Table"));
+                _logger.LogInformation(_batchLog.Print(_logId, "RemovePricesOlderThanOneHour"));
                 return Ok();
             }
             catch (Exception e)
@@ -284,7 +291,8 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                
+                _batchLog.Update(_logId, $"POST PostPrices {priceDto.Count()} Price(s)");
+
                 if (!priceDto.Any())
                 {
                     _logger.LogWarning(_batchLog.Print(_logId,"PriceDto Empty"));
