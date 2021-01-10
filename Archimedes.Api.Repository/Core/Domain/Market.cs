@@ -10,6 +10,7 @@ namespace Archimedes.Api.Repository
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        public int ExternalMarketId { get; set; }
         public int Interval { get; set; }
         public string TimeFrame { get; set; }
         public string Granularity { get; set; }
