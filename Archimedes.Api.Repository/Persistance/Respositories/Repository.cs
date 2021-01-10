@@ -9,8 +9,10 @@ namespace Archimedes.Api.Repository
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
+        
         protected readonly DbContext Context;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly object LockingObject = new object();
 
         public Repository(DbContext context)
         {
@@ -26,12 +28,18 @@ namespace Archimedes.Api.Repository
 
             try
             {
-                while (!Context.Database.CanConnect() && retryCounter < retry)
+
+                lock (LockingObject)
                 {
-                    retryCounter++;
-                    Thread.Sleep(1000);
-                    Logger.Warn($"Database connection denied - retry {retryCounter} out of {retry}");
+                    while (!Context.Database.CanConnect() && retryCounter < retry)
+                    {
+                        retryCounter++;
+                        Thread.Sleep(5000);
+                        Logger.Warn($"Database connection denied - retry {retryCounter} out of {retry}");
+                    }
                 }
+                
+                Logger.Info($"Database connection success - retry {retryCounter} out of {retry}");
 
             }
             catch (Exception e)
