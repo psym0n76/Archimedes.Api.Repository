@@ -105,7 +105,7 @@ namespace Archimedes.Api.Repository.Tests
                 "2020-01-01T10:00:00", CancellationToken.None);
 
             Assert.That(result, Is.InstanceOf<ActionResult<IEnumerable<PriceDto>>>());
-            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
 

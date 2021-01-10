@@ -23,24 +23,22 @@ namespace Archimedes.Api.Repository
 
         public void CheckConnection()
         {
-            const int retry = 10;
-            var retryCounter = 0;
-
             try
             {
-
                 lock (LockingObject)
                 {
+                    const int retry = 20;
+                    var retryCounter = 0;
+
                     while (!Context.Database.CanConnect() && retryCounter < retry)
                     {
                         retryCounter++;
                         Thread.Sleep(5000);
                         Logger.Warn($"Database connection denied - retry {retryCounter} out of {retry}");
                     }
-                }
-                
-                Logger.Info($"Database connection success - retry {retryCounter} out of {retry}");
 
+                    Logger.Info($"Database connection success - retry {retryCounter} out of {retry}");
+                }
             }
             catch (Exception e)
             {
