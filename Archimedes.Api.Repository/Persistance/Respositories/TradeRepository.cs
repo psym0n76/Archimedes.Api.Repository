@@ -21,7 +21,7 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Trades.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Trade>> GetTradesAsync(int pageIndex, int pageSize, CancellationToken ct)
+        public async Task<List<Trade>> GetTradesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             return await FxDatabaseContext.Trades.OrderBy(a=>a.TimeStamp).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);

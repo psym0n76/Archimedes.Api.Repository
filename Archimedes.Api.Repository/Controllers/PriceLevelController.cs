@@ -53,11 +53,15 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
                 
                 return NotFound();
-
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
                 return BadRequest(e.Message);
             }
         }
@@ -79,10 +83,15 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
 
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController",e));
                 return BadRequest(e.Message);
             }
 
@@ -108,9 +117,14 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
                 return BadRequest(e.Message);
             }
 
@@ -135,13 +149,18 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(priceLevel);
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
                 return BadRequest(e.Message);
             }
 
-            _logger.LogError(_batchLog.Print(_logId,$"price-level not found {id}"));
+            _logger.LogWarning(_batchLog.Print(_logId,$"price-level not found {id}"));
             return NotFound();
         }
 
@@ -175,9 +194,14 @@ namespace Archimedes.Api.Repository.Controllers
                //return CreatedAtAction(nameof(GetPriceLevelAsync), new {id = 0, version = apiVersion.ToString()}, priceLevels);
                return Ok();
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return BadRequest($"Operation Cancelled");
+            }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
                 return BadRequest(e.Message);
             }
         }
@@ -204,9 +228,14 @@ namespace Archimedes.Api.Repository.Controllers
 
                 return Ok();
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return BadRequest($"Operation Cancelled");
+            }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController \n\nErrorMessage: {e.Message} \n\nStackTrace: {e.StackTrace}"));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
                 return BadRequest(e.Message);
             }
         }

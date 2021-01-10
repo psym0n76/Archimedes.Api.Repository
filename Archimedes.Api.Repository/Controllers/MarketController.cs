@@ -46,6 +46,7 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(MapMarkets(markets));
                 }
             }
+            
             catch (Exception e)
             {
                 _logger.LogError($"Error {e.Message} {e.StackTrace}");

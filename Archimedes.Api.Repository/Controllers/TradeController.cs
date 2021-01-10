@@ -46,9 +46,14 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (trades != null)
                 {
-                    _logger.LogInformation($"Returned {trades.Count()} Trade(s)");
+                    _logger.LogInformation(_batchLog.Print( _logId,$"Returned {trades.Count()} Trade(s)"));
                     return Ok(trades);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -75,9 +80,14 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (trade != null)
                 {
-                    _logger.LogInformation($"Returned {trade.Strategy} {trade.BuySell} {trade.TimeStamp} Trade");
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {trade.Strategy} {trade.BuySell} {trade.TimeStamp} Trade"));
                     return Ok(trade);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -103,10 +113,15 @@ namespace Archimedes.Api.Repository.Controllers
                 _unit.Trade.AddTradesAsync(trades, ct);
                 _unit.SaveChanges();
 
-                _logger.LogInformation($"SAVED");
+                _logger.LogInformation(_batchLog.Print(_logId,$"SAVED"));
 
                 // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
                 return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trades);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return BadRequest("Operation Cancelled");
             }
             catch (Exception e)
             {
@@ -136,6 +151,11 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogInformation(_batchLog.Print(_logId, "SAVED"));
 
                 return Ok();
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return BadRequest("Operation Cancelled");
             }
             catch (Exception e)
             {

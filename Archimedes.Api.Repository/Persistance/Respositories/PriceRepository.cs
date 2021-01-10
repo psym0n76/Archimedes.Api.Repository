@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Archimedes.Library.Message.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace Archimedes.Api.Repository
@@ -23,14 +22,14 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Prices.FindAsync(id);
         }
 
-        public async Task<IList<Price>> GetPricesAsync(int pageIndex, int pageSize, CancellationToken ct)
+        public async Task<List<Price>> GetPricesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             return await FxDatabaseContext.Prices.AsNoTracking().OrderBy(a=>a.TimeStamp).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
             //return await FxDatabaseContext.Prices.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
-        public async Task<IList<Price>> GetPricesAsync(Expression<Func<Price, bool>> predicate,
+        public async Task<List<Price>> GetPricesAsync(Expression<Func<Price, bool>> predicate,
             CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
@@ -54,7 +53,7 @@ namespace Archimedes.Api.Repository
 
 
 
-        public async Task<IEnumerable<Price>> GetMarketPrices(string market, CancellationToken ct)
+        public async Task<List<Price>> GetMarketPrices(string market, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             var prices =
@@ -75,7 +74,7 @@ namespace Archimedes.Api.Repository
             return recentPrice;
         }
 
-        public async Task<IEnumerable<Price>> GetMarketGranularityPricesDate(string market, string granularity,
+        public async Task<List<Price>> GetMarketGranularityPricesDate(string market, string granularity,
             DateTimeOffset fromDate, DateTimeOffset toDate,
             CancellationToken ct)
         {
@@ -94,19 +93,19 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.Prices.AddAsync(price, ct);
         }
 
-        public async Task AddPricesAsync(IList<Price> prices, CancellationToken ct)
+        public async Task AddPricesAsync(List<Price> prices, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             await FxDatabaseContext.Prices.AddRangeAsync(prices, ct);
         }
 
 
-        public void RemovePrices(IList<Price> prices)
+        public void RemovePrices(List<Price> prices)
         {
             FxDatabaseContext.Prices.RemoveRange(prices);
         }
 
-        public async Task RemoveDuplicatePriceEntries(IList<Price> price, CancellationToken ct)
+        public async Task RemoveDuplicatePriceEntries(List<Price> price, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             var granularity = price.Select(a => a.Granularity).FirstOrDefault();

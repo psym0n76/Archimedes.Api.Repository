@@ -50,6 +50,11 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
@@ -77,6 +82,11 @@ namespace Archimedes.Api.Repository.Controllers
                     _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candle.Market} {candle.Granularity} {candle.TimeStamp} Candle"));
                     return Ok(MapCandle(candle));
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -106,6 +116,11 @@ namespace Archimedes.Api.Repository.Controllers
                     _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candles.Count} Candle(s)"));
                     return Ok(MapCandles(candles.OrderBy(a=>a.TimeStamp)));
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -137,6 +152,11 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(MapCandles(marketCandles.OrderBy(a=>a.TimeStamp)));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
@@ -167,6 +187,11 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(MapCandles(marketCandles.OrderBy(a=>a.TimeStamp)));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
@@ -192,6 +217,11 @@ namespace Archimedes.Api.Repository.Controllers
                 var lastUpdated = await _unit.Candle.GetLastCandleUpdated(market, granularity, ct);
                 _logger.LogInformation(_batchLog.Print(_logId, $"Returned {lastUpdated}"));
                 return Ok(lastUpdated);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -237,6 +267,11 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(MapCandles(candles.OrderBy(a=>a.TimeStamp)));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
@@ -269,6 +304,11 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
@@ -300,6 +340,11 @@ namespace Archimedes.Api.Repository.Controllers
 
                 _batchLog.Update(_logId, $"Returned {result.Quantity} {result.MinDate} {result.MaxDate}");
                 return Ok(result);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return BadRequest($"Operation Cancelled");
             }
             catch (Exception e)
             {
@@ -337,6 +382,11 @@ namespace Archimedes.Api.Repository.Controllers
 
                 // re-direct will not work but i wont the 201 response + records added 
                 return CreatedAtAction(nameof(GetCandles), new {id = 0, version = apiVersion.ToString()}, candle);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return BadRequest("Operation Cancelled");
             }
             catch (Exception e)
             {

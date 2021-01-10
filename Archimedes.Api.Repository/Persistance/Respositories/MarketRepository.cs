@@ -21,7 +21,7 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Markets.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Market>> GetMarketsAsync(int pageIndex, int pageSize,
+        public async Task<List<Market>> GetMarketsAsync(int pageIndex, int pageSize,
             CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
@@ -35,7 +35,7 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.Markets.AddAsync(market, ct);
         }
 
-        public async Task AddMarketsAsync(IEnumerable<Market> markets, CancellationToken ct = default)
+        public async Task AddMarketsAsync(List<Market> markets, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
             await FxDatabaseContext.Markets.AddRangeAsync(markets, ct);

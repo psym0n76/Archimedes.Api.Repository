@@ -50,6 +50,11 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(MapPrices(prices));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController",e));
@@ -77,6 +82,11 @@ namespace Archimedes.Api.Repository.Controllers
                     _logger.LogInformation(_batchLog.Print(_logId));
                     return Ok(MapPrice(price));
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -106,6 +116,11 @@ namespace Archimedes.Api.Repository.Controllers
                     _logger.LogInformation(_batchLog.Print(_logId));
                     return Ok(MapPrices(marketPrices));
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -137,6 +152,11 @@ namespace Archimedes.Api.Repository.Controllers
                 }
 
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
@@ -167,6 +187,11 @@ namespace Archimedes.Api.Repository.Controllers
                     _logger.LogInformation(_batchLog.Print(_logId,$"Returned {lastUpdated}"));
                     return Ok(lastUpdated);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -214,6 +239,11 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(MapPrices(prices));
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
@@ -247,6 +277,11 @@ namespace Archimedes.Api.Repository.Controllers
                     return Ok(priceCollection);
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
@@ -273,6 +308,11 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogInformation(_batchLog.Print(_logId, "RemovePricesOlderThanOneHour"));
                 return Ok();
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
@@ -283,7 +323,6 @@ namespace Archimedes.Api.Repository.Controllers
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> PostPrices([FromBody] IEnumerable<PriceDto> priceDto, ApiVersion apiVersion,
             CancellationToken ct)
@@ -299,7 +338,7 @@ namespace Archimedes.Api.Repository.Controllers
                     return BadRequest("PriceDto Empty");
                 }
 
-                var price = _mapper.Map<IList<Price>>(priceDto);
+                var price = _mapper.Map<List<Price>>(priceDto);
 
                // await _unit.Price.RemoveDuplicatePriceEntries(price, ct);
                // _unit.SaveChanges();
@@ -309,6 +348,11 @@ namespace Archimedes.Api.Repository.Controllers
                 _logger.LogInformation(_batchLog.Print(_logId));
                 // re-direct will not work but i wont the 201 response + records added 
                 return CreatedAtAction(nameof(GetPrices), new {id = 0, version = apiVersion.ToString()}, price);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
             }
             catch (Exception e)
             {

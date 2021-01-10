@@ -29,14 +29,14 @@ namespace Archimedes.Api.Repository
             return await FxDatabaseContext.Strategy.AsNoTracking().Where(predicate).ToListAsync(ct);
         }
 
-        public async Task<IEnumerable<Strategy>> GetStrategiesAsync(int pageIndex, int pageSize, CancellationToken ct)
+        public async Task<List<Strategy>> GetStrategiesAsync(int pageIndex, int pageSize, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             //return await FxDatabaseContext.Strategy.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
             return await FxDatabaseContext.Strategy.OrderBy(a=>a.LastUpdated).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(ct);
         }
 
-        public async Task<IEnumerable<Strategy>> GetActiveStrategiesGranularityMarket(string market, string granularity,
+        public async Task<List<Strategy>> GetActiveStrategiesGranularityMarket(string market, string granularity,
             CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
@@ -49,7 +49,7 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.Strategy.AddAsync(strategy, ct);
         }
 
-        public async Task AddStrategiesAsync(IEnumerable<Strategy> strategy, CancellationToken ct)
+        public async Task AddStrategiesAsync(List<Strategy> strategy, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
             await FxDatabaseContext.Strategy.AddRangeAsync(strategy, ct);
