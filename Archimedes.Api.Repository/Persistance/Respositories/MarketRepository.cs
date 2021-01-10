@@ -53,6 +53,7 @@ namespace Archimedes.Api.Repository
             market.Name = updated.Name;
             market.Quantity = updated.Quantity;
             market.TimeFrame = updated.TimeFrame;
+            market.ExternalMarketId = updated.ExternalMarketId;
 
             market.LastUpdated = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
