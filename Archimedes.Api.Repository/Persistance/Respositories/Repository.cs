@@ -37,7 +37,11 @@ namespace Archimedes.Api.Repository
                         Logger.Warn($"Database connection denied - retry {retryCounter} out of {retry}");
                     }
 
-                    Logger.Info($"Database connection success");
+                    if (retryCounter > 0)
+                    {
+                        Logger.Info($"Database Connection Success");
+                    }
+
                 }
             }
             catch (Exception e)
