@@ -12,7 +12,7 @@ namespace Archimedes.Api.Repository
         
         protected readonly DbContext Context;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        private readonly object LockingObject = new object();
+        private readonly object LockingObject = new();
 
         public Repository(DbContext context)
         {
