@@ -176,13 +176,13 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> PostPriceLevel([FromBody] PriceLevelDto priceLevelDto,
+        public async Task<ActionResult<int>> PostPriceLevel([FromBody] PriceLevelDto levelDto,
             ApiVersion apiVersion, CancellationToken ct)
         {
             try
             {
                 _logId = _batchLog.Start();
-                var level = _mapper.Map<PriceLevel>(priceLevelDto);
+                var level = _mapper.Map<PriceLevel>(levelDto);
 
                 _batchLog.Update(_logId, $"Processing PriceLevel ({level.TimeStamp})");
 
@@ -190,10 +190,9 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (levelExists)
                 {
-                    _logger.LogWarning(_batchLog.Print(_logId,
-                        $"Duplicate PriceLevel {priceLevelDto.TimeStamp} {priceLevelDto.Market} {priceLevelDto.Granularity}"));
-                    return BadRequest(
-                        $"Duplicate PriceLevel {priceLevelDto.TimeStamp} {priceLevelDto.Market} {priceLevelDto.Granularity}");
+                    var message = $"Duplicate PriceLevel {level.TimeStamp} {level.Market} {level.Granularity}";
+                    _logger.LogWarning(_batchLog.Print(_logId, message));
+                    return UnprocessableEntity(message);
                 }
 
                 await _unit.PriceLevel.AddPriceLevelAsync(level, ct);
