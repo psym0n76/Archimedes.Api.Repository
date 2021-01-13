@@ -42,6 +42,8 @@ namespace Archimedes.Api.Repository.Controllers
             {
                 _logId = _batchLog.Start();
 
+                _batchLog.Update(_logId, $"GET {nameof(GetPriceLevels)}");
+                
                 var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 100000, ct);
 
                 if (priceLevels != null)
@@ -77,6 +79,8 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId, $"GET GetPriceLevelsByMarketFromDate {market} {fromDate}");
+                
                 var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByDateAsync(market, fromDate, ct);
 
                 if (priceLevels != null)
@@ -113,6 +117,8 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
+                _batchLog.Update(_logId,$"GET GetPriceLevelsByMarketByGranularityFromDateActive {market} {granularity} {fromDate}");
+                
                 var priceLevels =
                     await _unit.PriceLevel.GetPriceLevelsByMarketByGranularityByDateActiveAsync(market, granularity,
                         fromDate, ct);
@@ -184,7 +190,7 @@ namespace Archimedes.Api.Repository.Controllers
                 _logId = _batchLog.Start();
                 var level = _mapper.Map<PriceLevel>(levelDto);
 
-                _batchLog.Update(_logId, $"Processing PriceLevel ({level.TimeStamp})");
+                _batchLog.Update(_logId, $"POST PostPriceLevel ({level.TimeStamp})");
 
                 var levelExists = await _unit.PriceLevel.GetPriceLevelExists(level, ct);
 
@@ -230,13 +236,11 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"Processing price-level UPDATE {priceLevelDto.TimeStamp}");
+                _batchLog.Update(_logId, $"PUT UpdatePriceLevel {priceLevelDto.Granularity} {priceLevelDto.Market}{priceLevelDto.TimeStamp}");
 
                 var priceLevel = _mapper.Map<PriceLevel>(priceLevelDto);
 
                 await _unit.PriceLevel.UpdatePriceLevelAsync(priceLevel, ct);
-
-                _batchLog.Update(_logId, $"Processing price-level UPDATED {priceLevelDto.TimeStamp}");
 
                 _unit.SaveChanges();
 
