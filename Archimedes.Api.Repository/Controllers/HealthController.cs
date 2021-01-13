@@ -32,8 +32,7 @@ namespace Archimedes.Api.Repository.Controllers
         public ActionResult<HealthMonitorDto> GetHealth()
         {
             _logId = _batchLog.Start();
-            //_batchLog.Update(_logId, $"GET GetHealth");
-
+            
             var health = new HealthMonitorDto()
             {
                 AppName = _config.ApplicationName,
@@ -46,13 +45,12 @@ namespace Archimedes.Api.Repository.Controllers
 
             try
             {
-               //_logger.LogInformation(_batchLog.Print(_logId,$"Returned {health.AppName} {health.StatusMessage}"));
                 return Ok(health);
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from HealthController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(HealthController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(HealthController)}", e));
             }
         }
     }

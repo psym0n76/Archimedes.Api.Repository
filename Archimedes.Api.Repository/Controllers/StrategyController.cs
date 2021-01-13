@@ -131,13 +131,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, "Strategy not found"));
-            return NotFound("Strategy not found");
-        }
-
-        private ActionResult<IEnumerable<StrategyDto>> ErrorResponse(Exception e)
-        {
-            _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-            return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
+            return NotFound("Not Found");
         }
 
         [HttpPut]
@@ -166,8 +160,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-                return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(StrategyController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(StrategyController)}", e));
             }
         }
 
@@ -197,8 +191,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-                return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(StrategyController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(StrategyController)}", e));
             }
         }
 
@@ -214,14 +208,14 @@ namespace Archimedes.Api.Repository.Controllers
         }
         private ActionResult<IEnumerable<StrategyDto>> ErrorMessages(Exception e)
         {
-            _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-            return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
+            _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(StrategyController)}", e));
+            return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(StrategyController)}", e));
         }
 
         private ActionResult<StrategyDto> ErrorMessage(Exception e)
         {
-            _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-            return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
+            _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(StrategyController)}", e));
+            return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(StrategyController)}", e));
         }
     }
 }

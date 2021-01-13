@@ -53,16 +53,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from TradeController", e));
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Trade not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [HttpGet("{id}")]
@@ -87,16 +87,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from TradeController", e));
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Trade not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [HttpPost]
@@ -125,8 +125,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from TradeController", e));
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
             }
         }
 
@@ -159,8 +159,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from TradeController", e));
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
             }
         }
     }

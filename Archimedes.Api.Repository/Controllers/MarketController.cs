@@ -49,12 +49,12 @@ namespace Archimedes.Api.Repository.Controllers
             
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
             }
 
             _logger.LogError("Markets not found");
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -75,12 +75,12 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
             }
 
             _logger.LogError("Markets not found");
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -101,12 +101,12 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
             }
 
             _logger.LogError("Markets not found");
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -125,12 +125,12 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
             }
 
             _logger.LogError($"Market not found for Id: {id}");
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [HttpPut]
@@ -158,8 +158,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId,$"Error {e.Message} {e.StackTrace}"));
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
             }
         }
 
@@ -188,8 +188,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
             }
         }
 
@@ -218,8 +218,8 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
             }
         }
 
@@ -230,6 +230,8 @@ namespace Archimedes.Api.Repository.Controllers
         public async Task<ActionResult> PostMarkets([FromBody] IList<MarketDto> marketDto, ApiVersion apiVersion,
             CancellationToken ct)
         {
+            //todo change to individual updates
+            
             try
             {
                 _logId = _batchLog.Start();
@@ -245,13 +247,13 @@ namespace Archimedes.Api.Repository.Controllers
                 _batchLog.Print(_logId, $"SAVED");
 
                 // re-direct will not work but i wont the 201 response + records added 
-                //return CreatedAtAction(nameof(GetStrategyAsync), new {id = 0, version = apiVersion.ToString()}, strategy);
+                //return CreatedAtAction(nameof(PostMarkets), new {id = market., version = apiVersion.ToString()}, market);
                 return Ok();
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error {e.Message} {e.StackTrace}");
-                return BadRequest();
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(MarketController)}", e));
             }
         }
 

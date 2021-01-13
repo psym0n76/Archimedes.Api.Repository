@@ -53,16 +53,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController",e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId,"Price not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [HttpGet("{id}")]
@@ -86,16 +86,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Price not found for Id: {id}"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/price/bymarket?market=gbpusd
@@ -120,16 +120,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/price/byLastPrice_byMarket?market=gbpusd
@@ -155,16 +155,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/price/bylastupdated?market=gbpusd&granularity=15
@@ -191,16 +191,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/price/bymarket_bygranularity_fromdate_todate?market=gbpusd&granularity=15&fromDate=2020-01-01T05:00:00&toDate=2020-01-01T05:00:00
@@ -242,16 +242,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -280,16 +280,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Price not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -311,12 +311,12 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
         }
 
@@ -329,6 +329,8 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
+                //todo change to single entry
+                
                 _logId = _batchLog.Start();
                 _batchLog.Update(_logId, $"POST PostPrices {priceDto.Count()} Price(s)");
 
@@ -352,12 +354,12 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceController)}", e));
             }
         }
 

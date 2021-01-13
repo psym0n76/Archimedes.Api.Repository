@@ -35,7 +35,7 @@ namespace Archimedes.Api.Repository.Tests
 
 
             Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
-            Assert.That(result.Result, Is.InstanceOf<NotFoundResult>());
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
             Assert.That(result.Value, Is.Null); // not populated ???
 
         }
@@ -47,7 +47,7 @@ namespace Archimedes.Api.Repository.Tests
             var result = await controller.GetPriceAsync(4, CancellationToken.None);
 
             Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
-            Assert.That(result.Result, Is.InstanceOf<NotFoundResult>());
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Archimedes.Api.Repository.Tests
             var result = await controller.GetPriceAsync(10, CancellationToken.None);
 
             Assert.That(result, Is.InstanceOf<ActionResult<PriceDto>>());
-            Assert.That(result.Result, Is.InstanceOf<NotFoundResult>());
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
 
@@ -105,7 +105,7 @@ namespace Archimedes.Api.Repository.Tests
                 "2020-01-01T10:00:00", CancellationToken.None);
 
             Assert.That(result, Is.InstanceOf<ActionResult<IEnumerable<PriceDto>>>());
-            Assert.That(result.Result, Is.InstanceOf<NotFoundResult>());
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
             Assert.That(result.Value, Is.Null);
         }
 

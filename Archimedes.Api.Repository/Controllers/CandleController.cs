@@ -53,16 +53,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -86,16 +86,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/candle/bypage?page=1&size50
@@ -120,16 +120,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/candle/bymarket?market=gbpusd
@@ -155,16 +155,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/candle/bymarket?market=gbpusd&byFromDate=""
@@ -190,16 +190,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Returned 0 Candle(s)"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/candle/bylastupdated?market=gbpusd&granularity=15
@@ -221,12 +221,12 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
         }
 
@@ -270,16 +270,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Candle not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/candle/bymarket_bygranularity?market=gbpusd&granularity=15
@@ -307,16 +307,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Candle not found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/candle/candle_count?market=GBP/USD&granularity=15Min
@@ -344,12 +344,12 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return BadRequest($"Operation Cancelled");
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
         }
 
@@ -386,12 +386,12 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return BadRequest("Operation Cancelled");
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from CandleController", e));
-                return BadRequest(e.Message);
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(CandleController)}", e));
             }
         }
 
