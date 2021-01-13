@@ -45,25 +45,26 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (strategies != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId,$"Returned {strategies.Count} Strategies"));
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {strategies.Count} Strategies"));
                     return Ok(MapStrategies(strategies));
                 }
             }
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
 
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-                return BadRequest();
+                return ErrorMessages(e);
             }
 
-            _logger.LogWarning(_batchLog.Print(_logId,"Strategies not found"));
-            return NotFound();
+            _logger.LogWarning(_batchLog.Print(_logId, "Strategies not found"));
+            return NotFound("Strategies not found");
         }
+
+
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -86,16 +87,15 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-                return BadRequest();
+                return ErrorMessage(e);
             }
 
             _logger.LogWarning(_batchLog.Print(_logId, $"Not Found"));
-            return NotFound();
+            return NotFound("Not Found");
         }
 
         //GET: api/v1/strategy/bymarket_bygranularity?market=gbpusd&granularity=15
@@ -103,7 +103,8 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<StrategyDto>>> GetActiveStrategiesGranularityMarket(string market, string granularity,
+        public async Task<ActionResult<IEnumerable<StrategyDto>>> GetActiveStrategiesGranularityMarket(string market,
+            string granularity,
             CancellationToken ct)
         {
             try
@@ -126,12 +127,17 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-                return BadRequest("Error from StrategyController");
+                return ErrorMessages(e);
             }
 
-            _logger.LogWarning(_batchLog.Print(_logId,"Strategy not found"));
+            _logger.LogWarning(_batchLog.Print(_logId, "Strategy not found"));
             return NotFound("Strategy not found");
+        }
+
+        private ActionResult<IEnumerable<StrategyDto>> ErrorResponse(Exception e)
+        {
+            _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
+            return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
         }
 
         [HttpPut]
@@ -156,15 +162,14 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-                return BadRequest();
+                return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
             }
         }
-
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -182,9 +187,9 @@ namespace Archimedes.Api.Repository.Controllers
 
                 // await _unit.Candle.RemoveDuplicateCandleEntries(strategy, ct);
                 // _unit.SaveChanges(); // not sure this is required
-                await _unit.Strategy.AddStrategiesAsync(strategy,ct);
+                await _unit.Strategy.AddStrategiesAsync(strategy, ct);
                 _unit.SaveChanges();
-                _logger.LogInformation(_batchLog.Print(_logId,"SAVED"));
+                _logger.LogInformation(_batchLog.Print(_logId, "SAVED"));
 
                 // re-direct will not work but i wont the 201 response + records added 
                 //return CreatedAtAction(nameof(GetStrategyAsync), new {id = 0, version = apiVersion.ToString()}, strategy);
@@ -193,7 +198,7 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-                return BadRequest();
+                return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
             }
         }
 
@@ -206,6 +211,17 @@ namespace Archimedes.Api.Repository.Controllers
         private IEnumerable<StrategyDto> MapStrategies(IEnumerable<Strategy> strategies)
         {
             return _mapper.Map<IEnumerable<StrategyDto>>(strategies);
+        }
+        private ActionResult<IEnumerable<StrategyDto>> ErrorMessages(Exception e)
+        {
+            _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
+            return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
+        }
+
+        private ActionResult<StrategyDto> ErrorMessage(Exception e)
+        {
+            _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
+            return BadRequest(_batchLog.Print(_logId, $"Error from StrategyController", e));
         }
     }
 }
