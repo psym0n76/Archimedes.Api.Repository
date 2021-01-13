@@ -46,6 +46,11 @@ namespace Archimedes.Api.Repository
             FxDatabaseContext.Trades.Update(trade);
         }
 
+        public async Task AddTradeAsync(Trade trade, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            await FxDatabaseContext.Trades.AddAsync(trade, ct);
+        }
 
         public async Task AddTradesAsync(IEnumerable<Trade> trades, CancellationToken ct)
         {

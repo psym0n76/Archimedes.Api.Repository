@@ -103,20 +103,20 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult PostTrades([FromBody] IList<Trade> trades, ApiVersion apiVersion, CancellationToken ct)
+        public ActionResult PostTrade([FromBody] Trade trade, ApiVersion apiVersion, CancellationToken ct)
         {
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"POST PostTrades {trades.Count} Trade(s)");
+                _batchLog.Update(_logId, $"POST PostTrade {trade.TimeStamp} {trade.Market} {trade.BuySell}");
                 
-                _unit.Trade.AddTradesAsync(trades, ct);
+                _unit.Trade.AddTradeAsync(trade, ct);
                 _unit.SaveChanges();
 
-                _logger.LogInformation(_batchLog.Print(_logId,$"SAVED"));
+                _logger.LogInformation(_batchLog.Print(_logId,$"SAVED ID={trade.Id}"));
 
                 // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
-                return CreatedAtAction(nameof(GetTrades), new {id = 0, version = apiVersion.ToString()}, trades);
+                return CreatedAtAction(nameof(GetTrades), new {id = trade.Id, version = apiVersion.ToString()}, trade);
             }
             catch (OperationCanceledException)
             {

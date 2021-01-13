@@ -11,5 +11,6 @@ namespace Archimedes.Api.Repository
         Task AddTradesAsync(IEnumerable<Trade> trades, CancellationToken ct);
 
         Task UpdateTradeAsync(Trade tradeDto, CancellationToken ct);
+        Task AddTradeAsync(Trade trade, CancellationToken ct);
     }
 }
