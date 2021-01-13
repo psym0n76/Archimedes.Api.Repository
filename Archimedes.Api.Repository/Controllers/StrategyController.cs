@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,7 +57,7 @@ namespace Archimedes.Api.Repository.Controllers
 
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
                 return BadRequest();
             }
 
@@ -89,7 +90,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
                 return BadRequest();
             }
 
@@ -102,7 +103,7 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<StrategyDto>> GetActiveStrategiesGranularityMarket(string market, string granularity,
+        public async Task<ActionResult<IEnumerable<StrategyDto>>> GetActiveStrategiesGranularityMarket(string market, string granularity,
             CancellationToken ct)
         {
             try
@@ -112,7 +113,7 @@ namespace Archimedes.Api.Repository.Controllers
                 var strategies =
                     await _unit.Strategy.GetActiveStrategiesGranularityMarket(market, granularity, ct);
 
-                if (strategies != null)
+                if (strategies.Any())
                 {
                     _logger.LogInformation(_batchLog.Print(_logId, $"Returned {strategies.Count} Strategies"));
                     return Ok(MapStrategies(strategies));
@@ -125,11 +126,11 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
                 return BadRequest();
             }
 
-            _logger.LogWarning(_batchLog.Print(_logId,"Candle not found"));
+            _logger.LogWarning(_batchLog.Print(_logId,"Strategy not found"));
             return NotFound();
         }
 
@@ -159,7 +160,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
                 return BadRequest();
             }
         }
@@ -169,7 +170,7 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> PostStrategies([FromBody] IList<StrategyDto> strategyDto, ApiVersion apiVersion,
+        public async Task<ActionResult> PostStrategies([FromBody] List<StrategyDto> strategyDto, ApiVersion apiVersion,
             CancellationToken ct)
         {
             try
@@ -191,7 +192,7 @@ namespace Archimedes.Api.Repository.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
                 return BadRequest();
             }
         }
