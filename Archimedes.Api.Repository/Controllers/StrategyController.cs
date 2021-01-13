@@ -122,16 +122,16 @@ namespace Archimedes.Api.Repository.Controllers
             catch (OperationCanceledException)
             {
                 _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
-                return NotFound();
+                return NotFound("Operation Cancelled");
             }
             catch (Exception e)
             {
                 _logger.LogError(_batchLog.Print(_logId, $"Error from StrategyController", e));
-                return BadRequest();
+                return BadRequest("Error from StrategyController");
             }
 
             _logger.LogWarning(_batchLog.Print(_logId,"Strategy not found"));
-            return NotFound();
+            return NotFound("Strategy not found");
         }
 
         [HttpPut]
