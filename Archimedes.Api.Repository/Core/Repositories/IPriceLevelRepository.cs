@@ -17,6 +17,9 @@ namespace Archimedes.Api.Repository
         Task<List<PriceLevel>> GetPriceLevelsByMarketByGranularityByDateActiveAsync(string market, string granularity, DateTime fromDate, CancellationToken ct);
 
         Task AddPriceLevelsAsync(IEnumerable<PriceLevel> priceLevel, CancellationToken ct);
+        Task AddPriceLevelAsync(PriceLevel priceLevel, CancellationToken ct);
+
+        Task<bool> GetPriceLevelExists(PriceLevel priceLevel, CancellationToken ct);
 
         Task<List<PriceLevel>> RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevel, CancellationToken ct);
 

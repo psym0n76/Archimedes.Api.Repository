@@ -137,7 +137,7 @@ namespace Archimedes.Api.Repository
                     }).ToList();
 
                 RemoveCandles(duplicatedCandles);
-                FxDatabaseContext.SaveChanges();
+                await FxDatabaseContext.SaveChangesAsync(ct);
             }
         }
 

@@ -71,6 +71,12 @@ namespace Archimedes.Api.Repository
             await FxDatabaseContext.PriceLevels.AddRangeAsync(priceLevels, ct);
         }
 
+        public async Task AddPriceLevelAsync(PriceLevel priceLevel, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            await FxDatabaseContext.PriceLevels.AddAsync(priceLevel, ct);
+        }
+
         public async Task UpdatePriceLevelAsync(PriceLevel priceLevel, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
@@ -78,7 +84,7 @@ namespace Archimedes.Api.Repository
 
             if (level==null)
             {
-                throw new ArgumentNullException(nameof(priceLevel), $"Unable to find {priceLevel.Id}");
+                throw new ArgumentNullException(nameof(priceLevel), $"Unable to find PriceLevel.Id {priceLevel.Id}");
             }
 
             level.Active = priceLevel.Active;
@@ -96,6 +102,22 @@ namespace Archimedes.Api.Repository
 
             FxDatabaseContext.PriceLevels.Update(level);
         }
+
+
+        public async Task<bool> GetPriceLevelExists(PriceLevel priceLevel, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            var granularity = priceLevel.Granularity;
+            var market = priceLevel.Market;
+            var timestamp = priceLevel.TimeStamp;
+
+            var results = await GetPriceLevelsAsync(
+                a => a.Granularity == granularity && a.Market == market && a.TimeStamp == timestamp, ct);
+
+            return results.Any();
+        }
+        
 
         public async Task<List<PriceLevel>> RemoveDuplicatePriceLevelEntries(List<PriceLevel> priceLevel, CancellationToken ct)
         {

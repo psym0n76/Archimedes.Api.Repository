@@ -40,18 +40,19 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logId =  _batchLog.Start();
-                
+                _logId = _batchLog.Start();
+
                 var priceLevels = await _unit.PriceLevel.GetPriceLevelsAsync(1, 100000, ct);
 
                 if (priceLevels != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
-                    return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
+                    _logger.LogInformation(
+                        _batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
+                    return Ok(priceLevels.OrderBy(a => a.TimeStamp));
                 }
-                
-                _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
-                
+
+                _logger.LogError(_batchLog.Print(_logId, "PriceLevels not found."));
+
                 return NotFound();
             }
             catch (OperationCanceledException)
@@ -70,17 +71,19 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketFromDate(string market, DateTime fromDate, CancellationToken ct)
+        public async Task<ActionResult<List<PriceLevel>>> GetPriceLevelsByMarketFromDate(string market,
+            DateTime fromDate, CancellationToken ct)
         {
             try
             {
                 _logId = _batchLog.Start();
-                var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByDateAsync(market, fromDate,ct);
+                var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByDateAsync(market, fromDate, ct);
 
                 if (priceLevels != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
-                    return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
+                    _logger.LogInformation(
+                        _batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
+                    return Ok(priceLevels.OrderBy(a => a.TimeStamp));
                 }
             }
             catch (OperationCanceledException)
@@ -91,12 +94,12 @@ namespace Archimedes.Api.Repository.Controllers
             catch (Exception e)
             {
 
-                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController",e));
+                _logger.LogError(_batchLog.Print(_logId, $"Error from PriceLevelController", e));
                 return BadRequest(e.Message);
             }
 
-            _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
-            
+            _logger.LogError(_batchLog.Print(_logId, "PriceLevels not found."));
+
             return NotFound();
         }
 
@@ -104,17 +107,21 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<PriceLevel>>> GetPriceLevelsByMarketByGranularityFromDateActive(string market,string granularity, DateTime fromDate, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<PriceLevel>>> GetPriceLevelsByMarketByGranularityFromDateActive(
+            string market, string granularity, DateTime fromDate, CancellationToken ct)
         {
             try
             {
                 _logId = _batchLog.Start();
-                var priceLevels = await _unit.PriceLevel.GetPriceLevelsByMarketByGranularityByDateActiveAsync(market, granularity, fromDate, ct);
+                var priceLevels =
+                    await _unit.PriceLevel.GetPriceLevelsByMarketByGranularityByDateActiveAsync(market, granularity,
+                        fromDate, ct);
 
                 if (priceLevels != null)
                 {
-                    _logger.LogInformation( _batchLog.Print(_logId,$"Returned {priceLevels.Count()} PriceLevel records"));
-                    return Ok(priceLevels.OrderBy(a=>a.TimeStamp));
+                    _logger.LogInformation(
+                        _batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
+                    return Ok(priceLevels.OrderBy(a => a.TimeStamp));
                 }
             }
             catch (OperationCanceledException)
@@ -128,7 +135,7 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogError(_batchLog.Print(_logId,"PriceLevels not found."));
+            _logger.LogError(_batchLog.Print(_logId, "PriceLevels not found."));
             return NotFound();
         }
 
@@ -145,7 +152,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (priceLevel != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId,$"price-level returned {priceLevel.TimeStamp}"));
+                    _logger.LogInformation(_batchLog.Print(_logId, $"price-level returned {priceLevel.TimeStamp}"));
                     return Ok(priceLevel);
                 }
             }
@@ -160,39 +167,47 @@ namespace Archimedes.Api.Repository.Controllers
                 return BadRequest(e.Message);
             }
 
-            _logger.LogWarning(_batchLog.Print(_logId,$"price-level not found {id}"));
+            _logger.LogWarning(_batchLog.Print(_logId, $"price-level not found {id}"));
             return NotFound();
         }
+
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> PostPriceLevels([FromBody] IList<PriceLevelDto> priceLevelDto, ApiVersion apiVersion, CancellationToken ct)
+        public async Task<ActionResult<int>> PostPriceLevel([FromBody] PriceLevelDto priceLevelDto,
+            ApiVersion apiVersion, CancellationToken ct)
         {
             try
             {
                 _logId = _batchLog.Start();
-                var priceLevels = _mapper.Map<List<PriceLevel>>(priceLevelDto);
+                var level = _mapper.Map<PriceLevel>(priceLevelDto);
 
-                _batchLog.Update(_logId,$"Processing price-levels ({priceLevels.Count})");
-                
-                var updatedPriceLevels =  await _unit.PriceLevel.RemoveDuplicatePriceLevelEntries(priceLevels, ct);
+                _batchLog.Update(_logId, $"Processing PriceLevel ({level.TimeStamp})");
 
-                _batchLog.Update(_logId, $"Processing price-levels - identified  ({priceLevels.Count - updatedPriceLevels.Count}) duplicate(s)");
+                var levelExists = await _unit.PriceLevel.GetPriceLevelExists(level, ct);
 
-                await _unit.PriceLevel.AddPriceLevelsAsync(updatedPriceLevels, ct);
+                if (levelExists)
+                {
+                    _logger.LogWarning(_batchLog.Print(_logId,
+                        $"Duplicate PriceLevel {priceLevelDto.TimeStamp} {priceLevelDto.Market} {priceLevelDto.Granularity}"));
+                    return Ok(
+                        $"Duplicate PriceLevel {priceLevelDto.TimeStamp} {priceLevelDto.Market} {priceLevelDto.Granularity}");
+                }
 
-                _batchLog.Update(_logId, $"Processing price-levels ({updatedPriceLevels.Count}) POSTED");
-                
+                await _unit.PriceLevel.AddPriceLevelAsync(level, ct);
+
+                _batchLog.Update(_logId, $"PriceLevel {level.TimeStamp} Id={level.Id}) ADDED");
+
                 _unit.SaveChanges();
 
-                _logger.LogInformation(_batchLog.Print(_logId,"SAVED"));
+                _logger.LogInformation(_batchLog.Print(_logId, $"PriceLevel {level.TimeStamp} Id={level.Id}) ADDED"));
 
-                // leave the re-route in as an example how to do it - cannot have name GetTradesAsync
-               //return CreatedAtAction(nameof(GetPriceLevelAsync), new {id = 0, version = apiVersion.ToString()}, priceLevels);
-               return Ok();
+                // this now works :)
+                return CreatedAtAction(nameof(PostPriceLevel), new {id = level.Id, version = apiVersion.ToString()},
+                    level);
+
             }
             catch (OperationCanceledException)
             {
@@ -210,7 +225,8 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> UpdatePriceLevel([FromBody] PriceLevelDto priceLevelDto, ApiVersion apiVersion, CancellationToken ct)
+        public async Task<ActionResult> UpdatePriceLevel([FromBody] PriceLevelDto priceLevelDto, ApiVersion apiVersion,
+            CancellationToken ct)
         {
             try
             {
@@ -222,6 +238,7 @@ namespace Archimedes.Api.Repository.Controllers
                 await _unit.PriceLevel.UpdatePriceLevelAsync(priceLevel, ct);
 
                 _batchLog.Update(_logId, $"Processing price-level UPDATED {priceLevelDto.TimeStamp}");
+
                 _unit.SaveChanges();
 
                 _logger.LogInformation(_batchLog.Print(_logId, "SAVED"));
