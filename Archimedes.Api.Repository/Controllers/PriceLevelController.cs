@@ -192,7 +192,7 @@ namespace Archimedes.Api.Repository.Controllers
                 {
                     _logger.LogWarning(_batchLog.Print(_logId,
                         $"Duplicate PriceLevel {priceLevelDto.TimeStamp} {priceLevelDto.Market} {priceLevelDto.Granularity}"));
-                    return Ok(
+                    return BadRequest(
                         $"Duplicate PriceLevel {priceLevelDto.TimeStamp} {priceLevelDto.Market} {priceLevelDto.Granularity}");
                 }
 
