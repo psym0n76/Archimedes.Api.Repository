@@ -46,7 +46,7 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candles != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId,$"Returned {candles.Count} Candle(s)"));
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candles.Count} Candle(s)"));
                     return Ok(MapCandles(candles.OrderBy(order => order.TimeStamp)));
                 }
             }
@@ -79,7 +79,8 @@ namespace Archimedes.Api.Repository.Controllers
 
                 if (candle != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candle.Market} {candle.Granularity} {candle.TimeStamp} Candle"));
+                    _logger.LogInformation(_batchLog.Print(_logId,
+                        $"Returned {candle.Market} {candle.Granularity} {candle.TimeStamp} Candle"));
                     return Ok(MapCandle(candle));
                 }
             }
@@ -103,18 +104,19 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesAsync(int page, int size, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesAsync(int page, int size,
+            CancellationToken ct)
         {
             try
             {
                 _logId = _batchLog.Start();
                 _batchLog.Update(_logId, $"GET GetCandleAsync Page: {page} Size: {size} request");
-                var candles = await _unit.Candle.GetCandlesAsync(page, size,ct);
+                var candles = await _unit.Candle.GetCandlesAsync(page, size, ct);
 
                 if (candles != null)
                 {
                     _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candles.Count} Candle(s)"));
-                    return Ok(MapCandles(candles.OrderBy(a=>a.TimeStamp)));
+                    return Ok(MapCandles(candles.OrderBy(a => a.TimeStamp)));
                 }
             }
             catch (OperationCanceledException)
@@ -143,13 +145,13 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId,$"GET GetMarketCandlesAsync for {market}");
+                _batchLog.Update(_logId, $"GET GetMarketCandlesAsync for {market}");
                 var marketCandles = await _unit.Candle.GetMarketCandles(market, ct);
 
                 if (marketCandles != null)
                 {
-                    _logger.LogInformation(_batchLog.Print(_logId,$"Returned {marketCandles.Count} Candles(s)"));
-                    return Ok(MapCandles(marketCandles.OrderBy(a=>a.TimeStamp)));
+                    _logger.LogInformation(_batchLog.Print(_logId, $"Returned {marketCandles.Count} Candles(s)"));
+                    return Ok(MapCandles(marketCandles.OrderBy(a => a.TimeStamp)));
                 }
             }
             catch (OperationCanceledException)
@@ -172,7 +174,8 @@ namespace Archimedes.Api.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesByMarketByFromDate(string market, DateTime fromDate,
+        public async Task<ActionResult<IEnumerable<CandleDto>>> GetCandlesByMarketByFromDate(string market,
+            DateTime fromDate,
             CancellationToken ct)
         {
             try
@@ -184,7 +187,7 @@ namespace Archimedes.Api.Repository.Controllers
                 if (marketCandles != null)
                 {
                     _logger.LogInformation(_batchLog.Print(_logId, $"Returned {marketCandles.Count} Candles(s)"));
-                    return Ok(MapCandles(marketCandles.OrderBy(a=>a.TimeStamp)));
+                    return Ok(MapCandles(marketCandles.OrderBy(a => a.TimeStamp)));
                 }
             }
             catch (OperationCanceledException)
@@ -242,8 +245,9 @@ namespace Archimedes.Api.Repository.Controllers
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"GET GetMarketGranularityCandlesDate for {market} {granularity} {fromDate} {toDate}");
-                
+                _batchLog.Update(_logId,
+                    $"GET GetMarketGranularityCandlesDate for {market} {granularity} {fromDate} {toDate}");
+
                 if (!DateTimeOffset.TryParse(fromDate, out var fromDateOffset))
                 {
                     _logger.LogWarning(_batchLog.Print(_logId, $"Incorrect FromDate format: {fromDate}"));
@@ -264,7 +268,7 @@ namespace Archimedes.Api.Repository.Controllers
                 if (candles != null)
                 {
                     _logger.LogInformation(_batchLog.Print(_logId, $"Returned {candles.Count} Candles(s)"));
-                    return Ok(MapCandles(candles.OrderBy(a=>a.TimeStamp)));
+                    return Ok(MapCandles(candles.OrderBy(a => a.TimeStamp)));
                 }
             }
             catch (OperationCanceledException)
@@ -330,7 +334,7 @@ namespace Archimedes.Api.Repository.Controllers
             {
                 _logId = _batchLog.Start();
                 _batchLog.Update(_logId, $"GET GetCandleMetrics for {market} {granularity}");
-                
+
                 var result = new CandleMetricsDto()
                 {
                     MinDate = await _unit.Candle.GetFirstCandleUpdated(market, granularity, ct),
@@ -357,31 +361,37 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> PostCandles([FromBody] IList<CandleDto> candleDto, ApiVersion apiVersion,
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<ActionResult> PostCandle([FromBody] CandleDto candleDto, ApiVersion apiVersion,
             CancellationToken ct)
         {
             try
             {
                 _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"POST PostCandles for {candleDto.Count} Candle(s)");
-                
-                var candle = _mapper.Map<List<Candle>>(candleDto);
+                _batchLog.Update(_logId,
+                    $"POST PostCandle for {candleDto.Market} {candleDto.Granularity} {candleDto.TimeStamp} Candle");
 
-                _batchLog.Update(_logId,$"Candle Received: {candle[0].Market} {candle[0].Granularity} StartDate: {candle[0].TimeStamp} EndDate: {candle[^1].TimeStamp} Records: {candle.Count}");
+                var candle = _mapper.Map<Candle>(candleDto);
 
-                await _unit.Candle.RemoveDuplicateCandleEntries(candle, ct);
+                var candleExists =
+                    await _unit.Candle.GetCandleExists(candle.Market, candle.Granularity, candle.TimeStamp, ct);
+
+                if (candleExists)
+                {
+                    var message = $"Duplicate Candle {candle.Market} {candle.Granularity} {candle.TimeStamp}";
+                    _logger.LogWarning(_batchLog.Print(_logId, message));
+                    return UnprocessableEntity(message);
+                }
+
+                await _unit.Candle.AddCandleAsync(candle, ct);
                 _unit.SaveChanges();
-
-                _batchLog.Update(_logId,"Candle Duplicates Removed");
-
-                await _unit.Candle.AddCandlesAsync(candle, ct);
-                _unit.SaveChanges();
-
                 _batchLog.Update(_logId, "Candle Added");
+
                 _logger.LogInformation(_batchLog.Print(_logId));
 
                 // re-direct will not work but i wont the 201 response + records added 
-                return CreatedAtAction(nameof(GetCandles), new {id = 0, version = apiVersion.ToString()}, candle);
+                return CreatedAtAction(nameof(GetCandles), new {id = candle.Id, version = apiVersion.ToString()},
+                    candle);
             }
             catch (OperationCanceledException)
             {

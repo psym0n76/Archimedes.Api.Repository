@@ -30,5 +30,6 @@ namespace Archimedes.Api.Repository
         Task<List<Candle>> GetMarketGranularityCandles(string market, string granularity, CancellationToken ct);
 
         Task<List<Candle>> GetMarketCandles(string market, CancellationToken ct);
+        Task<bool> GetCandleExists(string market, string granularity, DateTime timeStamp, CancellationToken ct);
     }
 }

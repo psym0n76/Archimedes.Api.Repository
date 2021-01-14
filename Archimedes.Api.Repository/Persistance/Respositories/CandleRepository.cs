@@ -31,6 +31,16 @@ namespace Archimedes.Api.Repository
             return candles;
         }
 
+        public async Task<bool> GetCandleExists(string market, string granularity, DateTime timeStamp, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            var candle = await GetCandlesAsync(a =>
+                a.Market == market && a.Granularity == granularity && a.TimeStamp == timeStamp,ct);
+
+            return candle.Any();
+        }
+
         public async Task<List<Candle>> GetCandlesAsync(int pageIndex, int pageSize,
             CancellationToken ct = default)
         {

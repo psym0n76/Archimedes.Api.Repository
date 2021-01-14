@@ -180,6 +180,8 @@ namespace Archimedes.Api.Repository.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        
         public async Task<ActionResult<int>> PostPriceLevel([FromBody] PriceLevelDto levelDto,
             ApiVersion apiVersion, CancellationToken ct)
         {
