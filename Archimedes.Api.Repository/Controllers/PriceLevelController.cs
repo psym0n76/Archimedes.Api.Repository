@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using Archimedes.Library.Extensions;
 using Archimedes.Library.Logger;
 using Archimedes.Library.Message.Dto;
 using AutoMapper;
@@ -126,6 +127,46 @@ namespace Archimedes.Api.Repository.Controllers
                     _logger.LogInformation(
                         _batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
                     return Ok(priceLevels.OrderBy(a => a.TimeStamp));
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning(_batchLog.Print(_logId, $"Operation Cancelled"));
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
+                return BadRequest(_batchLog.Print(_logId, $"Error from {nameof(PriceLevelController)}", e));
+            }
+
+            _logger.LogError(_batchLog.Print(_logId, "PriceLevels not found."));
+            return NotFound("Not Found");
+        }
+
+        [HttpGet("byMarket_byGranularity_byCurrentDay", Name = nameof(GetPriceLevelsByMarketByGranularityByCurrentDay))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<PriceLevel>>> GetPriceLevelsByMarketByGranularityByCurrentDay(
+            string market, string granularity, CancellationToken ct)
+        {
+            try
+            {
+                _logId = _batchLog.Start();
+                var fromDate = DateTime.Today.PreviousWorkDay().AddDays(-1);
+
+                _batchLog.Update(_logId, $"GET {nameof(GetPriceLevelsByMarketByGranularityByCurrentDay)} {market} {granularity} {fromDate}");
+
+                var priceLevels =
+                    await _unit.PriceLevel.GetPriceLevelsByMarketByGranularityByDateActiveAsync(market, granularity,
+                        fromDate, ct);
+
+                if (priceLevels != null)
+                {
+                    _logger.LogInformation(
+                        _batchLog.Print(_logId, $"Returned {priceLevels.Count()} PriceLevel records"));
+                    return Ok(priceLevels.OrderByDescending(a => a.TimeStamp));
                 }
             }
             catch (OperationCanceledException)
