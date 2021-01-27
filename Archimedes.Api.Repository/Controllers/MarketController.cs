@@ -171,17 +171,18 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"Processing market UPDATE: {marketDto.Name}");
-                
+                _logId = _batchLog.Start($"Processing market-metrics UPDATE: {marketDto.Name} Id: {marketDto.Id} ExtId: {marketDto.ExternalMarketId}");
+
                 var market = _mapper.Map<Market>(marketDto);
 
-                await _unit.Market.UpdateMarketMetrics(market, ct);
 
-                _batchLog.Update(_logId, $"Processing market UPDATED: {marketDto.Name}");
+                if (!await _unit.Market.UpdateMarketMetrics(market, ct))
+                {
+                    _logger.LogWarning(_batchLog.Print(_logId, $"Market {market.Id} Not Found"));
+                    return NotFound(market);
+                }
 
                 _unit.SaveChanges();
-                
                 _batchLog.Print(_logId, $"SAVED");
 
                 return Ok();
@@ -205,12 +206,13 @@ namespace Archimedes.Api.Repository.Controllers
 
                 var market = _mapper.Map<Market>(marketDto);
 
-                await _unit.Market.UpdateMarketStatus(market, ct);
-
-                _batchLog.Update(_logId, $"Processing market-status UPDATED");
-
+                if (!await _unit.Market.UpdateMarketStatus(market, ct))
+                {
+                    _logger.LogWarning(_batchLog.Print(_logId, $"Market {market.Id} Mot Found"));
+                    return NotFound(market);
+                }
+                
                 _unit.SaveChanges();
-
                 _batchLog.Print(_logId, $"SAVED");
                 
                 return Ok();
