@@ -201,14 +201,13 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"Processing market-status UPDATE: {marketDto.Name}");
+                _logId = _batchLog.Start($"Processing market-status UPDATE: {marketDto.Name} Id: {marketDto.Id} ExtId: {marketDto.ExternalMarketId}");
 
                 var market = _mapper.Map<Market>(marketDto);
 
                 await _unit.Market.UpdateMarketStatus(market, ct);
 
-                _batchLog.Update(_logId, $"Processing market-status UPDATED: {marketDto.Name}");
+                _batchLog.Update(_logId, $"Processing market-status UPDATED");
 
                 _unit.SaveChanges();
 

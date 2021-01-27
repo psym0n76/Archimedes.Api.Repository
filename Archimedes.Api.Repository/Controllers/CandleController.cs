@@ -332,8 +332,7 @@ namespace Archimedes.Api.Repository.Controllers
         {
             try
             {
-                _logId = _batchLog.Start();
-                _batchLog.Update(_logId, $"GET GetCandleMetrics for {market} {granularity}");
+                _logId = _batchLog.Start($"GET GetCandleMetrics for {market} {granularity}");
 
                 var result = new CandleMetricsDto()
                 {

@@ -80,7 +80,8 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             var response = await GetCandlesAsync(a => a.Market == market && a.Granularity == granularity, ct);
-            return response.Max(a => a.FromDate);
+
+            return response.Any() ? response.Max(a => a.FromDate) : new DateTime();
         }
 
         public async Task<int> GetCandleCount(string market, string granularity, CancellationToken ct)
@@ -94,8 +95,8 @@ namespace Archimedes.Api.Repository
         {
             ct.ThrowIfCancellationRequested();
             var response = await GetCandlesAsync(a => a.Market == market && a.Granularity == granularity, ct);
-            return response.Min(a => a.FromDate);
 
+            return response.Any() ? response.Min(a => a.FromDate) : new DateTime();
         }
 
         public async Task<List<Candle>> GetMarketGranularityCandlesDate(string market, string granularity,
