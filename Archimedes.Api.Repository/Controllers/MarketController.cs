@@ -175,7 +175,6 @@ namespace Archimedes.Api.Repository.Controllers
 
                 var market = _mapper.Map<Market>(marketDto);
 
-
                 if (!await _unit.Market.UpdateMarketMetrics(market, ct))
                 {
                     _logger.LogWarning(_batchLog.Print(_logId, $"Market {market.Id} Not Found"));
